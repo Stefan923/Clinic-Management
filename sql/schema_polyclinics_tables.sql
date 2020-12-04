@@ -210,6 +210,8 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_services` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`patients` (
   `cnp` VARCHAR(13) NOT NULL,
+  `lastName` VARCHAR(25) NULL DEFAULT NULL,
+  `firstName` VARCHAR(50) NULL DEFAULT NULL,
   PRIMARY KEY (`cnp`));
 
 -- -----------------------------------------------------
