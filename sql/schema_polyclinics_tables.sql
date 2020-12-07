@@ -9,7 +9,6 @@ USE `polyclinics`;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`employees` (
   `cnp` VARCHAR(13) NOT NULL,
-  `idMedicalUnit` INT NOT NULL,
   `lastName` VARCHAR(25) NULL DEFAULT NULL,
   `firstName` VARCHAR(50) NULL DEFAULT NULL,
   `address` VARCHAR(100) NULL DEFAULT NULL,
@@ -343,5 +342,40 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`appointments` (
   CONSTRAINT `fk_appointments_cnpDoctor`
     FOREIGN KEY (`cnpDoctor`)
     REFERENCES `polyclinics`.`doctors` (`cnpEmployee`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+-- -----------------------------------------------------
+-- Table `polyclinics`.`analyse`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `polyclinics`.`analyse` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `minimum` INT NULL,
+  `maximum` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`));
+  
+-- -----------------------------------------------------
+-- Table `polyclinics`.`patient_analyses`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_analyses` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `cnpPatient` VARCHAR(13) NOT NULL,
+  `idAnalyse` INT NULL,
+  `value` FLOAT(5,2) NULL DEFAULT NULL,
+  `isPositive` TINYINT NULL DEFAULT NULL,
+  INDEX `fk_patient_analyses_cnpPatient_idx` (`cnpPatient` ASC) VISIBLE,
+  INDEX `fk_patient_analyses_idAnalyse_idx` (`idAnalyse` ASC) VISIBLE,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_patient_analyses_cnpPatient`
+    FOREIGN KEY (`cnpPatient`)
+    REFERENCES `polyclinics`.`patients` (`cnp`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_patient_analyses_idAnalyse`
+    FOREIGN KEY (`idAnalyse`)
+    REFERENCES `polyclinics`.`analyse` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
