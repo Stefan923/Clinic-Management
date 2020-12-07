@@ -293,20 +293,20 @@ VALUES
 	('2701209623568','Rosu','Daniela','Arad, str. Avram Iancu nr. 2','0723625834','danielarosu@yahoo.com','RO84PORL5463823379519983','10','1991-01-04','Receptioner',3000,120),
 	('2701867345247','Crin','Izabela','Arad, str. Petru Maior 29-19','0762523572','crin_iza_1024@gmail.com','RO11PORL9649944214969712','11','2013-01-30','Contabil',3600,120),
 	('1701223675345','Grigorescu','Matei','Arad, Calea Floresti','0745234145','grigore.matei124@gmail.com','RO12PORL7474515959592751','12','1976-08-30','HR',3601,120),
-	('2801204117404','Baran','Maria Ileana','Iasi, str. Nicolae Iorga nr. 13','0753723634','baran_maria_ileana@gmail.com','RO61PORL2985652863833938','13','2011-07-10','Medic',15000,120),
+	('2801204117104','Baran','Maria Ileana','Iasi, str. Nicolae Iorga nr. 13','0753723634','baran_maria_ileana@gmail.com','RO61PORL2985652863833938','13','2011-07-10','Medic',15000,120),
 	('2931204115436','Bitoleanu','Alexandra Ioana','Iasi, str. Lacul Rosu','0745537474','bitoleanu_ale2@yahoo.com','RO35RZBR8945177663379578','14','2019-12-20','Medic',17000,120),
-	('1961204466262','Darie','Emanuel','Iasi, str. Mihai Viteazu nr. 2','0723626386','darie.emanuel5@gmail.com','RO83RZBR6275958249175962','15','2001-09-23','Asistent Medical',5000,120),
+	('1971204466262','Darie','Emanuel','Iasi, str. Mihai Viteazu nr. 2','0723626386','darie.emanuel5@gmail.com','RO83RZBR6275958249175962','15','2001-09-23','Asistent Medical',5000,120),
 	('2761204115614','David','Denisa Elena','Iasi, str. Avram Iancu nr. 4','0714724834','denisae_david@yahoo.com','RO85PORL4861432928789566','16','1995-01-04','Receptioner',4000,120),
 	('2851204119863','Popa','Izabela Ioana','Iasi, str. Ion Luca Caragiale nr. 16','0786456872','popa_ioana_elena@gmail.com','RO20PORL2744493865283367','17','2007-03-30','Contabil',3400,120),
 	('1911204048836','Munteanu','Victor Mihai','Iasi, Calea Bucuresti nr. 2','0745936743','munteanu.victor@gmail.com','RO09PORL8289969499888436','18','1985-08-30','HR',3700,120),
-	('2801204117404','Giurgiu','Cristina','Iasi, Craiova, str. Avram Iancu nr. 13','0784573674','giurgiu_cristina@gmail.com','RO14PORL4288784224545331','19','2011-02-06','Medic',12400,120),
-	('2931204115436','Florea','Ionela Mihaela','Craiova, str. Mihai Viteazu nr. 1','0774856846','florea_ionela@yahoo.com','RO89RZBR5887486576599979','20','1998-11-12','Medic',11150,120),
+	('2811204117404','Giurgiu','Cristina','Iasi, Craiova, str. Avram Iancu nr. 13','0784573674','giurgiu_cristina@gmail.com','RO14PORL4288784224545331','19','2011-02-06','Medic',12400,120),
+	('2031204115436','Florea','Ionela Mihaela','Craiova, str. Mihai Viteazu nr. 1','0774856846','florea_ionela@yahoo.com','RO89RZBR5887486576599979','20','1998-11-12','Medic',11150,120),
 	('1961204466262','Lascu','Vlad Ionut','Craiova, str. Mihai Viteazu nr. 2','0784674859','lascu.ionut7@gmail.com','RO07RZBR2772478373358274','21','2013-07-01','Asistent Medical',5000,120),
-	('2761204115614','Helerea','Ramona Andreea','Craiova, str. Avram Iancu nr. 4','0702375386','helerea_ramona24@yahoo.com','RO60RZBR4193362912123856','22','1995-04-23','Receptioner',3800,120),
-	('2851204119863','Macovei','Larisa','Craiova, str. Ion Luca Caragiale nr. 3','0728574930','macovei_larisa45@gmail.com','RO22RZBR6312293294421645','23','2002-07-25','Contabil',3400,120),
-	('1911204048836','Zamfira','Gabriel Alexandru','Craiova, Calea Bucuresti','0758275948','gabi_alexandru12@gmail.com','RO27RZBR4923277449898256','24','1974-05-15','HR',3700,120);
+	('2761104115614','Helerea','Ramona Andreea','Craiova, str. Avram Iancu nr. 4','0702375386','helerea_ramona24@yahoo.com','RO60RZBR4193362912123856','22','1995-04-23','Receptioner',3800,120),
+	('2851284119863','Macovei','Larisa','Craiova, str. Ion Luca Caragiale nr. 3','0728574930','macovei_larisa45@gmail.com','RO22RZBR6312293294421645','23','2002-07-25','Contabil',3400,120),
+	('1911204948836','Zamfira','Gabriel Alexandru','Craiova, Calea Bucuresti','0758275948','gabi_alexandru12@gmail.com','RO27RZBR4923277449898256','24','1974-05-15','HR',3700,120);
 
-INSERT INTO ``
+INSERT INTO `analyse` (name,minimum,maximum) VALUES
 ("Leucocite",3.50,10.500),
 ("Trombocite",150,450),
 ("Glicemia",70,110),
@@ -321,3 +321,39 @@ INSERT INTO ``
 ("Lipide",500,800),
 ("VLDL",2,38),
 ("Imunoglobulina A",90,450);
+
+INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`,`rank`,`sealCode`,`scientificTitle`,`didacticTitle`) VALUES
+('2901204019549','primar','12345',NULL,'profesor'),
+('2701204068831','specialist','56477','doctorand','lector'),
+('2901204012456','primar','90754',NULL,'asistent'),
+('2701204737245','primar','67323',NULL,'conferential'),
+('2801204117104','specialist','77895','doctor stiinte medicale','preparator'),
+('2931204115436','specialist','67441','doctorand','profesor'),
+('2811204117404','primar','50012',NULL,NULL),
+('2031204115436','specialist','40975','doctor stiinte medicale',NULL);
+ 
+ INSERT INTO `polyclinics`.`doctor_specialities` (cnpDoctor,idSpeciality) values
+ ('2901204019549',1),
+('2701204068831',2),
+('2901204012456',3),
+('2901204012456',4),
+('2701204737245',5),
+('2801204117104',6),
+('2931204115436',7),
+('2931204115436',9),
+('2931204115436',10),
+('2811204117404',8),
+('2031204115436',11);
+
+INSERT INTO `polyclinics`.`doctor_accreditations` (cnpDoctor,idAccreditation) VALUES
+ ('2901204019549',4),
+('2701204068831',4),
+('2901204012456',2),
+('2701204737245',3),
+('2801204117104',3),
+('2931204115436',3),
+('2811204117404',2),
+('2031204115436',3);
+
+
+ 
