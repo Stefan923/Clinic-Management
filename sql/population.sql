@@ -279,7 +279,7 @@ VALUES
 ('2991208015482', 'Boldea', 'Crina'),
 ('2971003128722', 'Fekete', 'Orsoyla');
 
-INSERT INTO `employees` (`cnp`,`lastName`,`firstName`,`address`,`phoneNum`,`email`,`iban`,`contractNum`,`employmentDate`,`position`,`salary`,`workedHrs`) 
+INSERT INTO `employees` (`cnp`,`lastName`,`firstName`,`address`,`phoneNum`,`email`,`iban`,`contractNum`,`employmentDate`,`position`,`salary`,`workedHrs`)
 VALUES
 	('2901204019549','Ionescu','Oana','Cluj-Napoca, str. Lacul Rosu nr. 13','0745634674','ionescu_oana@gmail.com','RO84PORL3823333897221298','1','2018-06-10','Medic',15000,120),
 	('2701204068831','Georgescu','Ileana','Cluj-Napoca, str. Lacul Rosu nr. 13','0745634472','georgescu.ileana@yahoo.com','RO02PORL1553658265733295','2','2000-07-20','Medic',20000,130),
@@ -306,18 +306,19 @@ VALUES
 	('2851204119863','Macovei','Larisa','Craiova, str. Ion Luca Caragiale nr. 3','0728574930','macovei_larisa45@gmail.com','RO22RZBR6312293294421645','23','2002-07-25','Contabil',3400,120),
 	('1911204048836','Zamfira','Gabriel Alexandru','Craiova, Calea Bucuresti','0758275948','gabi_alexandru12@gmail.com','RO27RZBR4923277449898256','24','1974-05-15','HR',3700,120);
 
-INSERT INTO ``
-("Leucocite",3.50,10.500),
-("Trombocite",150,450),
-("Glicemia",70,110),
-("Trigliceride",50,150),
-("Colesterol",0,200),
-("Fibrinogen",200,400),
-("Sodiu",135,145),
-("Calciu",8.5,10.5),
-("Magneziu",1.6,2.5),
-("Calciu ionic seric",3.6,5.2),
-("Hemoglobina glicozilata",4,5.9),
-("Lipide",500,800),
-("VLDL",2,38),
-("Imunoglobulina A",90,450);
+INSERT INTO `analyse` (`name`, `minimum`, `maximum`)
+VALUES
+	("Leucocite", 3.50, 10.500),
+	("Trombocite", 150, 450),
+	("Glicemia", 70, 110),
+	("Trigliceride", 50, 150),
+	("Colesterol", 0, 200),
+	("Fibrinogen", 200, 400),
+	("Sodiu", 135, 145),
+	("Calciu", 8.5, 10.5),
+	("Magneziu", 1.6, 2.5),
+	("Calciu ionic seric", 3.6, 5.2),
+	("Hemoglobina glicozilata", 4, 5.9),
+	("Lipide", 500, 800),
+	("VLDL", 2, 38),
+	("Imunoglobulina A", 90, 450);
