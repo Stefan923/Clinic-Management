@@ -299,12 +299,17 @@ VALUES
 	('2761204115614','David','Denisa Elena','Iasi, str. Avram Iancu nr. 4','0714724834','denisae_david@yahoo.com','RO85PORL4861432928789566','16','1995-01-04','Receptioner',4000,120),
 	('2851204119863','Popa','Izabela Ioana','Iasi, str. Ion Luca Caragiale nr. 16','0786456872','popa_ioana_elena@gmail.com','RO20PORL2744493865283367','17','2007-03-30','Contabil',3400,120),
 	('1911204048836','Munteanu','Victor Mihai','Iasi, Calea Bucuresti nr. 2','0745936743','munteanu.victor@gmail.com','RO09PORL8289969499888436','18','1985-08-30','HR',3700,120),
-	('2801204117404','Giurgiu','Cristina','Iasi, Craiova, str. Avram Iancu nr. 13','0784573674','giurgiu_cristina@gmail.com','RO14PORL4288784224545331','19','2011-02-06','Medic',12400,120),
-	('2931204115436','Florea','Ionela Mihaela','Craiova, str. Mihai Viteazu nr. 1','0774856846','florea_ionela@yahoo.com','RO89RZBR5887486576599979','20','1998-11-12','Medic',11150,120),
-	('1961204466262','Lascu','Vlad Ionut','Craiova, str. Mihai Viteazu nr. 2','0784674859','lascu.ionut7@gmail.com','RO07RZBR2772478373358274','21','2013-07-01','Asistent Medical',5000,120),
-	('2761204115614','Helerea','Ramona Andreea','Craiova, str. Avram Iancu nr. 4','0702375386','helerea_ramona24@yahoo.com','RO60RZBR4193362912123856','22','1995-04-23','Receptioner',3800,120),
-	('2851204119863','Macovei','Larisa','Craiova, str. Ion Luca Caragiale nr. 3','0728574930','macovei_larisa45@gmail.com','RO22RZBR6312293294421645','23','2002-07-25','Contabil',3400,120),
-	('1911204048836','Zamfira','Gabriel Alexandru','Craiova, Calea Bucuresti','0758275948','gabi_alexandru12@gmail.com','RO27RZBR4923277449898256','24','1974-05-15','HR',3700,120);
+	('2731201018946','Giurgiu','Cristina','Iasi, Craiova, str. Avram Iancu nr. 13','0784573674','giurgiu_cristina@gmail.com','RO14PORL4288784224545331','19','2011-02-06','Medic',12400,120),
+	('2781201019674','Florea','Ionela Mihaela','Craiova, str. Mihai Viteazu nr. 1','0774856846','florea_ionela@yahoo.com','RO89RZBR5887486576599979','20','1998-11-12','Medic',11150,120),
+	('1851201018242','Lascu','Vlad Ionut','Craiova, str. Mihai Viteazu nr. 2','0784674859','lascu.ionut7@gmail.com','RO07RZBR2772478373358274','21','2013-07-01','Asistent Medical',5000,120),
+	('2901201019233','Helerea','Ramona Andreea','Craiova, str. Avram Iancu nr. 4','0702375386','helerea_ramona24@yahoo.com','RO60RZBR4193362912123856','22','1995-04-23','Receptioner',3800,120),
+	('2701201019767','Macovei','Larisa','Craiova, str. Ion Luca Caragiale nr. 3','0728574930','macovei_larisa45@gmail.com','RO22RZBR6312293294421645','23','2002-07-25','Contabil',3400,120),
+	('1801201017127','Zamfira','Gabriel Alexandru','Craiova, Calea Bucuresti','0758275948','gabi_alexandru12@gmail.com','RO27RZBR4923277449898256','24','1974-05-15','HR',3700,120),
+	('2801201016081','Vlad','Georgiana Mihaela','Constanta, str. Aviatorilor nr. 8','0785639076','vlad_georgiana@gmail.com','RO89PORL3847726967587324','25','1999-05-12','Asistent Medical',4700,120),
+	('1960820039445','Cristescu','George','Constanta, str. Avram Iancu','0729406749','crist_george10@yahoo.com','RO68RZBR4199291787829444','26','1995-06-01','Receptioner',3100,120),
+	('2961201037997','Matei','Ana Irina','Constanta, str. 1 Mai','0767493068','matei_anairina@gmail.com','RO44RZBR8623977857491312','27','2020-11-30','Contabil',3570,120),
+	('1830121466921','Stancu','Ioan Mihail','Constanta, str. Craiovei nr. 3','0748692056','ioan.mihail.st@gmail.com','RO75PORL6346981883481832','28','1985-08-18','HR',3150,120),
+	('2700927417309','Madalina','Adam','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120);
 
 INSERT INTO `analyse` (`name`, `minimum`, `maximum`)
 VALUES
