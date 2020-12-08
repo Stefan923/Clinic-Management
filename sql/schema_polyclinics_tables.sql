@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patients` (
 -- Table `polyclinics`.`patient_history`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `cnpPatient` VARCHAR(13) NOT NULL,
   `idService` INT NOT NULL,
   PRIMARY KEY (`id`),
