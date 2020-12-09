@@ -54,14 +54,10 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`doctor_specialities` (
   INDEX `idx_doctor_specialities_idSpeciality` (`idSpeciality` ASC) INVISIBLE,
   CONSTRAINT `fk_doctor_specialities_cnpDoctor`
     FOREIGN KEY (`cnpDoctor`)
-    REFERENCES `polyclinics`.`doctors` (`cnpEmployee`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `polyclinics`.`doctors` (`cnpEmployee`),
   CONSTRAINT `fk_doctor_specialities_idSpeciality`
     FOREIGN KEY (`idSpeciality`)
-    REFERENCES `polyclinics`.`specialities` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`specialities` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`medical_units`
@@ -103,14 +99,10 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`cabinet_equipments` (
   INDEX `fk_cabinet_equipments_idEquipment_idx` (`idEquipment` ASC) VISIBLE,
   CONSTRAINT `fk_cabinet_equipments_idCabinet`
     FOREIGN KEY (`idCabinet`)
-    REFERENCES `polyclinics`.`cabinets` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `polyclinics`.`cabinets` (`id`),
   CONSTRAINT `fk_cabinet_equipments_idEquipment`
     FOREIGN KEY (`idEquipment`)
-    REFERENCES `polyclinics`.`equipments` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`equipments` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`accreditations`
@@ -118,10 +110,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`cabinet_equipments` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`accreditations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`doctor_accreditations`
@@ -132,14 +121,10 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`doctor_accreditations` (
   PRIMARY KEY (`cnpDoctor`, `idAccreditation`),
   CONSTRAINT `fk_doctor_accreditations_idAccreditation`
     FOREIGN KEY (`idAccreditation`)
-    REFERENCES `polyclinics`.`accreditations` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `polyclinics`.`accreditations` (`id`),
   CONSTRAINT `fk_doctor_accreditations_idDoctor`
     FOREIGN KEY (`cnpDoctor`)
-    REFERENCES `polyclinics`.`doctors` (`cnpEmployee`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`doctors` (`cnpEmployee`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`medical_unit_employees`
@@ -151,14 +136,10 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_unit_employees` (
   INDEX `fk_medical_unit_employees_cnpEmployee_idx` (`cnpEmployee` ASC) VISIBLE,
   CONSTRAINT `fk_medical_unit_employees_idMedicalUnit`
     FOREIGN KEY (`idMedicalUnit`)
-    REFERENCES `polyclinics`.`medical_units` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `polyclinics`.`medical_units` (`id`),
   CONSTRAINT `fk_medical_unit_employees_cnpEmployee`
     FOREIGN KEY (`cnpEmployee`)
-    REFERENCES `polyclinics`.`employees` (`cnp`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`employees` (`cnp`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`nurse`
@@ -191,18 +172,21 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`holidays` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_services` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `idSpeciality` INT NOT NULL,
-  `idMedicalUnit` INT NOT NULL,
-  `hasAccreditation` TINYINT NULL DEFAULT 0,
-  `price` DECIMAL(5,2) NULL DEFAULT NULL,
-  `duration` INT NULL DEFAULT NULL,
+  `cnpDoctor` VARCHAR(13) NOT NULL,
+  `idSpeciality` INT NULL DEFAULT NULL,
+  `idEquipment` INT NULL DEFAULT NULL,
+  `hasAccreditation` TINYINT NULL DEFAULT '0',
+  `price` DECIMAL(5,2) NOT NULL DEFAULT 0,
+  `duration` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_medical_services_idMedicalUnti_idx` (`idMedicalUnit` ASC) VISIBLE,
-  CONSTRAINT `fk_medical_services_idMedicalUnti`
-    FOREIGN KEY (`idMedicalUnit`)
-    REFERENCES `polyclinics`.`medical_units` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  INDEX `fk_medical_services_cnpDoctor_idx` (`cnpDoctor` ASC) VISIBLE,
+  INDEX `fk_medical_services_idEquipment_idx` (`idEquipment` ASC) VISIBLE,
+  CONSTRAINT `fk_medical_services_cnpDoctor`
+    FOREIGN KEY (`cnpDoctor`)
+    REFERENCES `polyclinics`.`doctors` (`cnpEmployee`),
+  CONSTRAINT `fk_medical_services_idEquipment`
+    FOREIGN KEY (`idEquipment`)
+    REFERENCES `polyclinics`.`equipments` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`patients`
@@ -224,14 +208,10 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
   INDEX `fk_patitent_history_idService_idx` (`idService` ASC) VISIBLE,
   CONSTRAINT `fk_patitent_history_idService`
     FOREIGN KEY (`idService`)
-    REFERENCES `polyclinics`.`medical_services` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `polyclinics`.`medical_services` (`id`),
   CONSTRAINT `fk_patient_history_cnpPatient`
     FOREIGN KEY (`cnpPatient`)
-    REFERENCES `polyclinics`.`patients` (`cnp`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`patients` (`cnp`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`transactions`
@@ -279,9 +259,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`role_permissions` (
   PRIMARY KEY (`idRole`, `permission`),
   CONSTRAINT `fk_role_permissions_idRole`
     FOREIGN KEY (`idRole`)
-    REFERENCES `polyclinics`.`roles` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`roles` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`employee_schedule`
@@ -299,9 +277,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employee_schedule` (
     REFERENCES `polyclinics`.`employees` (`cnp`),
   CONSTRAINT `fk_employee_schedule_idMedicalUnit`
     FOREIGN KEY (`idMedicalUnit`)
-    REFERENCES `polyclinics`.`medical_units` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`medical_units` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`medical_unit_schedule`
@@ -324,26 +300,25 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`appointments` (
   `cnpPatient` VARCHAR(13) NOT NULL,
   `cnpDoctor` VARCHAR(13) NOT NULL,
   `idCabinet` INT NOT NULL,
+  `idMedicalService` INT NOT NULL,
   `data_programare` DATE NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_appointments_idCabinet_idx` (`idCabinet` ASC) VISIBLE,
   INDEX `fk_appointments_idPatient_idx` (`cnpPatient` ASC) VISIBLE,
   INDEX `fk_appointments_cnpDoctor_idx` (`cnpDoctor` ASC) VISIBLE,
-  CONSTRAINT `fk_appointments_idCabinet`
-    FOREIGN KEY (`idCabinet`)
-    REFERENCES `polyclinics`.`cabinets` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_appointments_idPatient`
-    FOREIGN KEY (`cnpPatient`)
-    REFERENCES `polyclinics`.`patients` (`cnp`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_appointments_idMedicalService_idx` (`idMedicalService` ASC) VISIBLE,
   CONSTRAINT `fk_appointments_cnpDoctor`
     FOREIGN KEY (`cnpDoctor`)
-    REFERENCES `polyclinics`.`doctors` (`cnpEmployee`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`doctors` (`cnpEmployee`),
+  CONSTRAINT `fk_appointments_idCabinet`
+    FOREIGN KEY (`idCabinet`)
+    REFERENCES `polyclinics`.`cabinets` (`id`),
+  CONSTRAINT `fk_appointments_idPatient`
+    FOREIGN KEY (`cnpPatient`)
+    REFERENCES `polyclinics`.`patients` (`cnp`),
+  CONSTRAINT `fk_appointments_idMedicalService`
+    FOREIGN KEY (`idMedicalService`)
+    REFERENCES `polyclinics`.`medical_services` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`analyse`
@@ -371,11 +346,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_analyses` (
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_patient_analyses_cnpPatient`
     FOREIGN KEY (`cnpPatient`)
-    REFERENCES `polyclinics`.`patients` (`cnp`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `polyclinics`.`patients` (`cnp`),
   CONSTRAINT `fk_patient_analyses_idAnalyse`
     FOREIGN KEY (`idAnalyse`)
-    REFERENCES `polyclinics`.`analyse` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `polyclinics`.`analyse` (`id`));
