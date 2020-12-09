@@ -13,12 +13,18 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employees` (
   `firstName` VARCHAR(50) NULL DEFAULT NULL,
   `address` VARCHAR(100) NULL DEFAULT NULL,
   `phoneNum` VARCHAR(10) NULL DEFAULT NULL,
+<<<<<<< HEAD
   `email` VARCHAR(50) NULL DEFAULT NULL,
   `iban` VARCHAR(25) NULL DEFAULT NULL,
   `contractNum` VARCHAR(25) NULL DEFAULT NULL,
+=======
+  `email` VARCHAR(45) NULL DEFAULT NULL,
+  `iban` VARCHAR(45) NULL DEFAULT NULL,
+  `contractNum` INT NULL DEFAULT NULL,
+>>>>>>> 3661c88705d59e89e7b0381030a07dd441db623f
   `employmentDate` DATE NULL DEFAULT NULL,
   `position` VARCHAR(25) NULL DEFAULT NULL,
-  `salary` FLOAT(10,2) NULL DEFAULT NULL,
+  `salary` DECIMAL(10,2) NULL DEFAULT NULL,
   `workedHrs` INT NULL DEFAULT NULL,
   PRIMARY KEY (`cnp`));
 
@@ -194,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_services` (
   `idSpeciality` INT NOT NULL,
   `idMedicalUnit` INT NOT NULL,
   `hasAccreditation` TINYINT NULL DEFAULT 0,
-  `price` FLOAT(5,2) NULL DEFAULT NULL,
+  `price` DECIMAL(5,2) NULL DEFAULT NULL,
   `duration` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_medical_services_idMedicalUnti_idx` (`idMedicalUnit` ASC) VISIBLE,
@@ -217,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patients` (
 -- Table `polyclinics`.`patient_history`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `cnpPatient` VARCHAR(13) NOT NULL,
   `idService` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -240,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`transactions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(10) NOT NULL,
   `date` DATE NULL,
-  `amount` FLOAT(10,2) NOT NULL,
+  `amount` DECIMAL(10,2) NOT NULL,
   `sender` VARCHAR(50) NOT NULL,
   `receiver` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`));
@@ -364,7 +370,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_analyses` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `cnpPatient` VARCHAR(13) NOT NULL,
   `idAnalyse` INT NULL,
-  `value` FLOAT(5,2) NULL DEFAULT NULL,
+  `value` DECIMAL(5,2) NULL DEFAULT NULL,
   `isPositive` TINYINT NULL DEFAULT NULL,
   INDEX `fk_patient_analyses_cnpPatient_idx` (`cnpPatient` ASC) VISIBLE,
   INDEX `fk_patient_analyses_idAnalyse_idx` (`idAnalyse` ASC) VISIBLE,
