@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employees` (
   `firstName` VARCHAR(50) NULL DEFAULT NULL,
   `address` VARCHAR(100) NULL DEFAULT NULL,
   `phoneNum` VARCHAR(10) NULL DEFAULT NULL,
-  `email` VARCHAR(25) NULL DEFAULT NULL,
+  `email` VARCHAR(50) NULL DEFAULT NULL,
   `iban` VARCHAR(25) NULL DEFAULT NULL,
   `contractNum` VARCHAR(25) NULL DEFAULT NULL,
   `employmentDate` DATE NULL DEFAULT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`doctors` (
   `cnpEmployee` VARCHAR(13) NOT NULL,
   `rank` VARCHAR(20) NULL DEFAULT NULL,
   `sealCode` VARCHAR(20) NULL DEFAULT NULL,
-  `scientificTitle` VARCHAR(20) NULL DEFAULT NULL,
+  `scientificTitle` VARCHAR(30) NULL DEFAULT NULL,
   `didacticTitle` VARCHAR(20) NULL DEFAULT NULL,
   PRIMARY KEY (`cnpEmployee`),
   CONSTRAINT `fk_doctors_cnpEmployee`
@@ -352,8 +352,8 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`appointments` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`analyse` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `minimum` INT NULL,
-  `maximum` INT NULL DEFAULT NULL,
+  `minimum` FLOAT(5,2) NULL,
+  `maximum` FLOAT(5,2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`));
   
 -- -----------------------------------------------------
