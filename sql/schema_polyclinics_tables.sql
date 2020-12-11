@@ -13,15 +13,9 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employees` (
   `firstName` VARCHAR(50) NULL DEFAULT NULL,
   `address` VARCHAR(100) NULL DEFAULT NULL,
   `phoneNum` VARCHAR(10) NULL DEFAULT NULL,
-<<<<<<< HEAD
-  `email` VARCHAR(50) NULL DEFAULT NULL,
-  `iban` VARCHAR(25) NULL DEFAULT NULL,
-  `contractNum` VARCHAR(25) NULL DEFAULT NULL,
-=======
   `email` VARCHAR(45) NULL DEFAULT NULL,
   `iban` VARCHAR(45) NULL DEFAULT NULL,
   `contractNum` INT NULL DEFAULT NULL,
->>>>>>> 3661c88705d59e89e7b0381030a07dd441db623f
   `employmentDate` DATE NULL DEFAULT NULL,
   `position` VARCHAR(25) NULL DEFAULT NULL,
   `salary` DECIMAL(10,2) NULL DEFAULT NULL,
@@ -33,11 +27,12 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employees` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`doctors` (
   `cnpEmployee` VARCHAR(13) NOT NULL,
-  `rank` VARCHAR(20) NULL DEFAULT NULL,
-  `sealCode` VARCHAR(20) NULL DEFAULT NULL,
-  `scientificTitle` VARCHAR(30) NULL DEFAULT NULL,
-  `didacticTitle` VARCHAR(20) NULL DEFAULT NULL,
+  `sealCode` VARCHAR(5) NOT NULL,
+  `commission` DECIMAL(3,2) NULL,
+  `scientificTitle` VARCHAR(20) NULL DEFAULT NULL,
+  `didacticTitle` VARCHAR(20) NULL,
   PRIMARY KEY (`cnpEmployee`),
+  UNIQUE INDEX `sealCode_UNIQUE` (`sealCode` ASC) VISIBLE,
   CONSTRAINT `fk_doctors_cnpEmployee`
     FOREIGN KEY (`cnpEmployee`)
     REFERENCES `polyclinics`.`employees` (`cnp`));
@@ -56,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`specialities` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`doctor_specialities` (
   `cnpDoctor` VARCHAR(13) NOT NULL,
   `idSpeciality` INT NOT NULL,
+  `rank` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`cnpDoctor`, `idSpeciality`),
   INDEX `idx_doctor_specialities_idSpeciality` (`idSpeciality` ASC) INVISIBLE,
   CONSTRAINT `fk_doctor_specialities_cnpDoctor`
@@ -133,21 +129,6 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`doctor_accreditations` (
     REFERENCES `polyclinics`.`doctors` (`cnpEmployee`));
 
 -- -----------------------------------------------------
--- Table `polyclinics`.`medical_unit_employees`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_unit_employees` (
-  `idMedicalUnit` INT NOT NULL,
-  `cnpEmployee` VARCHAR(13) NOT NULL,
-  PRIMARY KEY (`idMedicalUnit`, `cnpEmployee`),
-  INDEX `fk_medical_unit_employees_cnpEmployee_idx` (`cnpEmployee` ASC) VISIBLE,
-  CONSTRAINT `fk_medical_unit_employees_idMedicalUnit`
-    FOREIGN KEY (`idMedicalUnit`)
-    REFERENCES `polyclinics`.`medical_units` (`id`),
-  CONSTRAINT `fk_medical_unit_employees_cnpEmployee`
-    FOREIGN KEY (`cnpEmployee`)
-    REFERENCES `polyclinics`.`employees` (`cnp`));
-
--- -----------------------------------------------------
 -- Table `polyclinics`.`nurse`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`nurse` (
@@ -179,20 +160,29 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`holidays` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_services` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `cnpDoctor` VARCHAR(13) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   `idSpeciality` INT NULL DEFAULT NULL,
+  `idAccreditation` INT NULL DEFAULT NULL,
   `idEquipment` INT NULL DEFAULT NULL,
-  `hasAccreditation` TINYINT NULL DEFAULT '0',
   `price` DECIMAL(5,2) NOT NULL DEFAULT 0,
   `duration` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_medical_services_cnpDoctor_idx` (`cnpDoctor` ASC) VISIBLE,
   INDEX `fk_medical_services_idEquipment_idx` (`idEquipment` ASC) VISIBLE,
+  INDEX `fk_medical_services_idAccreditation_idx` (`idAccreditation` ASC) VISIBLE,
+  INDEX `fk_medical_services_idSpeciality_idx` (`idSpeciality` ASC) VISIBLE,
   CONSTRAINT `fk_medical_services_cnpDoctor`
     FOREIGN KEY (`cnpDoctor`)
     REFERENCES `polyclinics`.`doctors` (`cnpEmployee`),
   CONSTRAINT `fk_medical_services_idEquipment`
     FOREIGN KEY (`idEquipment`)
-    REFERENCES `polyclinics`.`equipments` (`id`));
+    REFERENCES `polyclinics`.`equipments` (`id`),
+  CONSTRAINT `fk_medical_services_idAccreditation`
+    FOREIGN KEY (`idAccreditation`)
+    REFERENCES `polyclinics`.`accreditations` (`id`),
+  CONSTRAINT `fk_medical_services_idSpeciality`
+    FOREIGN KEY (`idSpeciality`)
+    REFERENCES `polyclinics`.`specialities` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`patients`
@@ -210,14 +200,21 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `cnpPatient` VARCHAR(13) NOT NULL,
   `idService` INT NOT NULL,
+  `diagnostic` VARCHAR(100) NULL DEFAULT NULL,
+  `sealCode` VARCHAR(5) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_patitent_history_idService_idx` (`idService` ASC) VISIBLE,
+  INDEX `fk_patient_history_cnpPatient` (`cnpPatient` ASC) VISIBLE,
+  INDEX `fk_patient_history_sealCode_idx` (`sealCode` ASC) VISIBLE,
+  CONSTRAINT `fk_patient_history_cnpPatient`
+    FOREIGN KEY (`cnpPatient`)
+    REFERENCES `polyclinics`.`patients` (`cnp`),
   CONSTRAINT `fk_patitent_history_idService`
     FOREIGN KEY (`idService`)
     REFERENCES `polyclinics`.`medical_services` (`id`),
-  CONSTRAINT `fk_patient_history_cnpPatient`
-    FOREIGN KEY (`cnpPatient`)
-    REFERENCES `polyclinics`.`patients` (`cnp`));
+  CONSTRAINT `fk_patient_history_sealCode`
+    FOREIGN KEY (`sealCode`)
+    REFERENCES `polyclinics`.`doctors` (`sealCode`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`transactions`
@@ -225,10 +222,10 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`transactions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(10) NOT NULL,
-  `date` DATE NULL,
+  `date` DATE NULL DEFAULT NULL,
   `amount` DECIMAL(10,2) NOT NULL,
-  `sender` VARCHAR(50) NOT NULL,
-  `receiver` VARCHAR(50) NOT NULL,
+  `sender` VARCHAR(45) NOT NULL,
+  `receiver` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`));
 
 -- -----------------------------------------------------
@@ -243,12 +240,13 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`roles` (
 -- Table `polyclinics`.`accounts`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`accounts` (
-  `cnpEmployee` VARCHAR(20) NOT NULL,
+  `cnpEmployee` VARCHAR(13) NOT NULL,
   `username` VARCHAR(20) NOT NULL,
-  `idRole` INT NOT NULL DEFAULT 0,
   `password` VARCHAR(45) NOT NULL,
+  `idRole` INT NOT NULL DEFAULT '0',
   INDEX `fk_accounts_cnpEmployee_idx` (`cnpEmployee` ASC) VISIBLE,
   INDEX `fk_accounts_idRole_idx` (`idRole` ASC) VISIBLE,
+  PRIMARY KEY (`cnpEmployee`),
   CONSTRAINT `fk_accounts_cnpEmployee`
     FOREIGN KEY (`cnpEmployee`)
     REFERENCES `polyclinics`.`employees` (`cnp`),
@@ -306,13 +304,13 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`appointments` (
   `cnpPatient` VARCHAR(13) NOT NULL,
   `cnpDoctor` VARCHAR(13) NOT NULL,
   `idCabinet` INT NOT NULL,
-  `idMedicalService` INT NOT NULL,
-  `data_programare` DATE NOT NULL,
+  `idSpeciality` INT NOT NULL,
+  `date` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_appointments_idCabinet_idx` (`idCabinet` ASC) VISIBLE,
   INDEX `fk_appointments_idPatient_idx` (`cnpPatient` ASC) VISIBLE,
   INDEX `fk_appointments_cnpDoctor_idx` (`cnpDoctor` ASC) VISIBLE,
-  INDEX `fk_appointments_idMedicalService_idx` (`idMedicalService` ASC) VISIBLE,
+  INDEX `fk_appointments_idSpeciality_idx` (`idSpeciality` ASC) VISIBLE,
   CONSTRAINT `fk_appointments_cnpDoctor`
     FOREIGN KEY (`cnpDoctor`)
     REFERENCES `polyclinics`.`doctors` (`cnpEmployee`),
@@ -322,9 +320,26 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`appointments` (
   CONSTRAINT `fk_appointments_idPatient`
     FOREIGN KEY (`cnpPatient`)
     REFERENCES `polyclinics`.`patients` (`cnp`),
-  CONSTRAINT `fk_appointments_idMedicalService`
+  CONSTRAINT `fk_appointments_idSpeciality`
+    FOREIGN KEY (`idSpeciality`)
+    REFERENCES `polyclinics`.`specialities` (`id`));
+    
+-- -----------------------------------------------------
+-- Table `polyclinics`.`appointment_services`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `polyclinics`.`appointment_services` (
+  `idMedicalService` INT NOT NULL,
+  `idAppointment` INT NOT NULL,
+  PRIMARY KEY (`idMedicalService`, `idAppointment`),
+  INDEX `fk_appointment_services_idAppointment_idx` (`idAppointment` ASC) VISIBLE,
+  CONSTRAINT `fk_appointment_services_idMedicalService`
     FOREIGN KEY (`idMedicalService`)
-    REFERENCES `polyclinics`.`medical_services` (`id`));
+    REFERENCES `polyclinics`.`medical_services` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_appointment_services_idAppointment`
+    FOREIGN KEY (`idAppointment`)
+    REFERENCES `polyclinics`.`appointments` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`analyse`
@@ -333,8 +348,8 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`appointments` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`analyse` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `minimum` FLOAT(5,2) NULL,
-  `maximum` FLOAT(5,2) NULL DEFAULT NULL,
+  `minimum` DECIMAL(5,2) NULL,
+  `maximum` DECIMAL(5,2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`));
   
 -- -----------------------------------------------------
