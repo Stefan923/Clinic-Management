@@ -8,44 +8,44 @@ VALUES
 ('Sanitas Craiova', 'str. Calea Bucuresti, nr. 1'),
 ('Sanitas Costanta', 'str. Vaselor, nr. 24');
 
-INSERT INTO `medical_unit_schedule`(idMedicalUnit, dayOfWeek, startHour, endHour) 
+INSERT INTO `medical_unit_schedule`(`idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) 
 VALUES
-('1', 'Luni', '08:00', '20:00'),
-('1', 'Marti', '08:00', '20:00'),
-('1', 'Miercuri', '08:00', '20:00'),
-('1', 'Joi', '08:00', '20:00'),
-('1', 'Vineri', '08:00', '18:00'),
-('1', 'Sambata', '08:00', '16:00'),
+('1', 'Monday', '08:00:00', '20:00:00'),
+('1', 'Tuesday', '08:00:00', '20:00:00'),
+('1', 'Wednesday', '08:00:00', '20:00:00'),
+('1', 'Thursday', '08:00:00', '20:00:00'),
+('1', 'Friday', '08:00:00', '18:00:00'),
+('1', 'Saturday', '08:00:00', '16:00:00'),
 
-('2', 'Luni', '08:30', '20:00'),
-('2', 'Marti', '08:30', '20:00'),
-('2', 'Miercuri', '08:30', '20:00'),
-('2', 'Joi', '08:30', '20:00'),
-('2', 'Vineri', '08:30', '18:00'),
-('2', 'Sambata', '08:30', '16:00'),
-('2', 'Duminica', '08:30', '12:00'),
+('2', 'Monday', '08:30:00', '20:00:00'),
+('2', 'Tuesday', '08:30:00', '20:00:00'),
+('2', 'Wednesday', '08:30:00', '20:00:00'),
+('2', 'Thursday', '08:30:00', '20:00:00'),
+('2', 'Friday', '08:30:00', '18:00:00'),
+('2', 'Saturday', '08:30:00', '16:00:00'),
+('2', 'Sunday', '08:30:00', '12:00:00'),
 
-('3', 'Luni', '07:30', '19:00'),
-('3', 'Marti', '07:30', '19:00'),
-('3', 'Miercuri', '07:30', '19:00'),
-('3', 'Joi', '07:30', '19:00'),
-('3', 'Vineri', '07:30', '17:00'),
-('3', 'Sambata', '07:30', '12:00'),
+('3', 'Monday', '07:30:00', '19:00:00'),
+('3', 'Tuesday', '07:30:00', '19:00:00'),
+('3', 'Wednesday', '07:30:00', '19:00:00'),
+('3', 'Thursday', '07:30:00', '19:00:00'),
+('3', 'Friday', '07:30:00', '17:00:00'),
+('3', 'Saturday', '07:30:00', '12:00:00'),
 
-('4', 'Luni', '07:30', '20:00'),
-('4', 'Marti', '07:30', '20:00'),
-('4', 'Miercuri', '07:30', '20:00'),
-('4', 'Joi', '07:30', '20:00'),
-('4', 'Vineri', '07:30', '18:00'),
-('4', 'Sambata', '07:30', '15:00'),
+('4', 'Monday', '07:30:00', '20:00:00'),
+('4', 'Tuesday', '07:30:00', '20:00:00'),
+('4', 'Wednesday', '07:30:00', '20:00:00'),
+('4', 'Thursday', '07:30:00', '20:00:00'),
+('4', 'Friday', '07:30:00', '18:00:00'),
+('4', 'Saturday', '07:30:00', '15:00:00'),
 
-('5', 'Luni', '07:45', '20:00'),
-('5', 'Marti', '07:45', '20:00'),
-('5', 'Miercuri', '07:45', '20:00'),
-('5', 'Joi', '07:45', '20:00'),
-('5', 'Vineri', '07:45', '18:00'),
-('5', 'Sambata', '07:45', '15:00'),
-('5', 'Duminica', '08:00', '12:00');
+('5', 'Monday', '07:45:00', '20:00:00'),
+('5', 'Tuesday', '07:45:00', '20:00:00'),
+('5', 'Wednesday', '07:45:00', '20:00:00'),
+('5', 'Thursday', '07:45:00', '20:00:00'),
+('5', 'Friday', '07:45:00', '18:00:00'),
+('5', 'Saturday', '07:45:00', '15:00:00'),
+('5', 'Sunday', '08:00:00', '12:00:00');
 
 INSERT INTO `cabinets`(idMedicalUnit, name) 
 VALUES
@@ -317,48 +317,32 @@ VALUES
 	('1830121466921','Stancu','Ioan Mihail','Constanta, str. Craiovei nr. 3','0748692056','ioan.mihail.st@gmail.com','RO75PORL6346981883481832','28','1985-08-18','HR',3150,120),
 	('2700927417309','Madalina','Adam','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120);
 
-INSERT INTO `analyse` (name,minimum,maximum) VALUES
-("Leucocite",3.50,10.500),
-("Trombocite",150,450),
-("Glicemia",70,110),
-("Trigliceride",50,150),
-("Colesterol",0,200),
-("Fibrinogen",200,400),
-("Sodiu",135,145),
-("Calciu",8.5,10.5),
-("Magneziu",1.6,2.5),
-("Calciu ionic seric",3.6,5.2),
-("Hemoglobina glicozilata",4,5.9),
-("Lipide",500,800),
-("VLDL",2,38),
-("Imunoglobulina A",90,450);
-
-INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`,`rank`,`sealCode`,`scientificTitle`,`didacticTitle`) VALUES
-	('2901204019549','primar','12345',NULL,'profesor'),
-	('2701204068831','specialist','56477','doctorand','lector'),
-	('2901204012456','primar','90754',NULL,'asistent'),
-	('2701204737245','primar','67323',NULL,'conferential'),
-	('2801204117104','specialist','77895','doctor stiinte medicale','preparator'),
-	('2931204115436','specialist','67441','doctorand','profesor'),
-	('2811204117404','primar','50012',NULL,NULL),
-	('2031204115436','specialist','40975','doctor stiinte medicale',NULL),
-	('2731201018946','primar','39563','doctorand',NULL),
-	('2781201019674','primar','47274','doctor stiinte medicale','profesor'),
-	('2700927417309','specialist','75436',NULL,NULL);
+INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`,`sealCode`,`scientificTitle`,`didacticTitle`) VALUES
+	('2901204019549','12345',NULL,'profesor'),
+	('2701204068831','56477','doctorand','lector'),
+	('2901204012456','90754',NULL,'asistent'),
+	('2701204737245','67323',NULL,'conferential'),
+	('2801204117104','77895','doctor stiinte medicale','preparator'),
+	('2931204115436','67441','doctorand','profesor'),
+	('2811204117404','50012',NULL,NULL),
+	('2031204115436','40975','doctor stiinte medicale',NULL),
+	('2731201018946','39563','doctorand',NULL),
+	('2781201019674','47274','doctor stiinte medicale','profesor'),
+	('2700927417309','75436',NULL,NULL);
  
-INSERT INTO `polyclinics`.`doctor_specialities` (cnpDoctor,idSpeciality) values
-	('2901204019549',1),
-	('2701204068831',2),
-	('2901204012456',3),
-	('2901204012456',4),
-	('2901204012456',1),
-	('2701204737245',5),
-	('2801204117104',6),
-	('2931204115436',7),
-	('2931204115436',9),
-	('2931204115436',10),
-	('2811204117404',8),
-	('2031204115436',11);
+INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values
+	('2901204019549',1,'specialist'),
+	('2701204068831',2,'specialist'),
+	('2901204012456',3,'primar'),
+	('2901204012456',4,'specialist'),
+	('2901204012456',1,'primar'),
+	('2701204737245',5,'primar'),
+	('2801204117104',6,'specialist'),
+	('2931204115436',7,'primar'),
+	('2931204115436',9,'specialist'),
+	('2931204115436',10,'specialist'),
+	('2811204117404',8,'primar'),
+	('2031204115436',11,'specialist');
 
 INSERT INTO `polyclinics`.`doctor_accreditations` (cnpDoctor,idAccreditation) VALUES
 	('2901204019549',4),
@@ -370,6 +354,22 @@ INSERT INTO `polyclinics`.`doctor_accreditations` (cnpDoctor,idAccreditation) VA
 	('2811204117404',2),
 	('2031204115436',3);
 
+INSERT INTO `analyse` (name,minimum,maximum) VALUES
+	("Leucocite",3.50,10.500),
+	("Trombocite",150,450),
+	("Glicemia",70,110),
+	("Trigliceride",50,150),
+	("Colesterol",0,200),
+	("Fibrinogen",200,400),
+	("Sodiu",135,145),
+	("Calciu",8.5,10.5),
+	("Magneziu",1.6,2.5),
+	("Calciu ionic seric",3.6,5.2),
+	("Hemoglobina glicozilata",4,5.9),
+	("Lipide",500,800),
+	("VLDL",2,38),
+	("Imunoglobulina A",90,450);
+    
 INSERT INTO `patient_analyses` (`cnpPatient`, `idAnalyse`,`value`) values
 	('2910815468725',1,8.5),
 	('2910815468725',2,200),
@@ -389,6 +389,25 @@ INSERT INTO `nurse` (`cnpEmployee`,`type`,`rank`) VALUES
 	('1971204466262','radiologie','principal'),
 	('1961204466262','generalist','principal');
 
+INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
+	(2700927417309,1,'Monday','08:00','12:00'),
+	(2700927417309,3,'Monday','13:00','16:00'),
+	(2700927417309,4,'Tuesday','09:00','18:00'),
+	(2700927417309,5,'Wednesday','08:30','13:00'),
+	(2700927417309,5,'Wednesday','16:00','20:00'),
+	(2700927417309,2,'Thursday','10:00','16:00'),
+	(2700927417309,3,'Thursday','17:00','19:00'),
+	(2700927417309,1,'Friday','08:00','12:00'),
+	(2700927417309,1,'Friday','13:30','17:00'),
+	(2700927417309,4,'Saturday','07:30','11:00'),
+	(2700927417309,5,'Saturday','12:00','15:00'),
+	(2700927417309,5,'Sunday','08:00','11:00');
+
+INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`) VALUES
+	(1971005087985, 2700927417309, '1', '1', '2020-12-14 15:00:00'),
+	(1960408068054, 2700927417309, '1', '1', '2020-12-14 14:30:00'),
+	(1960408068054, 2700927417309, '1', '1', '2020-12-14 10:00:00');
+
 INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,`hasAccreditation`,`price`,`duration`) VALUES
 	('2901204019549',1,3,'Consultatie Cardiologie',1,100,30),
 	('2701204068831',2,8,'Consultatie Dermatologie',0,80,20),
@@ -401,6 +420,9 @@ INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,
 	(9,4,1,40,30),
 	(10,5,0,50,15),
 	(11,5,0,100,30);
+    
+INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`) VALUES
+	('2700927417309', 'admin', 'adminpass');
 
 /*INSERT INTO `patient_history` (`cnpPatient`,`idService` ) VALUES
 ('2910815468725',
@@ -414,20 +436,3 @@ INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,
 ('6000822065974',
 ('2961028088875',
 ('2460512257129',*/
-
-INSERT INTO `analyse` (`name`, `minimum`, `maximum`)
-VALUES
-	("Leucocite", 3.50, 10.500),
-	("Trombocite", 150, 450),
-	("Glicemia", 70, 110),
-	("Trigliceride", 50, 150),
-	("Colesterol", 0, 200),
-	("Fibrinogen", 200, 400),
-	("Sodiu", 135, 145),
-	("Calciu", 8.5, 10.5),
-	("Magneziu", 1.6, 2.5),
-	("Calciu ionic seric", 3.6, 5.2),
-	("Hemoglobina glicozilata", 4, 5.9),
-	("Lipide", 500, 800),
-	("VLDL", 2, 38),
-	("Imunoglobulina A", 90, 450);
