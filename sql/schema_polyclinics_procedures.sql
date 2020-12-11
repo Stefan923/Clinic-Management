@@ -78,6 +78,19 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS INSERT_EMPLOYEE;
+DELIMITER //
+CREATE PROCEDURE INSERT_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `_lastName` VARCHAR(25), IN `_firstName` VARCHAR(50), IN `_address` VARCHAR(100), IN `_phoneNum` VARCHAR(10), IN `_email` VARCHAR(45), IN `_iban` VARCHAR(45), IN `_contractNum` INT, IN `_employmentDate` DATE, IN `_position` VARCHAR(25), IN `_salary` DECIMAL(10,2), IN `_workedHrs` INT, OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `employees` WHERE `cnp`=`_cnp`) = 0) THEN
+		INSERT INTO `employees` (`cnp`, `lastName`, `firstName`, `address`, `phoneNum`, `email`, `iban`, `contractNum`, `employmentDate`, `position`, `salary`, `workedHrs`) VALUES (`_cnp`, `_lastName`, `_firstName`, `_address`, `_phoneNum`, `_email`, `_iban`, `_contractNum`, `_employmentDate`, `_position`, `_salary`, `_workedHrs`);
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
 
 -- teste
 DROP PROCEDURE IF EXISTS TEST;
@@ -91,7 +104,8 @@ BEGIN
 	-- CALL INSERT_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '11:00:00', '11:00:01', @output);
 	-- CALL DELETE_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '12:00:00', '18:00:00', 1, @output);
     -- CALL UPDATE_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '13:00:00', '16:00:00', '14:55:00', '16:00:00', 1, @output);
-    CALL INSERT_HOLIDAY('2700927417309', '2020-12-13', '2020-12-15', @output);
+    -- CALL INSERT_HOLIDAY('2700927417309', '2020-12-13', '2020-12-15', @output);
+    CALL INSERT_EMPLOYEE('2700735934101', 'Spatariu', 'Diana', 'Cluj-Napoca, str. Nicolae Iorga nr. 6', '0783527882', 'spatariu.diana@gmail.com', 'RO64RZBR3277465196914272', '30', '2017-02-20', 'Receptioner', '3470', '120', @output);
     SELECT @output;
 END;
 // DELIMITER ;
