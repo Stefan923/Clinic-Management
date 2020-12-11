@@ -17,3 +17,13 @@ BEGIN
 	END IF;
 END;
 // DELIMITER ;
+
+DROP TRIGGER IF EXISTS ON_HOLIDAY_INSERT;
+DELIMITER //
+CREATE TRIGGER ON_HOLIDAY_INSERT AFTER INSERT ON `holidays` FOR EACH ROW
+BEGIN
+	IF ((SELECT E.`position` FROM `employees` E WHERE E.`cnp`=NEW.`cnpEmployee`) LIKE 'Medic') THEN
+		DELETE FROM `appointments` A WHERE A.`cnpDoctor`=NEW.`cnpEmployee` AND DATE(A.`date`)>=NEW.`startDate` AND DATE(A.`date`)<=NEW.`endDate`;
+	END IF;
+END;
+// DELIMITER ;
