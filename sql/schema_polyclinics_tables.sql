@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`doctors` (
   `cnpEmployee` VARCHAR(13) NOT NULL,
   `sealCode` VARCHAR(5) NOT NULL,
   `commission` DECIMAL(3,2) NULL,
-  `scientificTitle` VARCHAR(20) NULL DEFAULT NULL,
+  `scientificTitle` VARCHAR(45) NULL DEFAULT NULL,
   `didacticTitle` VARCHAR(20) NULL,
   PRIMARY KEY (`cnpEmployee`),
   UNIQUE INDEX `sealCode_UNIQUE` (`sealCode` ASC) VISIBLE,
@@ -145,13 +145,13 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`nurse` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`holidays` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `cnp` VARCHAR(13) NOT NULL,
+  `cnpEmployee` VARCHAR(13) NOT NULL,
   `startDate` DATE NOT NULL,
   `endDate` DATE NOT NULL,
-  INDEX `fk_holidays_cnp_idx` (`cnp` ASC) VISIBLE,
+  INDEX `fk_holidays_cnp_idx` (`cnpEmployee` ASC) VISIBLE,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_holidays_cnpEmployee`
-    FOREIGN KEY (`cnp`)
+    FOREIGN KEY (`cnpEmployee`)
     REFERENCES `polyclinics`.`employees` (`cnp`));
 
 -- -----------------------------------------------------
@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`accounts` (
   `cnpEmployee` VARCHAR(13) NOT NULL,
   `username` VARCHAR(20) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
-  `idRole` INT NOT NULL DEFAULT '0',
+  `idRole` INT NOT NULL DEFAULT 1,
   INDEX `fk_accounts_cnpEmployee_idx` (`cnpEmployee` ASC) VISIBLE,
   INDEX `fk_accounts_idRole_idx` (`idRole` ASC) VISIBLE,
   PRIMARY KEY (`cnpEmployee`),
@@ -272,9 +272,8 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employee_schedule` (
   `cnpEmployee` VARCHAR(13) NOT NULL,
   `idMedicalUnit` INT NOT NULL,
   `dayOfWeek` VARCHAR(10) NOT NULL,
-  `startHour` VARCHAR(5) NOT NULL,
-  `endHour` VARCHAR(5) NOT NULL,
-  PRIMARY KEY (`cnpEmployee`),
+  `startHour` TIME NOT NULL,
+  `endHour` TIME NOT NULL,
   INDEX `fk_employee_schedule_idMedicalUnit_idx` (`idMedicalUnit` ASC) VISIBLE,
   CONSTRAINT `fk_employee_schedule_cnpEmployee`
     FOREIGN KEY (`cnpEmployee`)
@@ -289,8 +288,8 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employee_schedule` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_unit_schedule` (
   `idMedicalUnit` INT NOT NULL,
   `dayOfWeek` VARCHAR(10) NOT NULL,
-  `startHour` VARCHAR(5) NOT NULL,
-  `endHour` VARCHAR(5) NOT NULL,
+  `startHour` TIME NOT NULL,
+  `endHour` TIME NOT NULL,
   PRIMARY KEY (`idMedicalUnit`, `dayOfWeek`),
   CONSTRAINT `fk_medical_unit_schedule_idMedicalUnit`
     FOREIGN KEY (`idMedicalUnit`)
