@@ -27,3 +27,19 @@ BEGIN
 	END IF;
 END;
 // DELIMITER ;
+
+DROP TRIGGER IF EXISTS ON_EMPLOYEE_INSERT;
+DELIMITER //
+CREATE TRIGGER ON_EMPLOYEE_INSERT AFTER INSERT ON `employees` FOR EACH ROW
+BEGIN
+	SET @count = 0;
+    SET @lastName = SUBSTRING_INDEX(SUBSTRING_INDEX(LOWER(NEW.`lastName`), ' ', 1), '-', 1);
+    SET @firstName = LOWER(SUBSTRING(NEW.`firstName`, 1, 1));
+	SET @username = CONCAT(@firstName, '.', @lastName);
+    WHILE ((SELECT COUNT(*) FROM `accounts` WHERE `username`=@username) = 1) DO
+		SET @count = @count + 1;
+		SET @username = CONCAT(@firstName, '.', @lastName, @count);
+	END WHILE;
+	INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`) VALUES (NEW.`cnp`, @username, CONCAT(NEW.`cnp`, @firstName));
+END;
+// DELIMITER ;
