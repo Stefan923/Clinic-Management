@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_units` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL DEFAULT NULL,
   `address` VARCHAR(100) NULL DEFAULT NULL,
+  `iban` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`id`));
 
 -- -----------------------------------------------------
@@ -164,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`medical_services` (
   `idSpeciality` INT NULL DEFAULT NULL,
   `idAccreditation` INT NULL DEFAULT NULL,
   `idEquipment` INT NULL DEFAULT NULL,
-  `price` DECIMAL(5,2) NOT NULL DEFAULT 0,
+  `price` DECIMAL(8,2) NOT NULL DEFAULT 0,
   `duration` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_medical_services_cnpDoctor_idx` (`cnpDoctor` ASC) VISIBLE,
@@ -191,6 +192,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patients` (
   `cnp` VARCHAR(13) NOT NULL,
   `lastName` VARCHAR(25) NULL DEFAULT NULL,
   `firstName` VARCHAR(50) NULL DEFAULT NULL,
+  `iban` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`cnp`));
 
 -- -----------------------------------------------------
