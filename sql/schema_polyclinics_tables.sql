@@ -204,6 +204,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
   `idService` INT NOT NULL,
   `diagnostic` VARCHAR(100) NULL DEFAULT NULL,
   `sealCode` VARCHAR(5) NULL DEFAULT NULL,
+  `date` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_patitent_history_idService_idx` (`idService` ASC) VISIBLE,
   INDEX `fk_patient_history_cnpPatient` (`cnpPatient` ASC) VISIBLE,
