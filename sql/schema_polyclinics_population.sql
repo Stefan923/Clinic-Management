@@ -200,7 +200,26 @@ VALUES
 ('Chirurgie'),
 ('Radiologie'),
 ('Explorare computer tomograf'),
-('Imagistica prin rezonanta magnetica');
+('Imagistica prin rezonanta magnetica'),
+('Aritmiologie'),  -- cardiologie
+('Transplant'),
+('Rinoplastie'),  -- chirurgie plastica
+('Liposuptie'),
+('Ortodontie'),  -- stoma
+('Endodontie'),
+('Odontoterapie'),
+('Infiltratii'),  -- derma
+('Radiocauterizare'),
+('Amigdalectomia'), -- ORL
+('Laringoscopie'),
+('Polipectomie'),
+('Artrodeza'), -- ortopedie
+('Artroscopie'),
+('Ligamentoplastie'),
+('Evisceratie'), -- ofta
+('Enucleere'),
+('Implanturi');
+
 
 INSERT INTO `specialities`(name) 
 VALUES
@@ -328,7 +347,7 @@ INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`,`sealCode`,`scientificTitle`,
 	('2031204115436','40975','doctor stiinte medicale',NULL),
 	('2731201018946','39563','doctorand',NULL),
 	('2781201019674','47274','doctor stiinte medicale','profesor'),
-	('2700927417309','75436',NULL,NULL);
+	('2700927417309','75436','doctor stiinte medicale','lector');
  
 INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values
 	('2901204019549',1,'specialist'),
@@ -338,23 +357,45 @@ INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `r
 	('2901204012456',1,'primar'),
 	('2701204737245',5,'primar'),
 	('2801204117104',6,'specialist'),
-	('2931204115436',7,'primar'),
-	('2931204115436',9,'specialist'),
-	('2931204115436',10,'specialist'),
+	('2931204115436',11,'specialist'),
 	('2811204117404',8,'primar'),
-	('2031204115436',11,'specialist');
+	('2031204115436',11,'specialist'),
+    ('2700927417309', 7, 'primar'),
+    ('2731201018946',5, 'specialist'),
+    ('2781201019674',10,'primar'),
+    ('2801204117104',5,'specialist');
 
 INSERT INTO `polyclinics`.`doctor_accreditations` (cnpDoctor,idAccreditation) VALUES
 	('2901204019549',4),
 	('2701204068831',4),
+    ('2701204068831',13),
+    ('2701204068831',14),
 	('2901204012456',2),
-	('2701204737245',3),
+	('2701204737245',13),
+    ('2701204737245',14),
 	('2801204117104',3),
 	('2931204115436',3),
 	('2811204117404',2),
-	('2031204115436',3);
-
-INSERT INTO `analyse` (name,minimum,maximum) VALUES
+    ('2031204115436',1),
+    ('2031204115436',2),
+    ('2700927417309',15),
+    ('2700927417309',16),
+    ('2700927417309',17),
+    ('2731201018946',4),
+    ('2731201018946',5),
+    ('2781201019674',21),
+	('2781201019674',22),
+    ('2781201019674',23),
+    ('2811204117404',18),
+    ('2811204117404',19),
+    ('2811204117404',20),
+    ('2901204012456',8),
+    ('2901204012456',6),
+    ('2901204019549',7),
+    ('2931204115436',1),
+    ('2931204115436','2');
+    
+    INSERT INTO `analyse` (name,minimum,maximum) VALUES
 	("Leucocite",3.50,10.500),
 	("Trombocite",150,450),
 	("Glicemia",70,110),
