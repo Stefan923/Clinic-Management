@@ -52,7 +52,7 @@ BEGIN
 	IF ((SELECT COUNT(*) FROM `employee_schedule` WHERE `cnpEmployee`=`_cnpEmployee` AND `idMedicalUnit`=`_idMedicalUnit` AND `dayOfWeek` LIKE `_dayOfWeek` AND `startHour`=`_startHour` AND `endHour`=`_endHour`) = 1) THEN
 		IF ((SELECT `position` FROM `employees` WHERE `cnp`=`_cnpEmployee`) NOT LIKE 'Medic'
 			OR `force`='1'
-			OR(SELECT COUNT(*) FROM `appointments` WHERE `cnpDoctor`=`_cnpEmployee` AND DAYNAME(`date`) LIKE `_dayOfWeek` AND TIME(`date`)>=`_startHour` AND TIME(`date`)<=`_endHour`) = 0) THEN
+			OR (SELECT COUNT(*) FROM `appointments` WHERE `cnpDoctor`=`_cnpEmployee` AND DAYNAME(`date`) LIKE `_dayOfWeek` AND TIME(`date`)>=`_startHour` AND TIME(`date`)<=`_endHour`) = 0) THEN
             
 			UPDATE `employee_schedule` SET `startHour`=`new_startHour`, `endHour`=`new_endHour` WHERE `cnpEmployee`=`_cnpEmployee` AND `idMedicalUnit`=`_idMedicalUnit` AND `dayOfWeek` LIKE `_dayOfWeek` AND `startHour`=`_startHour` AND `endHour`=`_endHour`;
 			SET `validation` = 1; -- s-a executat
@@ -67,13 +67,20 @@ END;
 
 DROP PROCEDURE IF EXISTS INSERT_HOLIDAY;
 DELIMITER //
-CREATE PROCEDURE INSERT_HOLIDAY(IN `_cnpEmployee` VARCHAR(13), IN `_startDate` DATE, IN `_endDate` DATE, OUT `validation` INT)
+CREATE PROCEDURE INSERT_HOLIDAY(IN `_cnpEmployee` VARCHAR(13), IN `_startDate` DATE, IN `_endDate` DATE, IN `force` INT, OUT `validation` INT)
 BEGIN
 	IF ((SELECT COUNT(*) FROM `holidays` WHERE `cnpEmployee`=`_cnpEmployee` AND ((`startDate`>=`_startDate` AND `startDate`<=`_endDate`) OR (`endDate`>=`_startDate` AND `endDate`<=`_endDate`) OR (`startDate`<`_startDate` AND `endDate`>`_endDate`))) = 0) THEN
-		INSERT INTO `holidays` (`cnpEmployee`, `startDate`, `endDate`) VALUES (`_cnpEmployee`, `_startDate`, `_endDate`);
-		SET `validation` = 1;
+		IF ((SELECT `position` FROM `employees` WHERE `cnp`=`_cnpEmployee`) NOT LIKE 'Medic'
+			OR `force`='1'
+            OR (SELECT COUNT(*) FROM `appointments` WHERE `cnpDoctor`=`_cnpEmployee` AND DATE(`date`) >= `_startDate` AND DATE(`date`) <= `_endDate`) = 0) THEN
+        
+			INSERT INTO `holidays` (`cnpEmployee`, `startDate`, `endDate`) VALUES (`_cnpEmployee`, `_startDate`, `_endDate`);
+			SET `validation` = 1; -- s-a executat
+		ELSE
+			SET `validation` = 0; -- sunt programari care trebuiesc sterse
+		END IF;
 	ELSE
-		SET `validation` = 0;
+		SET `validation` = 2; -- nu exista intrare in orar pentru datele furnizate
 	END IF;
 END;
 // DELIMITER ;
@@ -91,6 +98,71 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS DELETE_EMPLOYEE;
+DELIMITER //
+CREATE PROCEDURE DELETE_EMPLOYEE(IN `_cnp` VARCHAR(13), OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `employees` WHERE `cnp`=`_cnp`) = 1) THEN
+		DELETE FROM `employees` WHERE `cnp`=`_cnp`;
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS UPDATE_EMPLOYEE;
+DELIMITER //
+CREATE PROCEDURE UPDATE_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `columnName` VARCHAR(45), IN `value` VARCHAR(100), OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `employees` WHERE `cnp`=`_cnp`) = 1) THEN
+		SET @sqlAction = CONCAT('UPDATE employees SET ', `columnName`, '=', `value`, ' WHERE cnp=', `_cnp`, ';');
+		PREPARE statement FROM @sqlAction;
+		EXECUTE statement;
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS GET_TOTAL_PROFIT;
+DELIMITER //
+CREATE PROCEDURE GET_TOTAL_PROFIT(IN `startDate` DATE, IN `endDate` DATE, OUT `profit` DECIMAL(10,2))
+BEGIN
+	SET @income = 0, @outcome = 0;
+	SELECT IFNULL(SUM(`amount`), 0) INTO @income FROM `transactions` WHERE DATE(`date`) >= `startDate` AND DATE(`date`) <= `endDate` AND `type` = 'income';
+	SELECT IFNULL(SUM(`amount`), 0) INTO @outcome FROM `transactions` WHERE DATE(`date`) >= `startDate` AND DATE(`date`) <= `endDate` AND `type` = 'outcome';
+    SET `profit` = @income - @outcome;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS GET_MEDICAL_UNIT_PROFIT;
+DELIMITER //
+CREATE PROCEDURE GET_MEDICAL_UNIT_PROFIT(IN `_id` INT, IN `startDate` DATE, IN `endDate` DATE, OUT `profit` DECIMAL(10,2))
+BEGIN
+	SET @income = 0, @outcome = 0;
+    SET @iban = (SELECT `iban` FROM `medical_units` WHERE `id` = `_id` LIMIT 1);
+    
+    IF (@iban IS NOT NULL) THEN
+		SELECT IFNULL(SUM(`amount`), 0) INTO @income FROM `transactions` WHERE `receiver` = @iban AND DATE(`date`) >= `startDate` AND DATE(`date`) <= `endDate` AND `type` = 'income';
+		SELECT IFNULL(SUM(`amount`), 0) INTO @outcome FROM `transactions` WHERE `sender` = @iban AND DATE(`date`) >= `startDate` AND DATE(`date`) <= `endDate` AND `type` = 'outcome';
+    END IF;
+    
+    SET `profit` = @income - @outcome;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS GET_PROFIT_BY_SPECIALITY;
+DELIMITER //
+CREATE PROCEDURE GET_PROFIT_BY_SPECIALITY(IN `_id` INT, IN `startDate` DATE, IN `endDate` DATE, OUT `profit` DECIMAL(10,2))
+BEGIN
+	SELECT A.`idMedicalService`, IFNULL(SUM(M.`price` * A.`count`), 0)
+		FROM (SELECT `idMedicalService`, COUNT(*) AS `count` FROM `appointment_services` A, `appointments` AP WHERE AP.`idSpeciality` = `_id` AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= '2020-12-13' AND DATE(AP.`date`) <= '2020-12-15' GROUP BY A.`idMedicalService`) A, `medical_services` M
+		WHERE M.`id` = A.`idMedicalService`;
+END;
+// DELIMITER ;
+
 
 -- teste
 DROP PROCEDURE IF EXISTS TEST;
@@ -104,13 +176,25 @@ BEGIN
 	-- CALL INSERT_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '11:00:00', '11:00:01', @output);
 	-- CALL DELETE_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '12:00:00', '18:00:00', 1, @output);
     -- CALL UPDATE_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '13:00:00', '16:00:00', '14:55:00', '16:00:00', 1, @output);
-    -- CALL INSERT_HOLIDAY('2700927417309', '2020-12-13', '2020-12-15', @output);
-    CALL INSERT_EMPLOYEE('2700735934101', 'Spatariu', 'Diana', 'Cluj-Napoca, str. Nicolae Iorga nr. 6', '0783527882', 'spatariu.diana@gmail.com', 'RO64RZBR3277465196914272', '30', '2017-02-20', 'Receptioner', '3470', '120', @output);
+    -- CALL INSERT_HOLIDAY('2700927417309', '2020-12-13', '2020-12-15', 1, @output);
+    -- CALL INSERT_EMPLOYEE('2700735934101', 'Spatariu', 'Diana', 'Cluj-Napoca, str. Nicolae Iorga nr. 6', '0783527882', 'spatariu.diana@gmail.com', 'RO64RZBR3277465196914272', '30', '2017-02-20', 'Receptioner', '3470', '120', @output);
+    -- CALL DELETE_EMPLOYEE('2700735934101', @output);
+    -- CALL UPDATE_EMPLOYEE('2700735934101', 'contractNum', '31', @output);
+    -- CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
+    -- CALL GET_MEDICAL_UNIT_PROFIT('2', '2019-01-01', '2019-12-31', @output);
+    CALL GET_PROFIT_BY_SPECIALITY('1', '2019-01-01', '2019-12-31', @output);
     SELECT @output;
 END;
 // DELIMITER ;
 
 CALL TEST();
+
+
+SELECT A.`idMedicalService`, IFNULL(SUM(M.`price` * A.`count`), 0)
+    FROM (SELECT `idMedicalService`, COUNT(*) AS `count` FROM `appointment_services` A, `appointments` AP WHERE AP.`idSpeciality` = '1' AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= '2020-12-13' AND DATE(AP.`date`) <= '2020-12-15' GROUP BY A.`idMedicalService`) A, `medical_services` M
+	WHERE M.`id` = A.`idMedicalService` GROUP BY A.`idMedicalService`;
+
+SELECT `idMedicalService`, COUNT(*) AS `count` FROM `appointment_services` A, `appointments` AP WHERE AP.`idSpeciality` = '1' AND AP.`id`=A.`idAppointment` AND DATE(AP.`date`) >= '2020-12-13' AND DATE(AP.`date`) <= '2020-12-15' GROUP BY A.`idMedicalService`;
 
 -- INGORA
 -- (TIME_TO_SEC(TIME(`date`)) + `duration` * 60)>=TIME_TO_SEC(`_startHour`) AND TIME(`date`)<=`_endHour`)

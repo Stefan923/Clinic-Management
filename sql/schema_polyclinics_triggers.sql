@@ -43,3 +43,18 @@ BEGIN
 	INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`) VALUES (NEW.`cnp`, @username, CONCAT(NEW.`cnp`, @firstName));
 END;
 // DELIMITER ;
+
+DROP TRIGGER IF EXISTS ON_EMPLOYEE_DELETE;
+DELIMITER //
+CREATE TRIGGER ON_EMPLOYEE_DELETE BEFORE DELETE ON `employees` FOR EACH ROW
+BEGIN
+	DELETE FROM `accounts` WHERE `cnpEmployee`=OLD.`cnp`;
+	DELETE FROM `appointments` WHERE `cnpDoctor`=OLD.`cnp`;
+	DELETE FROM `holidays` WHERE `cnpEmployee`=OLD.`cnp`;
+	DELETE FROM `employee_schedule` WHERE `cnpEmployee`=OLD.`cnp`;
+	DELETE FROM `nurse` WHERE `cnpEmployee`=OLD.`cnp`;
+	DELETE FROM `doctor_accreditations` WHERE `cnpDoctor`=OLD.`cnp`;
+	DELETE FROM `doctor_specialities` WHERE `cnpDoctor`=OLD.`cnp`;
+	DELETE FROM `doctors` WHERE `cnpEmployee`=OLD.`cnp`;
+END;
+// DELIMITER ;
