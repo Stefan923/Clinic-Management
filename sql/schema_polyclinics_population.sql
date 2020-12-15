@@ -1,12 +1,12 @@
 USE `polyclinics`;
 
-INSERT INTO `medical_units`(name, address) 
+INSERT INTO `medical_units`(`name`, `address`, `iban`)
 VALUES
-('Sanitas Cluj-Napoca', 'str. Observatorului, nr. 314'),
-('Sanitas Arad', 'str. Aurel Vlaicu, nr. 91'),
-('Sanitas Iasi', 'str. Mihai Eminescu, nr. 1'),
-('Sanitas Craiova', 'str. Calea Bucuresti, nr. 1'),
-('Sanitas Costanta', 'str. Vaselor, nr. 24');
+('Sanitas Cluj-Napoca', 'str. Observatorului, nr. 314', 'RO22PORL9568116158281625'),
+('Sanitas Arad', 'str. Aurel Vlaicu, nr. 91', 'RO29RZBR5523951481289988'),
+('Sanitas Iasi', 'str. Mihai Eminescu, nr. 1', 'RO16RZBR4452416377244199'),
+('Sanitas Craiova', 'str. Calea Bucuresti, nr. 1', 'RO77RZBR9622577696235615'),
+('Sanitas Costanta', 'str. Vaselor, nr. 24', 'RO20PORL6329853195357123');
 
 INSERT INTO `medical_unit_schedule`(`idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) 
 VALUES
@@ -259,25 +259,25 @@ VALUES
 ('8', '*'),
 ('8', '+');
 
-INSERT INTO `patients`(cnp, lastName, firstName) 
+INSERT INTO `patients`(`cnp`, `lastName`, `firstName`, `iban`) 
 VALUES
-('2910815468725', 'Alexa', 'Magda'),
-('2750329315938', 'Ambrus', 'Erika'),
-('1801119378613', 'Aproslavesei', 'Ion Dumitru'),
-('1201204085247', 'Iliescu', 'Ion'),
-('2380127165640', 'Georgescu', 'Carmen'),
-('2460512257129', 'Marin', 'Florina'),
-('1471020095263', 'Gras', 'Dumitru'),
-('1520619148967', 'Tomoiaga', 'Vali'),
-('2920430215231', 'Manea', 'Ana Georgiana'),
-('1960408068054', 'Vijelie', 'Ioan Andrei'),
-('1971005087985', 'Haralamb-Vantu', 'Codrin Mihai'),
-('2961028088875', 'Schnitzel', 'Ana Maria'),
-('5000604169904', 'Popescu', 'Daniel'),
-('6000930329136', 'Stoica', 'Dana Andreea'),
-('6000822065974', 'Halas', 'Elisabeta'),
-('2991208015482', 'Boldea', 'Crina'),
-('2971003128722', 'Fekete', 'Orsoyla');
+('2910815468725', 'Alexa', 'Magda', 'RO10PORL8445344576188294'),
+('2750329315938', 'Ambrus', 'Erika', 'RO35RZBR3698834477613845'),
+('1801119378613', 'Aproslavesei', 'Ion Dumitru', 'RO76PORL9896956714137455'),
+('1201204085247', 'Iliescu', 'Ion', 'RO93PORL8478334416771422'),
+('2380127165640', 'Georgescu', 'Carmen', 'RO44RZBR2949687113834933'),
+('2460512257129', 'Marin', 'Florina', 'RO14RZBR4387649111429396'),
+('1471020095263', 'Gras', 'Dumitru', 'RO21PORL3293351589179521'),
+('1520619148967', 'Tomoiaga', 'Vali', 'RO57PORL7165544998976662'),
+('2920430215231', 'Manea', 'Ana Georgiana', 'RO06PORL8544898836212462'),
+('1960408068054', 'Vijelie', 'Ioan Andrei', 'RO06RZBR2869765134298533'),
+('1971005087985', 'Haralamb-Vantu', 'Codrin Mihai', 'RO50PORL4744963715379738'),
+('2961028088875', 'Schnitzel', 'Ana Maria', 'RO02RZBR7187757494527896'),
+('5000604169904', 'Popescu', 'Daniel', 'RO34RZBR6673452921254556'),
+('6000930329136', 'Stoica', 'Dana Andreea', 'RO24RZBR8381357471134179'),
+('6000822065974', 'Halas', 'Elisabeta', 'RO26PORL2983474129649563'),
+('2991208015482', 'Boldea', 'Crina', 'RO28RZBR3927163889689968'),
+('2971003128722', 'Fekete', 'Orsoyla', 'RO76PORL5228664564991568');
 
 INSERT INTO `employees` (`cnp`,`lastName`,`firstName`,`address`,`phoneNum`,`email`,`iban`,`contractNum`,`employmentDate`,`position`,`salary`,`workedHrs`)
 VALUES
@@ -389,6 +389,9 @@ INSERT INTO `nurse` (`cnpEmployee`,`type`,`rank`) VALUES
 	('1971204466262','radiologie','principal'),
 	('1961204466262','generalist','principal');
 
+DELETE FROM `appointments`;
+DELETE FROM `employee_schedule`;
+
 INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
 	(2700927417309,1,'Monday','08:00','12:00'),
 	(2700927417309,3,'Monday','13:00','16:00'),
@@ -406,12 +409,31 @@ INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `s
 INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`) VALUES
 	(1971005087985, 2700927417309, '1', '1', '2020-12-14 15:00:00'),
 	(1960408068054, 2700927417309, '1', '1', '2020-12-14 14:30:00'),
-	(1960408068054, 2700927417309, '1', '1', '2020-12-14 10:00:00');
+	(1960408068054, 2700927417309, '1', '1', '2020-12-14 10:00:00'),
+	(1960408068054, 2700927417309, '5', '1', '2020-12-16 10:00:00');
 
-INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,`hasAccreditation`,`price`,`duration`) VALUES
+
+DELETE FROM transactions;
+INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALUES
+	('income', '2018-01-02 08:04:17', '200', 'RO06RZBR2869765134298533', 'RO22PORL9568116158281625'),
+	('income', '2019-01-02 08:04:17', '200', 'RO76PORL5228664564991568', 'RO22PORL9568116158281625'),
+	('income', '2019-07-02 16:08:00', '100', 'RO44RZBR2949687113834933', 'RO22PORL9568116158281625'),
+	('income', '2019-09-20 12:04:17', '150', 'RO06RZBR2869765134298533', 'RO22PORL9568116158281625'),
+	('income', '2019-03-11 08:04:12', '125', 'RO24RZBR8381357471134179', 'RO22PORL9568116158281625'),
+	('income', '2019-08-01 16:08:00', '100', 'RO28RZBR3927163889689968', 'RO22PORL9568116158281625'),
+	('income', '2019-11-21 12:04:17', '150', 'RO14RZBR4387649111429396', 'RO22PORL9568116158281625'),
+	('income', '2019-12-26 08:04:12', '125', 'RO35RZBR3698834477613845', 'RO22PORL9568116158281625'),
+	('income', '2019-03-01 18:08:00', '350', 'RO26PORL2983474129649563', 'RO22PORL9568116158281625'),
+	('income', '2019-11-21 14:05:17', '600', 'RO76PORL5228664564991568', 'RO22PORL9568116158281625'),
+	('income', '2019-04-26 17:04:12', '570', 'RO44RZBR2949687113834933', 'RO22PORL9568116158281625'),
+	('income', '2019-07-14 12:04:12', '1300', 'RO02RZBR7187757494527896', 'RO29RZBR5523951481289988'),
+	('outcome', '2019-02-01 08:00:00', '3400', 'RO22PORL9568116158281625', 'RO68PORL8164427875373638');
+
+INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,`idAccreditation`,`price`,`duration`) VALUES
 	('2901204019549',1,3,'Consultatie Cardiologie',1,100,30),
-	('2701204068831',2,8,'Consultatie Dermatologie',0,80,20),
-	('2901204012456',3,13,'Operatie Cardiologie',1,1200,120),
+	('2701204068831',2,8,'Consultatie Dermatologie',NULL,80,20),
+	('2901204012456',1,3,'Consultatie Cardiologie',3,1200,120);
+    /*,
 	(4,1,1,200,40),
 	(5,3,0,50,15),
 	(6,2,1,110,30),
@@ -419,7 +441,7 @@ INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,
 	(8,4,1,70,20),
 	(9,4,1,40,30),
 	(10,5,0,50,15),
-	(11,5,0,100,30);
+	(11,5,0,100,30);*/
     
 INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`) VALUES
 	('2700927417309', 'admin', 'adminpass');
