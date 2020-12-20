@@ -11,8 +11,6 @@ public class Database {
     private Connection connection;
 
     public Database(String host, Integer port, String databaseName, String username, String password) {
-        url = "jdbc:mysql://localhost/sakila?user=root&password=DButcnMySQL";
-
         this.username = username;
         this.password = password;
         this.url = "jdbc:mysql://" + host + ":" + port + "/" + databaseName;
