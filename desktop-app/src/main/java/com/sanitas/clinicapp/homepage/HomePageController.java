@@ -6,9 +6,11 @@ import java.awt.event.ActionListener;
 public class HomePageController {
 
     private HomePageModel model;
+    private HomePageView view;
 
     public HomePageController(HomePageModel model, HomePageView view) {
         this.model = model;
+        this.view = view;
 
         view.addBtnHRListener(new ButtonListener(1));
         view.addBtnFRListener(new ButtonListener(2));
@@ -25,6 +27,7 @@ public class HomePageController {
         }
 
         public void actionPerformed(ActionEvent e) {
+            view.setVisible(false);
             model.openMVC(number);
         }
 

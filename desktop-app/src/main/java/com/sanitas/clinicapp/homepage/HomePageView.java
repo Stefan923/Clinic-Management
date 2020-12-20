@@ -26,7 +26,7 @@ public class HomePageView extends JFrame {
         this.setContentPane(content);
         this.pack();
 
-        this.setTitle("Memory Game");
+        this.setTitle("Sanitas");
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
