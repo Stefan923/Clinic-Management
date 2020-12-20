@@ -1,10 +1,13 @@
 package com.sanitas.clinicapp.hr;
 
-import java.util.List;
-
 public class HrMVC {
-    public static void main(String[] args) {
-        HrModel model=new HrModel();
-        List<Employee> list=model.getAllData("","","");
+
+    public HrMVC() {
+        HrModel model = new HrModel();
+        HrView view = new HrView();
+        HrController controller = new HrController(model, view);
+
+        view.setVisible(true);
     }
+
 }
