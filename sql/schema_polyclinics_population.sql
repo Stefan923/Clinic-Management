@@ -317,18 +317,18 @@ VALUES
 	('1830121466921','Stancu','Ioan Mihail','Constanta, str. Craiovei nr. 3','0748692056','ioan.mihail.st@gmail.com','RO75PORL6346981883481832','28','1985-08-18','HR',3150,120),
 	('2700927417309','Madalina','Adam','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120);
 
-INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`,`sealCode`,`scientificTitle`,`didacticTitle`) VALUES
-	('2901204019549','12345',NULL,'profesor'),
-	('2701204068831','56477','doctorand','lector'),
-	('2901204012456','90754',NULL,'asistent'),
-	('2701204737245','67323',NULL,'conferential'),
-	('2801204117104','77895','doctor stiinte medicale','preparator'),
-	('2931204115436','67441','doctorand','profesor'),
-	('2811204117404','50012',NULL,NULL),
-	('2031204115436','40975','doctor stiinte medicale',NULL),
-	('2731201018946','39563','doctorand',NULL),
-	('2781201019674','47274','doctor stiinte medicale','profesor'),
-	('2700927417309','75436',NULL,NULL);
+INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `scientificTitle`, `didacticTitle`) VALUES
+	('2901204019549','12345','0.3',NULL,'profesor'),
+	('2701204068831','56477','0.3','doctorand','lector'),
+	('2901204012456','90754','0.3',NULL,'asistent'),
+	('2701204737245','67323','0.3',NULL,'conferential'),
+	('2801204117104','77895','0.3','doctor stiinte medicale','preparator'),
+	('2931204115436','67441','0.3','doctorand','profesor'),
+	('2811204117404','50012','0.3',NULL,NULL),
+	('2031204115436','40975','0.3','doctor stiinte medicale',NULL),
+	('2731201018946','39563','0.3','doctorand',NULL),
+	('2781201019674','47274','0.3','doctor stiinte medicale','profesor'),
+	('2700927417309','75436','0.3',NULL,NULL);
  
 INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values
 	('2901204019549',1,'specialist'),
@@ -342,7 +342,8 @@ INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `r
 	('2931204115436',9,'specialist'),
 	('2931204115436',10,'specialist'),
 	('2811204117404',8,'primar'),
-	('2031204115436',11,'specialist');
+	('2031204115436',11,'specialist'),
+    ('2700927417309',1,'specialist');
 
 INSERT INTO `polyclinics`.`doctor_accreditations` (cnpDoctor,idAccreditation) VALUES
 	('2901204019549',4),
@@ -352,7 +353,8 @@ INSERT INTO `polyclinics`.`doctor_accreditations` (cnpDoctor,idAccreditation) VA
 	('2801204117104',3),
 	('2931204115436',3),
 	('2811204117404',2),
-	('2031204115436',3);
+	('2031204115436',3),
+    ('2700927417309',1);
 
 INSERT INTO `analyse` (name,minimum,maximum) VALUES
 	("Leucocite",3.50,10.500),
@@ -406,12 +408,30 @@ INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `s
 	(2700927417309,5,'Saturday','12:00','15:00'),
 	(2700927417309,5,'Sunday','08:00','11:00');
 
+DELETE FROM `holidays`;
+INSERT INTO `holidays` (`cnpEmployee`, `startDate`, `endDate`) VALUES
+	('2700927417309', '2020-12-02', '2020-12-03');
+
+INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,`idAccreditation`,`price`,`duration`) VALUES
+	('2901204019549',1,3,'Consultatie Cardiologie',1,100,30),
+	('2701204068831',2,8,'Consultatie Dermatologie',NULL,80,20),
+	('2901204012456',1,3,'Consultatie Cardiologie',3,1200,120);
+    
+DELETE FROM `appointments`;
 INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`) VALUES
 	(1971005087985, 2700927417309, '1', '1', '2020-12-14 15:00:00'),
 	(1960408068054, 2700927417309, '1', '1', '2020-12-14 14:30:00'),
 	(1960408068054, 2700927417309, '1', '1', '2020-12-14 10:00:00'),
-	(1960408068054, 2700927417309, '5', '1', '2020-12-16 10:00:00');
-
+	(1960408068054, 2700927417309, '5', '1', '2020-12-16 10:00:00'),
+	(1801119378613, 2901204012456, '5', '1', '2020-12-16 11:00:00');
+    
+INSERT INTO `appointment_services` (`idMedicalService`, `idAppointment`) VALUES
+	('1', '1'),
+	('1', '2'),
+	('3', '2'),
+	('3', '3'),
+	('1', '4'),
+	('1', '5');
 
 DELETE FROM transactions;
 INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALUES
@@ -428,11 +448,7 @@ INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALU
 	('income', '2019-04-26 17:04:12', '570', 'RO44RZBR2949687113834933', 'RO22PORL9568116158281625'),
 	('income', '2019-07-14 12:04:12', '1300', 'RO02RZBR7187757494527896', 'RO29RZBR5523951481289988'),
 	('outcome', '2019-02-01 08:00:00', '3400', 'RO22PORL9568116158281625', 'RO68PORL8164427875373638');
-
-INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,`idAccreditation`,`price`,`duration`) VALUES
-	('2901204019549',1,3,'Consultatie Cardiologie',1,100,30),
-	('2701204068831',2,8,'Consultatie Dermatologie',NULL,80,20),
-	('2901204012456',1,3,'Consultatie Cardiologie',3,1200,120);
+    
     /*,
 	(4,1,1,200,40),
 	(5,3,0,50,15),
