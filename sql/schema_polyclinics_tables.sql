@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
 CREATE TABLE IF NOT EXISTS `polyclinics`.`transactions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(10) NOT NULL,
-  `date` DATE NULL DEFAULT NULL,
+  `date` TIMESTAMP NULL DEFAULT NULL,
   `amount` DECIMAL(10,2) NOT NULL,
   `sender` VARCHAR(45) NOT NULL,
   `receiver` VARCHAR(45) NOT NULL,
