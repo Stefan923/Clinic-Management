@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 
 public class HrView extends JFrame {
 
-    JButton btnShowEmployees = new StyledJButton("Afisare Angajatii").getButton();
+    JButton btnShowEmployees = new StyledJButton("Afisare Angajati").getButton();
     JButton btnSearchEmployee = new StyledJButton("Cautare Angajat").getButton();
 
     JButton btnBack = new StyledJButton("Inapoi").getButton();
