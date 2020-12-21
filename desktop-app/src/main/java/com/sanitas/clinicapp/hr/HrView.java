@@ -9,12 +9,19 @@ import java.awt.event.ActionListener;
 
 public class HrView extends JFrame {
 
-    JButton btnShowEmployees = new StyledJButton("Afisare Angajatii").getButton();
+    JButton btnShowEmployees = new StyledJButton("Adauga Angajat").getButton();
     JButton btnSearchEmployee = new StyledJButton("Cautare Angajat").getButton();
 
     JButton btnBack = new StyledJButton("Inapoi").getButton();
 
-    public HrView() {
+    HrModel model;
+
+
+    openViewModel modelv=new openViewModel();
+    openViewView viewv=new openViewView(modelv);
+
+
+    public HrView(HrModel model) {
         btnShowEmployees.setBackground(Colors.MAIN_COLOR.getColor());
         btnSearchEmployee.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
@@ -31,6 +38,11 @@ public class HrView extends JFrame {
         JPanel content = new JPanel(new BorderLayout());
         content.add(rightContent, BorderLayout.WEST);
 
+        content.add(viewv, BorderLayout.EAST);
+        openViewController controller=new openViewController(modelv,viewv);
+
+        viewv.setVisible(false);
+
         this.setPreferredSize(new Dimension(400, 300));
         this.setContentPane(content);
         this.pack();
@@ -44,7 +56,7 @@ public class HrView extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void addBtnShowEmployeesListener(ActionListener actionListener) {
+    public void addBtnAddEmployeesListener(ActionListener actionListener) {
         btnShowEmployees.addActionListener(actionListener);
     }
 
@@ -52,4 +64,5 @@ public class HrView extends JFrame {
         btnSearchEmployee.addActionListener(actionListener);
     }
 
+    public void setViewvVisible() {viewv.setVisible(true);}
 }
