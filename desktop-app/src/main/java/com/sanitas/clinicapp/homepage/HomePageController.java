@@ -28,7 +28,7 @@ public class HomePageController {
 
         public void actionPerformed(ActionEvent e) {
             view.setVisible(false);
-            model.openMVC(number);
+            model.openMVC(number, view);
         }
 
     }
