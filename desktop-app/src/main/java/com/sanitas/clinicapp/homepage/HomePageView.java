@@ -26,6 +26,10 @@ public class HomePageView extends JFrame {
         this.setContentPane(content);
         this.pack();
 
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dimension.width / 2 - this.getSize().width / 2,
+                dimension.height / 2 - this.getSize().height / 2);
+
         this.setTitle("Sanitas");
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
