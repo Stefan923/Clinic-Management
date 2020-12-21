@@ -29,6 +29,8 @@ public class LoginController {
             } else {
                 username.setText("");
                 password.setText("");
+
+                view.sendError("Numele sau parola sunt gresite!");
             }
         }
     }

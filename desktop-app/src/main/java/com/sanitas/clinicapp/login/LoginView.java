@@ -41,6 +41,10 @@ public class LoginView extends JFrame {
         this.setContentPane(content);
         this.pack();
 
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dimension.width / 2 - this.getSize().width / 2,
+                        dimension.height / 2 - this.getSize().height / 2);
+
         this.setTitle("Sanitas");
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,6 +66,10 @@ public class LoginView extends JFrame {
 
     public void addBtnLoginListener(ActionListener actionListener) {
         btnLogin.addActionListener(actionListener);
+    }
+
+    public void sendError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Eroare", 0);
     }
 
     public JTextField getTfUsername() {
