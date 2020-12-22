@@ -1,6 +1,5 @@
 package com.sanitas.clinicapp.mr;
 
-import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
 import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
@@ -11,32 +10,30 @@ import java.awt.event.ActionListener;
 
 public class MrView extends JFrame {
 
-    PanelShowPatients panelShowPatients;
+    private PanelShowPatients panelShowPatients;
 
-    JPanel currentPanel;
+    private JPanel currentPanel;
 
-    JButton btnShowPatients = new StyledJButton("Afisare Pacienti").getButton();
-    JButton btnSearchPatient = new StyledJButton("Cautare Pacient").getButton();
-    JButton btnAddPatient = new StyledJButton("Adaugare Pacient").getButton();
-    JButton btnDeletePatient = new StyledJButton("Stergere Pacient").getButton();
+    private JButton btnShowPatients = new StyledJButton("Afisare Pacienti").getButton();
+    private JButton btnSearchPatient = new StyledJButton("Cautare Pacient").getButton();
+    private JButton btnAddPatient = new StyledJButton("Adaugare Pacient").getButton();
 
-    JButton btnBack = new StyledJButton("Inapoi").getButton();
+    private JButton btnBack = new StyledJButton("Inapoi").getButton();
 
     public MrView(MrModel model) {
         panelShowPatients = new PanelShowPatients(model);
         currentPanel = panelShowPatients;
+        panelShowPatients.setVisible(true);
 
         btnShowPatients.setBackground(Colors.MAIN_COLOR.getColor());
         btnSearchPatient.setBackground(Colors.MAIN_COLOR.getColor());
         btnAddPatient.setBackground(Colors.MAIN_COLOR.getColor());
-        btnDeletePatient.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
         JPanel menuContent = new JPanel(new GridLayout(4, 1));
         menuContent.add(btnShowPatients);
         menuContent.add(btnSearchPatient);
         menuContent.add(btnAddPatient);
-        menuContent.add(btnDeletePatient);
 
         JPanel leftContent = new JPanel(new BorderLayout());
         leftContent.add(menuContent, BorderLayout.NORTH);
@@ -75,12 +72,36 @@ public class MrView extends JFrame {
         return currentPanel;
     }
 
+    public JButton getBtnShowPatients() {
+        return btnShowPatients;
+    }
+
+    public JButton getBtnSearchPatient() {
+        return btnSearchPatient;
+    }
+
+    public JButton getBtnAddPatient() {
+        return btnAddPatient;
+    }
+
     public void sendError(String message) {
         JOptionPane.showMessageDialog(this, message, "Eroare!", JOptionPane.ERROR_MESSAGE);
     }
 
     public void sendSuccessMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Succes!", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void addBtnShowPatientsListener(ActionListener actionListener) {
+        btnShowPatients.addActionListener(actionListener);
+    }
+
+    public void addBtnSearchPatientListener(ActionListener actionListener) {
+        btnSearchPatient.addActionListener(actionListener);
+    }
+
+    public void addBtnAddPatientListener(ActionListener actionListener) {
+        btnAddPatient.addActionListener(actionListener);
     }
 
     public void addBackButtonListener(ActionListener actionListener) {
