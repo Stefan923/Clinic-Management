@@ -60,7 +60,7 @@ public class PanelEditPatient extends JPanel {
         add(patientData, BorderLayout.NORTH);
         add(buttonsPanel, BorderLayout.CENTER);
 
-        setVisible(true);
+        setVisible(false);
     }
 
     public JTextField getTfCnp() {
