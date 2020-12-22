@@ -1,7 +1,6 @@
 package com.sanitas.clinicapp.mr;
 
-import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
-import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
+import com.sanitas.clinicapp.mr.panels.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,9 +16,25 @@ public class MrController {
         this.model = model;
         this.view = view;
 
-        view.getPanelShowPatients().addSearchButtonListener(new SearchButtonListener());
-        view.getPanelShowPatients().addModifyButtonListener(new ModifyButtonListener());
-        view.getPanelShowPatients().addDeleteButtonListener(new DeleteButtonListener());
+        loadListeners(previousView);
+    }
+
+    private void loadListeners(JFrame previousView) {
+        PanelShowPatients panelShowPatients = view.getPanelShowPatients();
+        panelShowPatients.addSearchButtonListener(new SearchButtonListener());
+        panelShowPatients.addModifyButtonListener(new ModifyButtonListener());
+        panelShowPatients.addDeleteButtonListener(new DeleteButtonListener());
+
+        PanelSearchPatient panelSearchPatient = new PanelSearchPatient();
+        panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
+
+        PanelAddPatient panelAddPatient = new PanelAddPatient();
+        panelAddPatient.addSaveButtonListener(new SaveButtonListener());
+        panelAddPatient.addCancelButtonListener(new CancelButtonListener());
+
+        view.addBtnShowPatientsListener(new MenuButtonListener(view.getBtnShowPatients(), panelShowPatients));
+        view.addBtnSearchPatientListener(new MenuButtonListener(view.getBtnSearchPatient(), panelSearchPatient));
+        view.addBtnAddPatientListener(new MenuButtonListener(view.getBtnAddPatient(), panelAddPatient));
         view.addBackButtonListener(new BackButtonListener(previousView));
     }
 
@@ -90,18 +105,37 @@ public class MrController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            PanelEditPatient panel = (PanelEditPatient) view.getCurrentPanel();
-            boolean validation = model.updatePatient(panel.getTfCnp().getText(),
-                                panel.getTfLastname().getText(),
-                                panel.getTfFirstname().getText(),
-                                panel.getTfIban().getText());
+            JPanel panel = view.getCurrentPanel();
 
-            if (validation) {
-                view.sendSuccessMessage("Datele pacientului au fost actualizate.");
+            if (panel instanceof PanelEditPatient) {
+                PanelEditPatient panelEditPatient = (PanelEditPatient) view.getCurrentPanel();
+                boolean validation = model.updatePatient(panelEditPatient.getTfCnp().getText(),
+                        panelEditPatient.getTfLastname().getText(),
+                        panelEditPatient.getTfFirstname().getText(),
+                        panelEditPatient.getTfIban().getText());
 
-                view.getPanelShowPatients().updateTable(model.getPatients("", ""));
-            } else {
-                view.sendError("Datele pacientului NU au putut fi actualizate.");
+                if (validation) {
+                    view.sendSuccessMessage("Datele pacientului au fost actualizate.");
+
+                    view.getPanelShowPatients().updateTable(model.getPatients("", ""));
+                } else {
+                    view.sendError("Datele pacientului NU au putut fi actualizate.");
+                }
+            } else if (panel instanceof  PanelAddPatient) {
+                PanelAddPatient panelAddPatient = (PanelAddPatient) view.getCurrentPanel();
+                boolean validation = model.addPatient(panelAddPatient.getTfCnp().getText(),
+                        panelAddPatient.getTfLastname().getText(),
+                        panelAddPatient.getTfFirstname().getText(),
+                        panelAddPatient.getTfIban().getText());
+
+                if (validation) {
+                    panelAddPatient.reset();
+                    view.sendSuccessMessage("Pacientul a fost adaugat in baza de date.");
+
+                    view.getPanelShowPatients().updateTable(model.getPatients("", ""));
+                } else {
+                    view.sendError("Deja exista in baza de date un pacient cu acest cnp.");
+                }
             }
         }
 
@@ -111,7 +145,47 @@ public class MrController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            view.setRightPanel(view.getPanelShowPatients());
+            JPanel panel = view.getCurrentPanel();
+            if (panel instanceof PanelEditPatient) {
+                view.setRightPanel(view.getPanelShowPatients());
+            } else {
+                ((PanelAddPatient) panel).reset();
+            }
+        }
+
+    }
+
+    class SearchByCnpButtonListener implements ActionListener {
+
+        PanelSearchPatient panel;
+
+        public SearchByCnpButtonListener(PanelSearchPatient panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Patient patient = model.getPatient(panel.getTfCnp().getText());
+
+            PanelViewPatient panelViewPatient = new PanelViewPatient(patient);
+            view.setRightPanel(panelViewPatient);
+        }
+
+    }
+
+    class MenuButtonListener implements ActionListener {
+
+        private JButton button;
+        private JPanel panel;
+
+        public MenuButtonListener(JButton button, JPanel panel) {
+            this.button = button;
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            view.setRightPanel(panel);
         }
 
     }
