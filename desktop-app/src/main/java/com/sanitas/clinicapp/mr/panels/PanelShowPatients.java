@@ -17,7 +17,7 @@ public class PanelShowPatients extends JPanel {
     private JTextField tfFirstname = new JTextField(15);
 
     private JButton btnSearch = new StyledJButton("Cauta").getButton();
-    private JButton btnModify = new StyledJButton("Editare").getButton();
+    private JButton btnModify = new StyledJButton("Editeaza").getButton();
     private JButton btnDelete = new StyledJButton("Sterge").getButton();
 
     private JTable patientTable;
@@ -46,11 +46,11 @@ public class PanelShowPatients extends JPanel {
         editPanel.add(btnModify);
         editPanel.add(btnDelete);
 
-        this.add(searchPanel, BorderLayout.NORTH);
-        this.add(tablePanel, BorderLayout.CENTER);
-        this.add(editPanel, BorderLayout.SOUTH);
+        add(searchPanel, BorderLayout.NORTH);
+        add(tablePanel, BorderLayout.CENTER);
+        add(editPanel, BorderLayout.SOUTH);
 
-        this.setVisible(true);
+        setVisible(false);
     }
 
     private JTable initializeTable(MrModel model) {
