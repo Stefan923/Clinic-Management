@@ -5,6 +5,7 @@ import com.sanitas.clinicapp.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MrModel {
@@ -51,6 +52,7 @@ public class MrModel {
             throwables.printStackTrace();
         }
 
+        patients.sort(Patient::compareTo);
         return patients;
     }
 
@@ -97,6 +99,58 @@ public class MrModel {
     public boolean deletePatient(String cnp) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL DELETE_PATIENT(?, ?);");
+            callableStatement.setString(1, cnp);
+            callableStatement.registerOutParameter(2, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(2);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<Report> getReports(String cnp, Date startDate, Date endDate) {
+        List<Report> reports = new ArrayList<>();
+        int index = 2;
+
+        StringBuilder query = new StringBuilder("SELECT `date`, `lastEdit`, `sealCode` FROM `reports` WHERE `cnpPatient` = ?");
+        if (startDate != null) {
+            query.append(" AND `date` >= ?");
+        }
+        if (endDate != null) {
+            query.append(" AND `date` <= ?");
+        }
+        query.append(";");
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement(query.toString());
+            preparedStatement.setString(1, cnp);
+            if (startDate != null) {
+                preparedStatement.setDate(++index, (java.sql.Date) startDate);
+            }
+            if (endDate != null) {
+                preparedStatement.setDate(index, (java.sql.Date) endDate);
+            }
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                reports.add(new Report(resultSet.getDate(1),
+                        resultSet.getDate(2),
+                        resultSet.getInt(3)));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return reports;
+    }
+
+    public boolean addReport(String cnp) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_REPORT(?, ?);");
             callableStatement.setString(1, cnp);
             callableStatement.registerOutParameter(2, Types.BOOLEAN);
             callableStatement.execute();

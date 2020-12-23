@@ -80,4 +80,7 @@ public class PanelViewPatient extends JPanel {
         btnShowAnalyses.addActionListener(actionListener);
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
 }

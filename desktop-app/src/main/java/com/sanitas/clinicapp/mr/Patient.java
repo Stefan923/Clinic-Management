@@ -1,6 +1,6 @@
 package com.sanitas.clinicapp.mr;
 
-public class Patient {
+public class Patient implements Comparable<Patient> {
 
     private String cnp;
     private String lastname;
@@ -46,4 +46,15 @@ public class Patient {
                 ", iban='" + iban + '\'' +
                 '}';
     }
+
+    @Override
+    public int compareTo(Patient o) {
+        int compLastName = lastname.compareTo(o.lastname);
+        if (compLastName == 0) {
+            return firstname.compareTo(o.firstname);
+        }
+
+        return compLastName;
+    }
+
 }

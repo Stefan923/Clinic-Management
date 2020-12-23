@@ -43,7 +43,7 @@ public class MrView extends JFrame {
         content.add(leftContent, BorderLayout.WEST);
         content.add(panelShowPatients, BorderLayout.CENTER);
 
-        this.setPreferredSize(new Dimension(720, 420));
+        this.setPreferredSize(new Dimension(820, 420));
         this.setContentPane(content);
         this.pack();
 

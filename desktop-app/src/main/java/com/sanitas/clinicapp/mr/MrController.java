@@ -168,18 +168,55 @@ public class MrController {
             Patient patient = model.getPatient(panel.getTfCnp().getText());
 
             PanelViewPatient panelViewPatient = new PanelViewPatient(patient);
+            panelViewPatient.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelViewPatient));
             view.setRightPanel(panelViewPatient);
         }
 
     }
 
-    class MenuButtonListener implements ActionListener {
+    class PatientHistoryButtonListener implements ActionListener {
 
-        private JButton button;
+        private PanelViewPatient panel;
+
+        public PatientHistoryButtonListener(PanelViewPatient panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            List<Report> reports = model.getReports(panel.getPatient().getCnp(), null, null);
+
+            PanelShowReports panelShowReports = new PanelShowReports(panel.getPatient());
+            panelShowReports.addBtnAddReportListener(new AddReportButtonListener(panelShowReports));
+            panelShowReports.updateTable(reports);
+            view.setRightPanel(panelShowReports);
+        }
+
+    }
+
+    class AddReportButtonListener implements ActionListener {
+
+        private PanelShowReports panel;
+
+        public AddReportButtonListener(PanelShowReports panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            model.addReport(panel.getPatient().getCnp());
+
+            List<Report> reports = model.getReports(panel.getPatient().getCnp(), null, null);
+            panel.updateTable(reports);
+            view.setRightPanel(panel);
+        }
+
+    }
+
+    class MenuButtonListener implements ActionListener {
         private JPanel panel;
 
         public MenuButtonListener(JButton button, JPanel panel) {
-            this.button = button;
             this.panel = panel;
         }
 
