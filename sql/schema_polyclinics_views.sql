@@ -21,4 +21,21 @@ CREATE VIEW `polyclinics`.`view_permissions` AS
     FROM `role_permissions` RP, `roles` R, `employees` E, `accounts` A
 	WHERE R.`id` = RP.`idRole` AND R.`id` = A.`idRole` AND E.`cnp` = A.`cnpEmployee`;
 
-SELECT * FROM polyclinics.view_accounts;
+DROP VIEW IF EXISTS `polyclinics`.`view_specialities_by_doctor`;
+CREATE VIEW `polyclinics`.`view_specialities_by_doctor` AS
+	SELECT D.`cnpEmployee` as `cnp`, S.`id`, S.`name`
+    FROM `specialities` S, `doctor_specialities` DS, `doctors` D
+	WHERE DS.`cnpDoctor` = D.`cnpEmployee` AND S.`id` = DS.`idSpeciality`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_accreditations_by_doctor`;
+CREATE VIEW `polyclinics`.`view_accreditations_by_doctor` AS
+	SELECT D.`cnpEmployee` as `cnp`, A.`id`, A.`name`
+    FROM `accreditations` A, `doctor_accreditations` DA, `doctors` D
+	WHERE DA.`cnpDoctor` = D.`cnpEmployee` AND A.`id` = DA.`idAccreditation`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_equipments`;
+CREATE VIEW `polyclinics`.`view_equipments` AS
+	SELECT `id`, `name`
+    FROM `equipments`;
+
+SELECT `id`, `name` FROM `view_equipments`;
