@@ -196,28 +196,44 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patients` (
   PRIMARY KEY (`cnp`));
 
 -- -----------------------------------------------------
--- Table `polyclinics`.`patient_history`
+-- Table `polyclinics`.`reports`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_history` (
+CREATE TABLE IF NOT EXISTS `polyclinics`.`reports` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `cnpPatient` VARCHAR(13) NOT NULL,
-  `idService` INT NOT NULL,
-  `diagnostic` VARCHAR(100) NULL DEFAULT NULL,
+  `diagnostic` VARCHAR(255) NULL DEFAULT '',
+  `recommendation` VARCHAR(255) NULL DEFAULT '',
+  `date` TIMESTAMP NOT NULL,
+  `lastEdit` TIMESTAMP NULL DEFAULT NULL,
   `sealCode` VARCHAR(5) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_reports_idx` (`cnpPatient` ASC) VISIBLE,
+  INDEX `fk_reports_sealCode_idx` (`sealCode` ASC) VISIBLE,
+  CONSTRAINT `fk_reports_cnpPatient`
+    FOREIGN KEY (`cnpPatient`)
+    REFERENCES `polyclinics`.`patients` (`cnp`),
+  CONSTRAINT `fk_reports_sealCode`
+    FOREIGN KEY (`sealCode`)
+    REFERENCES `polyclinics`.`doctors` (`sealCode`));
+    
+-- -----------------------------------------------------
+-- Table `polyclinics`.`report_investigations`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `polyclinics`.`report_investigations` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `idReport` INT NOT NULL,
+  `idService` INT NOT NULL,
+  `remarks` VARCHAR(255) NULL DEFAULT '',
   `date` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_patitent_history_idService_idx` (`idService` ASC) VISIBLE,
-  INDEX `fk_patient_history_cnpPatient` (`cnpPatient` ASC) VISIBLE,
-  INDEX `fk_patient_history_sealCode_idx` (`sealCode` ASC) VISIBLE,
-  CONSTRAINT `fk_patient_history_cnpPatient`
-    FOREIGN KEY (`cnpPatient`)
-    REFERENCES `polyclinics`.`patients` (`cnp`),
+  INDEX `fk_report_investigations_idReport_idx` (`idReport` ASC) VISIBLE,
   CONSTRAINT `fk_patitent_history_idService`
     FOREIGN KEY (`idService`)
     REFERENCES `polyclinics`.`medical_services` (`id`),
-  CONSTRAINT `fk_patient_history_sealCode`
-    FOREIGN KEY (`sealCode`)
-    REFERENCES `polyclinics`.`doctors` (`sealCode`));
+  CONSTRAINT `fk_report_investigations_idReport`
+    FOREIGN KEY (`idReport`)
+    REFERENCES `polyclinics`.`reports` (`id`));
 
 -- -----------------------------------------------------
 -- Table `polyclinics`.`transactions`

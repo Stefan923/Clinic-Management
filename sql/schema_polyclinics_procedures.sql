@@ -262,6 +262,21 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS SAVE_PATIENT;
+DELIMITER //
+CREATE PROCEDURE SAVE_PATIENT(IN `_cnp` VARCHAR(13), IN `_lastName` VARCHAR(25), IN `_firstName` VARCHAR(50), IN `_iban` VARCHAR(45), OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `patients` WHERE `cnp`=`_cnp`) = 1) THEN
+		SET @sqlAction = CONCAT("UPDATE patients SET lastName = '", `_lastName`, "', firstName = '", `_firstName`, "', iban = '", `_iban`, "' WHERE cnp='", `_cnp`, "';");
+		PREPARE statement FROM @sqlAction;
+		EXECUTE statement;
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
 DROP PROCEDURE IF EXISTS DELETE_PATIENT;
 DELIMITER //
 CREATE PROCEDURE DELETE_PATIENT(IN `_cnp` VARCHAR(13), OUT `validation` INT)
@@ -289,14 +304,55 @@ BEGIN
 END;
 // DELIMITER ;
 
-DROP PROCEDURE IF EXISTS INSERT_PATIENT_HISTORY;
+DROP PROCEDURE IF EXISTS INSERT_REPORT;
 DELIMITER //
-CREATE PROCEDURE INSERT_PATIENT_HISTORY(IN `_cnp` VARCHAR(13), IN `_idService` INT, IN `_diagnostic` VARCHAR(100), IN `_sealCode` VARCHAR(5), OUT `validation` INT)
+CREATE PROCEDURE INSERT_REPORT(IN `_cnp` VARCHAR(13), OUT `validation` INT)
 BEGIN
-	IF ((SELECT COUNT(*) FROM `patients` WHERE `cnp` = `_cnp`) = 1
-		AND (SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_idService`) = 1) THEN
+	IF ((SELECT COUNT(*) FROM `patients` WHERE `cnp` = `_cnp`) = 1) THEN
         
-        INSERT INTO `patient_history` (`cnpPatient`, `idService`, `diagnostic`, `sealCode`, `date`) VALUE (`_cnp`, `_idService`, `_diagnostic`, `_sealCode`, NOW());
+        INSERT INTO `reports` (`cnpPatient`, `date`, `lastEdit`) VALUE (`_cnp`, NOW(), NOW());
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS UPDATE_REPORT;
+DELIMITER //
+CREATE PROCEDURE UPDATE_REPORT(IN `_cnp` VARCHAR(13), IN `_diagnostic` VARCHAR(255), IN `_recommendation` VARCHAR(255), OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `reports` WHERE `id` = `_id` AND `sealCode` IS NULL) = 1) THEN
+        
+        UPDATE `reports` SET `diagnostic` = `_diagnostic`, `recommendation` = `_recommendation`, `lastEdit` = NOW() WHERE `id` = `_id`;
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS CONFIRM_REPORT;
+DELIMITER //
+CREATE PROCEDURE CONFIRM_REPORT(IN `_id` VARCHAR(13), IN `_sealCode` VARCHAR(5), OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `reports` WHERE `id` = `_id` AND `sealCode` IS NULL) = 1) THEN
+        
+        UPDATE `reports` SET `sealCode` = `_sealCode` WHERE `id` = `_id`;
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS INSERT_REPORT_INVESTIGATION;
+DELIMITER //
+CREATE PROCEDURE INSERT_REPORT_INVESTIGATION(IN `_idReport` INT, IN `_idService` INT, IN `_remarks` VARCHAR(255), OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `patients` WHERE `id` = `_idReport`) = 1) THEN
+        
+        INSERT INTO `report_investigations` (`idReport`, `idService`, `remarks`, `date`) VALUE (`_idReport`, `_idService`, `_remarks`, NOW());
 		SET `validation` = 1;
     ELSE
 		SET `validation` = 0;
@@ -367,7 +423,7 @@ BEGIN
     -- CALL INSERT_EMPLOYEE('2700735934101', 'Spatariu', 'Diana', 'Cluj-Napoca, str. Nicolae Iorga nr. 6', '0783527882', 'spatariu.diana@gmail.com', 'RO64RZBR3277465196914272', '30', '2017-02-20', 'Receptioner', '3470', '120', @output);
     -- CALL DELETE_EMPLOYEE('2700735934101', @output);
     -- CALL UPDATE_EMPLOYEE('2700735934101', 'contractNum', '31', @output);
-    -- CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
+    CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
     -- CALL GET_MEDICAL_UNIT_PROFIT('2', '2019-01-01', '2019-12-31', @output);
     -- CALL GET_PROFIT_BY_SPECIALITY('1', '2020-01-01', '2020-12-15', @output);
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
@@ -383,7 +439,7 @@ BEGIN
     -- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL INSERT_ANALYSE('2910815468725', '3', '70', @output);
     -- CALL INSERT_MEDICAL_SERVICE('2700927417309', 'Consultatie cardiologie', '1', NULL, NULL, '300', '30', @output);
-    CALL DELETE_MEDICAL_SERVICE('7', @output);
+    -- CALL DELETE_MEDICAL_SERVICE('7', @output);
     SELECT @output;
 END;
 // DELIMITER ;
@@ -398,8 +454,7 @@ SELECT `idMedicalService`, COUNT(*) AS `count` FROM `appointment_services` A, `a
 
 -- INGORA
 -- (TIME_TO_SEC(TIME(`date`)) + `duration` * 60)>=TIME_TO_SEC(`_startHour`) AND TIME(`date`)<=`_endHour`)
-*/
-SELECT * FROM `employees` WHERE `lastName`='?' AND `firstName`='?' AND `position`='?';
+
 SELECT * FROM `employees` WHERE `cnp`='?';
 SELECT * FROM `employee_schedule` WHERE `cnpEmployee`='?';
 SELECT * FROM `holidays` WHERE `cnpEmployee`='?';
@@ -407,3 +462,4 @@ SELECT * FROM `patient_history` WHERE `cnpPatient`='?';
 SELECT * FROM `patient_analyses` PA, `analyse` A WHERE PA.`cnpPatient`='?' AND PA.`idAnalyse`=A.`id`;
 SELECT * FROM `patient_analyses` PA, `analyse` A WHERE PA.`cnpPatient`='?' AND PA.`idAnalyse`=A.`id`;
 SELECT A.`id`, `cnpPatient`, `cnpDoctor`, `idCabinet`, S.`name`, `date`, P.`lastName`, P.`firstName`, E.`lastName`, E.`firstName` FROM `patients` P, `appointments` A, `employees` E, `specialities` S WHERE P.`cnp`='1960408068054' AND A.`cnpPatient`=P.`cnp` AND A.`cnpDoctor`=E.`cnp` AND S.`id`=A.`idSpeciality`;
+*/
