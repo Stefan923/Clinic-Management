@@ -32,7 +32,7 @@ DROP TRIGGER IF EXISTS ON_EMPLOYEE_INSERT;
 DELIMITER //
 CREATE TRIGGER ON_EMPLOYEE_INSERT AFTER INSERT ON `employees` FOR EACH ROW
 BEGIN
-	SET @count = 0;
+	SET @count = 0, @idRole = 1;
     SET @lastName = SUBSTRING_INDEX(SUBSTRING_INDEX(LOWER(NEW.`lastName`), ' ', 1), '-', 1);
     SET @firstName = LOWER(SUBSTRING(NEW.`firstName`, 1, 1));
 	SET @username = CONCAT(@firstName, '.', @lastName);
@@ -40,7 +40,21 @@ BEGIN
 		SET @count = @count + 1;
 		SET @username = CONCAT(@firstName, '.', @lastName, @count);
 	END WHILE;
-	INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`) VALUES (NEW.`cnp`, @username, CONCAT(NEW.`cnp`, @firstName));
+    
+    
+    IF (NEW.`position` LIKE 'Receptioner') THEN
+		SET @idRole = 2;
+    ELSEIF (NEW.`position` LIKE 'HR') THEN
+		SET @idRole = 3;
+    ELSEIF (NEW.`position` LIKE 'Asistent Medical') THEN
+		SET @idRole = 4;
+    ELSEIF (NEW.`position` LIKE 'Medic') THEN
+		SET @idRole = 5;
+    ELSEIF (NEW.`position` LIKE 'Contabil') THEN
+		SET @idRole = 6;
+	END IF;
+    
+	INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`, `idRole`) VALUES (NEW.`cnp`, @username, CONCAT(NEW.`cnp`, @firstName),  @idRole);
 END;
 // DELIMITER ;
 
@@ -65,8 +79,16 @@ DELIMITER //
 CREATE TRIGGER ON_PATIENT_DELETE BEFORE DELETE ON `patients` FOR EACH ROW
 BEGIN
 	DELETE FROM `appointments` WHERE `cnpPatient`=OLD.`cnp`;
-	DELETE FROM `patient_history` WHERE `cnpPatient`=OLD.`cnp`;
+	DELETE FROM `reports` WHERE `cnpPatient`=OLD.`cnp`;
 	DELETE FROM `patient_analyses` WHERE `cnpPatient`=OLD.`cnp`;
+END;
+// DELIMITER ;
+
+DROP TRIGGER IF EXISTS ON_REPORT_DELETE;
+DELIMITER //
+CREATE TRIGGER ON_REPORT_DELETE BEFORE DELETE ON `reports` FOR EACH ROW
+BEGIN
+	DELETE FROM `report_investigations` WHERE `idReport`=OLD.`id`;
 END;
 // DELIMITER ;
 
