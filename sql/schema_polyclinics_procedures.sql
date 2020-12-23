@@ -350,7 +350,7 @@ DROP PROCEDURE IF EXISTS INSERT_REPORT_INVESTIGATION;
 DELIMITER //
 CREATE PROCEDURE INSERT_REPORT_INVESTIGATION(IN `_idReport` INT, IN `_idService` INT, IN `_remarks` VARCHAR(255), OUT `validation` INT)
 BEGIN
-	IF ((SELECT COUNT(*) FROM `patients` WHERE `id` = `_idReport`) = 1) THEN
+	IF ((SELECT COUNT(*) FROM `reports` WHERE `id` = `_idReport`) = 1) THEN
         
         INSERT INTO `report_investigations` (`idReport`, `idService`, `remarks`, `date`) VALUE (`_idReport`, `_idService`, `_remarks`, NOW());
 		SET `validation` = 1;
