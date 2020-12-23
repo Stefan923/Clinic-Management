@@ -379,26 +379,6 @@ INSERT INTO `polyclinics`.`doctor_accreditations` (cnpDoctor,idAccreditation) VA
 	('2811204117404',2),
 	('2031204115436',3),
     ('2700927417309',1);
-
-INSERT INTO `analyse` (name,minimum,maximum) VALUES
-    ('2031204115436',1),
-    ('2031204115436',2),
-    ('2700927417309',15),
-    ('2700927417309',16),
-    ('2700927417309',17),
-    ('2731201018946',4),
-    ('2731201018946',5),
-    ('2781201019674',21),
-	('2781201019674',22),
-    ('2781201019674',23),
-    ('2811204117404',18),
-    ('2811204117404',19),
-    ('2811204117404',20),
-    ('2901204012456',8),
-    ('2901204012456',6),
-    ('2901204019549',7),
-    ('2931204115436',1),
-    ('2931204115436','2');
     
 INSERT INTO `analyse` (name,minimum,maximum) VALUES
 	("Leucocite",3.50,10.500),
@@ -434,9 +414,6 @@ INSERT INTO `nurse` (`cnpEmployee`,`type`,`rank`) VALUES
 	('1701201757453','laborant','secundar'),
 	('1971204466262','radiologie','principal'),
 	('1961204466262','generalist','principal');
-
-DELETE FROM `appointments`;
-DELETE FROM `employee_schedule`;
 
 INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
 	(2700927417309,1,'Monday','08:00','12:00'),
