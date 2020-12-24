@@ -393,6 +393,23 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS SAVE_MEDICAL_SERVICE;
+DELIMITER //
+CREATE PROCEDURE SAVE_MEDICAL_SERVICE(IN `_id` VARCHAR(13), IN `_name` VARCHAR(45), IN `_idSpeciality` INT, IN `_idAccreditation` INT, IN `_idEquipment` INT, IN `_price` DECIMAL(8, 2), IN `_duration` INT, OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_id`) = 1
+		AND (SELECT COUNT(*) FROM `doctor_specialities` WHERE `cnpDoctor` = `_cnp` AND `idSpeciality` = `_idSpeciality`) > 0
+        AND ((SELECT COUNT(*) FROM `doctor_accreditations` WHERE `cnpDoctor` = `_cnp` AND `idAccreditation` = `_idAccreditation`) > 0 OR `_idAccreditation` IS NULL)
+        AND ((SELECT COUNT(*) FROM `equipments` WHERE `id` = `_idEquipment`) > 0 OR `_idEquipment` IS NULL)) THEN
+        
+        UPDATE `medical_services` SET `name` = `_name`, `idSpeciality` = `_idSpeciality`, `idAccreditation` = `_idAccreditation`, `idEquipment` = `_idEquipment`, `price` = `_price`, `duration` = `_duration` WHERE `id` = `_id`;
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
 DROP PROCEDURE IF EXISTS DELETE_MEDICAL_SERVICE;
 DELIMITER //
 CREATE PROCEDURE DELETE_MEDICAL_SERVICE(IN `_id` INT, OUT `validation` INT)
