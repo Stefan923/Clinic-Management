@@ -6,6 +6,7 @@ import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -33,6 +34,7 @@ public class PanelShowPatients extends JPanel {
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setPreferredSize(new Dimension(500, 200));
         JPanel tablePanel = new JPanel(new FlowLayout());
+        tablePanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         tablePanel.add(jScrollPane);
 
         JPanel searchPanel = new JPanel(new FlowLayout());

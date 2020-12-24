@@ -4,9 +4,8 @@ import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 
 public class MrModel {
 
@@ -161,6 +160,176 @@ public class MrModel {
         }
 
         return false;
+    }
+
+    public List<MedicalService> getMedicalServices(String cnp) {
+        List<MedicalService> medicalServices = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database
+                    .preparedStatement("SELECT * FROM `view_services`" +
+                            (cnp.equals("") ? ";" : " WHERE `cnpDoctor` = ?;"));
+            if (!cnp.equals("")) {
+                preparedStatement.setString(1, cnp);
+            }
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                medicalServices.add(new MedicalService(resultSet.getInt(1),
+                                                    resultSet.getString(2),
+                                                    resultSet.getString(3),
+                                                    resultSet.getDouble(4),
+                                                    resultSet.getInt(5),
+                                                    resultSet.getString(6),
+                                                    resultSet.getString(7),
+                                                    resultSet.getString(8),
+                                                    resultSet.getString(9),
+                                                    resultSet.getString(10)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return medicalServices;
+    }
+
+    public boolean addMedicalService(MedicalService medicalService) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_MEDICAL_SERVICE(?, ?, ?, ?, ?, ?, ?, ?);");
+            callableStatement.setString(1, medicalService.getCnpDoctor());
+            callableStatement.setString(2, medicalService.getName());
+            callableStatement.setInt(3, medicalService.getIdSpeciality());
+            if (medicalService.getIdAccreditation() == null) {
+                callableStatement.setNull(4, Types.INTEGER);
+            } else {
+                callableStatement.setInt(4, medicalService.getIdAccreditation());
+            }
+            if (medicalService.getIdEquipment() == null) {
+                callableStatement.setNull(5, Types.INTEGER);
+            } else {
+                callableStatement.setInt(5, medicalService.getIdEquipment());
+            }
+            callableStatement.setDouble(6, medicalService.getPrice());
+            callableStatement.setInt(7, medicalService.getDuration());
+            callableStatement.registerOutParameter(8, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(8);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean saveMedicalService(MedicalService medicalService) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL SAVE_MEDICAL_SERVICE(?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            callableStatement.setInt(1, medicalService.getId());
+            callableStatement.setString(2, medicalService.getCnpDoctor());
+            callableStatement.setString(3, medicalService.getName());
+            callableStatement.setInt(4, medicalService.getIdSpeciality());
+            if (medicalService.getIdAccreditation() == null) {
+                callableStatement.setNull(5, Types.INTEGER);
+            } else {
+                callableStatement.setInt(5, medicalService.getIdAccreditation());
+            }
+            if (medicalService.getIdEquipment() == null) {
+                callableStatement.setNull(6, Types.INTEGER);
+            } else {
+                callableStatement.setInt(6, medicalService.getIdEquipment());
+            }
+            callableStatement.setDouble(7, medicalService.getPrice());
+            callableStatement.setInt(8, medicalService.getDuration());
+            callableStatement.registerOutParameter(9, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(9);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteMedicalService(int id) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL DELETE_MEDICAL_SERVICE(?, ?);");
+            callableStatement.setInt(1, id);
+            callableStatement.registerOutParameter(2, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(2);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public Map<Integer, String> getSpecialities(String cnp) {
+        Map<Integer, String> specialities = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_specialities_by_doctor` WHERE `cnp` = ?;");
+            preparedStatement.setString(1, cnp);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                specialities.put(resultSet.getInt(1),
+                                resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return specialities;
+    }
+
+    public Map<Integer, String> getAccreditations(String cnp) {
+        Map<Integer, String> accreditations = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_accreditations_by_doctor` WHERE `cnp` = ?;");
+            preparedStatement.setString(1, cnp);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                accreditations.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return accreditations;
+    }
+
+    public Map<Integer, String> getEquipments(String cnp) {
+        Map<Integer, String> equipments = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_equipments`;");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                equipments.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return equipments;
     }
 
 }

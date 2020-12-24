@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.mr;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.mr.panels.*;
 
 import javax.swing.*;
@@ -9,10 +10,17 @@ import java.util.List;
 
 public class MrController {
 
-    MrModel model;
-    MrView view;
+    private MrModel model;
+    private MrView view;
+
+    private PanelShowMedicalServices gPanelSMS;
+
+    private String cnp;
 
     public MrController(MrModel model, MrView view, JFrame previousView) {
+        ClinicApplication.Account account = ClinicApplication.getUser();
+        cnp = (account.hasPermission("mr.medical_services.read.others") ? "" : account.getCnp());
+
         this.model = model;
         this.view = view;
 
@@ -23,7 +31,7 @@ public class MrController {
         PanelShowPatients panelShowPatients = view.getPanelShowPatients();
         panelShowPatients.addSearchButtonListener(new SearchButtonListener());
         panelShowPatients.addModifyButtonListener(new ModifyButtonListener());
-        panelShowPatients.addDeleteButtonListener(new DeleteButtonListener());
+        panelShowPatients.addDeleteButtonListener(new PatientDeleteButtonListener());
 
         PanelSearchPatient panelSearchPatient = new PanelSearchPatient();
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
@@ -32,9 +40,16 @@ public class MrController {
         panelAddPatient.addSaveButtonListener(new SaveButtonListener());
         panelAddPatient.addCancelButtonListener(new CancelButtonListener());
 
-        view.addBtnShowPatientsListener(new MenuButtonListener(view.getBtnShowPatients(), panelShowPatients));
-        view.addBtnSearchPatientListener(new MenuButtonListener(view.getBtnSearchPatient(), panelSearchPatient));
-        view.addBtnAddPatientListener(new MenuButtonListener(view.getBtnAddPatient(), panelAddPatient));
+        gPanelSMS = new PanelShowMedicalServices();
+        gPanelSMS.updateTable(model.getMedicalServices(cnp));
+        gPanelSMS.addBtnAddListener(new ServiceAddButtonListener());
+        gPanelSMS.addBtnDeleteListener(new ServiceDeleteButtonListener(gPanelSMS));
+        gPanelSMS.addBtnViewListener(new ServiceViewButtonListener());
+
+        view.addBtnShowPatientsListener(new MenuButtonListener(panelShowPatients));
+        view.addBtnSearchPatientListener(new MenuButtonListener(panelSearchPatient));
+        view.addBtnAddPatientListener(new MenuButtonListener(panelAddPatient));
+        view.addBtnMedicalServicesListener(new MenuButtonListener(gPanelSMS));
         view.addBackButtonListener(new BackButtonListener(previousView));
     }
 
@@ -78,7 +93,7 @@ public class MrController {
 
     }
 
-    class DeleteButtonListener implements ActionListener {
+    class PatientDeleteButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -97,6 +112,75 @@ public class MrController {
 
             view.getPanelShowPatients().updateTable(model.getPatients("", ""));
             view.sendSuccessMessage("Pacientii selectati au fost stersi.");
+        }
+
+    }
+
+    class ServiceDeleteButtonListener implements ActionListener {
+
+        private PanelShowMedicalServices panel;
+
+        public ServiceDeleteButtonListener(PanelShowMedicalServices panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTable servicesTable = panel.getServicesTable();
+
+            int[] indexes = servicesTable.getSelectedRows();
+            if (indexes.length == 0) {
+                view.sendError("Trebuie sa selectezi cel putin un serviciu.");
+                return;
+            }
+
+            for (int index : indexes) {
+                model.deleteMedicalService((int) panel.getMedicalServices().get(index).getId());
+            }
+
+            panel.updateTable(model.getMedicalServices(cnp));
+            view.sendSuccessMessage("Serviciile selectate au fost sterse.");
+        }
+
+    }
+
+    class ServiceAddButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelAddMedicalService panel = new PanelAddMedicalService(cnp);
+            panel.updateCbSpeciality(model.getSpecialities(cnp));
+            panel.updateCbAccreditation(model.getAccreditations(cnp));
+            panel.updateCbEquipment(model.getEquipments(cnp));
+            panel.addSaveButtonListener(new SaveButtonListener());
+            panel.addCancelButtonListener(new CancelButtonListener());
+            view.setRightPanel(panel);
+        }
+
+    }
+
+    class ServiceViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTable servicesTable = gPanelSMS.getServicesTable();
+
+            if (servicesTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact un serviciu.");
+            } else {
+                int row = servicesTable.getSelectedRow();
+                MedicalService medicalService = gPanelSMS.getMedicalServices().get(row);
+
+                PanelViewMedicalService panel = new PanelViewMedicalService(cnp);
+                panel.updateCbSpeciality(model.getSpecialities(cnp));
+                panel.updateCbAccreditation(model.getAccreditations(cnp));
+                panel.updateCbEquipment(model.getEquipments(cnp));
+                panel.addSaveButtonListener(new SaveButtonListener());
+                panel.addCancelButtonListener(new CancelButtonListener());
+                panel.loadMedicalServiceData(medicalService);
+                view.setRightPanel(panel);
+            }
+            servicesTable.clearSelection();
         }
 
     }
@@ -130,11 +214,50 @@ public class MrController {
 
                 if (validation) {
                     panelAddPatient.reset();
-                    view.sendSuccessMessage("Pacientul a fost adaugat in baza de date.");
+                    view.sendSuccessMessage("Pacientul a fost adaugat cu succes.");
 
                     view.getPanelShowPatients().updateTable(model.getPatients("", ""));
                 } else {
                     view.sendError("Deja exista in baza de date un pacient cu acest cnp.");
+                }
+            } else if (panel instanceof PanelAddMedicalService) {
+                PanelAddMedicalService panelAMS = (PanelAddMedicalService) panel;
+
+                boolean validation = model.addMedicalService(new MedicalService(panelAMS.getTfCnp().getText(),
+                                                        panelAMS.getTfName().getText(),
+                                                        panelAMS.getIdSpeciality(),
+                                                        panelAMS.getIdAccreditation(),
+                                                        panelAMS.getIdEquipment(),
+                                                        Double.parseDouble(panelAMS.getTfPrice().getText()),
+                                                        Integer.parseInt(panelAMS.getTfDuration().getText())));
+
+                if (validation) {
+                    panelAMS.reset();
+                    view.sendSuccessMessage("Serviciul a fost adaugat cu succes.");
+
+                    gPanelSMS.updateTable(model.getMedicalServices(cnp));
+                } else {
+                    view.sendError("Nu s-a putut adauga serviciul.");
+                }
+            } else if (panel instanceof PanelViewMedicalService) {
+                PanelViewMedicalService panelVMS = (PanelViewMedicalService) panel;
+
+                MedicalService medicalService = new MedicalService(panelVMS.getTfCnp().getText(),
+                            panelVMS.getTfName().getText(),
+                            panelVMS.getIdSpeciality(),
+                            panelVMS.getIdAccreditation(),
+                            panelVMS.getIdEquipment(),
+                            Double.parseDouble(panelVMS.getTfPrice().getText()),
+                            Integer.parseInt(panelVMS.getTfDuration().getText()));
+                medicalService.setId(panelVMS.getIdMedicalService());
+                boolean validation = model.saveMedicalService(medicalService);
+
+                if (validation) {
+                    view.sendSuccessMessage("Modificarile au fost salvate cu succes.");
+
+                    gPanelSMS.updateTable(model.getMedicalServices(cnp));
+                } else {
+                    view.sendError("Nu s-a putut salva serviciul.");
                 }
             }
         }
@@ -148,8 +271,13 @@ public class MrController {
             JPanel panel = view.getCurrentPanel();
             if (panel instanceof PanelEditPatient) {
                 view.setRightPanel(view.getPanelShowPatients());
-            } else {
+            } else if (panel instanceof PanelAddPatient) {
                 ((PanelAddPatient) panel).reset();
+            } else if (panel instanceof PanelAddMedicalService) {
+                ((PanelAddMedicalService) panel).reset();
+                view.setRightPanel(gPanelSMS);
+            } else if (panel instanceof PanelViewMedicalService) {
+                view.setRightPanel(gPanelSMS);
             }
         }
 
@@ -216,7 +344,7 @@ public class MrController {
     class MenuButtonListener implements ActionListener {
         private JPanel panel;
 
-        public MenuButtonListener(JButton button, JPanel panel) {
+        public MenuButtonListener(JPanel panel) {
             this.panel = panel;
         }
 
