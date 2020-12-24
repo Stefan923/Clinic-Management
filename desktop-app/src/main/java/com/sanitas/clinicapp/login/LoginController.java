@@ -24,6 +24,7 @@ public class LoginController {
 
             if (model.checkCreditentials(username.getText(), String.valueOf(password.getPassword()))) {
                 model.openHomePage();
+                model.loadUserData(username.getText());
 
                 view.setVisible(false);
             } else {
