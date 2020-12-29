@@ -185,6 +185,68 @@ public class MrController {
 
     }
 
+    class ReportViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel currentPanel = view.getCurrentPanel();
+
+            if (!(currentPanel instanceof PanelShowReports)) {
+                view.sendError("A avut loc o eroare.");
+                return;
+            }
+
+            PanelShowReports panelSR = (PanelShowReports) currentPanel;
+            JTable reportsTable = panelSR.getReportsTable();
+
+            if (reportsTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact un raport medical.");
+            } else {
+                int row = reportsTable.getSelectedRow();
+                Report report = panelSR.getReports().get(row);
+
+                PanelViewReport panel = new PanelViewReport(panelSR);
+                panel.addSaveButtonListener(new SaveButtonListener());
+                panel.addConfirmButtonListener(new ReportConfirmButtonListener());
+                panel.addCancelButtonListener(new CancelButtonListener());
+                panel.loadReportData(report);
+                view.setRightPanel(panel);
+            }
+            reportsTable.clearSelection();
+        }
+
+    }
+
+    class ReportConfirmButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel currentPanel = view.getCurrentPanel();
+
+            if (!(currentPanel instanceof PanelViewReport)) {
+                view.sendError("A avut loc o eroare.");
+                return;
+            }
+
+            PanelViewReport panelVR = (PanelViewReport) currentPanel;
+
+            Report report = panelVR.getReport();
+            boolean validation = model
+                    .confirmReport(report, model.getDoctor(cnp).getSealCode());
+
+            if (validation) {
+                view.sendSuccessMessage("Raportul medical a fost parafat cu succes.");
+
+                PanelShowReports panelSR = panelVR.getPreviousPanel();
+                panelSR.updateTable(model.getReports(panelSR.getPatient().getCnp(), null, null));
+                panelVR.loadReportData(model.getReport(report.getId()));
+            } else {
+                view.sendError("Nu s-a putut parafa raportul medical.");
+            }
+        }
+
+    }
+
     class SaveButtonListener implements ActionListener {
 
         @Override
@@ -259,6 +321,21 @@ public class MrController {
                 } else {
                     view.sendError("Nu s-a putut salva serviciul.");
                 }
+            } else if (panel instanceof PanelViewReport) {
+                PanelViewReport panelVR = (PanelViewReport) panel;
+
+                Report report = panelVR.getReport();
+                report.setDiagnostic(panelVR.getTfDiagnostic().getText());
+                report.setRecommendation(panelVR.getTfRecommendation().getText());
+                boolean validation = model.saveReport(report);
+
+                if (validation) {
+                    view.sendSuccessMessage("Modificarile au fost salvate cu succes.");
+
+                    gPanelSMS.updateTable(model.getMedicalServices(cnp));
+                } else {
+                    view.sendError("Nu s-a putut salva raportul medical.");
+                }
             }
         }
 
@@ -278,6 +355,8 @@ public class MrController {
                 view.setRightPanel(gPanelSMS);
             } else if (panel instanceof PanelViewMedicalService) {
                 view.setRightPanel(gPanelSMS);
+            } else if (panel instanceof PanelViewReport) {
+                view.setRightPanel(((PanelViewReport) panel).getPreviousPanel());
             }
         }
 
@@ -314,10 +393,11 @@ public class MrController {
         public void actionPerformed(ActionEvent e) {
             List<Report> reports = model.getReports(panel.getPatient().getCnp(), null, null);
 
-            PanelShowReports panelShowReports = new PanelShowReports(panel.getPatient());
-            panelShowReports.addBtnAddReportListener(new AddReportButtonListener(panelShowReports));
-            panelShowReports.updateTable(reports);
-            view.setRightPanel(panelShowReports);
+            PanelShowReports panelSR = new PanelShowReports(panel.getPatient());
+            panelSR.addBtnViewReportListener(new ReportViewButtonListener());
+            panelSR.addBtnAddReportListener(new AddReportButtonListener(panelSR));
+            panelSR.updateTable(reports);
+            view.setRightPanel(panelSR);
         }
 
     }
