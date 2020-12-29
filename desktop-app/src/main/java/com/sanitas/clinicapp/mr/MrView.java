@@ -17,7 +17,6 @@ public class MrView extends JFrame {
 
     private JButton btnShowPatients = new StyledJButton("Afisare Pacienti").getButton();
     private JButton btnSearchPatient = new StyledJButton("Cautare Pacient").getButton();
-    private JButton btnAddPatient = new StyledJButton("Adaugare Pacient").getButton();
     private JButton btnMedicalServices = new StyledJButton("Servicii Medicale").getButton();
 
     private JButton btnBack = new StyledJButton("Inapoi").getButton();
@@ -29,14 +28,12 @@ public class MrView extends JFrame {
 
         btnShowPatients.setBackground(Colors.MAIN_COLOR.getColor());
         btnSearchPatient.setBackground(Colors.MAIN_COLOR.getColor());
-        btnAddPatient.setBackground(Colors.MAIN_COLOR.getColor());
         btnMedicalServices.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
         JPanel menuContent = new JPanel(new GridLayout(4, 1));
         menuContent.add(btnShowPatients);
         menuContent.add(btnSearchPatient);
-        menuContent.add(btnAddPatient);
         menuContent.add(btnMedicalServices);
         menuContent.setBackground(Colors.MENU_COLOR.getColor());
         menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
@@ -100,10 +97,6 @@ public class MrView extends JFrame {
 
     public void addBtnSearchPatientListener(ActionListener actionListener) {
         btnSearchPatient.addActionListener(actionListener);
-    }
-
-    public void addBtnAddPatientListener(ActionListener actionListener) {
-        btnAddPatient.addActionListener(actionListener);
     }
 
     public void addBtnMedicalServicesListener(ActionListener actionListener) {

@@ -2,7 +2,6 @@ package com.sanitas.clinicapp.mr.panels;
 
 import com.sanitas.clinicapp.mr.MrModel;
 import com.sanitas.clinicapp.mr.Patient;
-import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
@@ -18,6 +17,8 @@ public class PanelShowPatients extends JPanel {
     private JTextField tfFirstname = new JTextField(15);
 
     private JButton btnSearch = new StyledJButton("Cauta").getButton();
+    private JButton btnAddPatient = new StyledJButton("Adauga un pacient").getButton();
+    private JButton btnViewPatient = new StyledJButton("Afiseaza").getButton();
     private JButton btnModify = new StyledJButton("Editeaza").getButton();
     private JButton btnDelete = new StyledJButton("Sterge").getButton();
 
@@ -41,14 +42,18 @@ public class PanelShowPatients extends JPanel {
         searchPanel.add(new JLabel("Prenume:"));
         searchPanel.add(tfFirstname);
         searchPanel.add(btnSearch);
+        searchPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
-        JPanel editPanel = new JPanel(new FlowLayout());
-        editPanel.add(btnModify);
-        editPanel.add(btnDelete);
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.add(btnAddPatient);
+        buttonsPanel.add(btnViewPatient);
+        buttonsPanel.add(btnModify);
+        buttonsPanel.add(btnDelete);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         add(searchPanel, BorderLayout.NORTH);
         add(tablePanel, BorderLayout.CENTER);
-        add(editPanel, BorderLayout.SOUTH);
+        add(buttonsPanel, BorderLayout.SOUTH);
 
         setVisible(false);
     }
@@ -113,6 +118,14 @@ public class PanelShowPatients extends JPanel {
 
     public void addSearchButtonListener(ActionListener actionListener) {
         btnSearch.addActionListener(actionListener);
+    }
+
+    public void addAddPatientButtonListener(ActionListener actionListener) {
+        btnAddPatient.addActionListener(actionListener);
+    }
+
+    public void addViewPatientButtonListener(ActionListener actionListener) {
+        btnViewPatient.addActionListener(actionListener);
     }
 
     public void addModifyButtonListener(ActionListener actionListener) {

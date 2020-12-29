@@ -29,6 +29,9 @@ public class PanelShowReports extends JPanel {
     private JButton btnViewReport = new StyledJButton("Afiseaza").getButton();
     private JButton btnAddReport = new StyledJButton("Raport nou").getButton();
 
+    private final UtilDateModel utilDateModelMin = new UtilDateModel();
+    private final UtilDateModel utilDateModelMax = new UtilDateModel();
+
     private final Patient patient;
 
     public PanelShowReports(Patient patient) {
@@ -41,11 +44,9 @@ public class PanelShowReports extends JPanel {
         properties.put("text.month","Month");
         properties.put("text.year","Year");
 
-        UtilDateModel utilDateModelMin = new UtilDateModel();
         JDatePanelImpl jDatePanelMin = new JDatePanelImpl(utilDateModelMin, properties);
         JDatePickerImpl jDatePickerMin = new JDatePickerImpl(jDatePanelMin, new DateLabelFormatter());
 
-        UtilDateModel utilDateModelMax = new UtilDateModel();
         JDatePanelImpl jDatePanelMax = new JDatePanelImpl(utilDateModelMax, properties);
         JDatePickerImpl jDatePickerMax = new JDatePickerImpl(jDatePanelMax, new DateLabelFormatter());
 
@@ -55,10 +56,12 @@ public class PanelShowReports extends JPanel {
         searchPanel.add(new JLabel("Sfarsit:"));
         searchPanel.add(jDatePickerMax);
         searchPanel.add(btnSearch);
+        searchPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnViewReport);
         buttonsPanel.add(btnAddReport);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         reportsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         reportsTable.setFillsViewportHeight(true);
@@ -96,6 +99,14 @@ public class PanelShowReports extends JPanel {
                 return false;
             }
         });
+    }
+
+    public UtilDateModel getUtilDateModelMin() {
+        return utilDateModelMin;
+    }
+
+    public UtilDateModel getUtilDateModelMax() {
+        return utilDateModelMax;
     }
 
     public JTable getReportsTable() {

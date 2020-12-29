@@ -112,6 +112,7 @@ public class PanelViewReport extends JPanel {
         buttonsPanel.add(btnSave);
         buttonsPanel.add(btnConfirm);
         buttonsPanel.add(btnCancel);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         add(reportData, BorderLayout.NORTH);
         add(buttonsPanel, BorderLayout.SOUTH);

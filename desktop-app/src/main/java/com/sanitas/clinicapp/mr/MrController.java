@@ -28,17 +28,19 @@ public class MrController {
     }
 
     private void loadListeners(JFrame previousView) {
+        PanelAddPatient panelAddPatient = new PanelAddPatient();
+        panelAddPatient.addSaveButtonListener(new SaveButtonListener());
+        panelAddPatient.addCancelButtonListener(new CancelButtonListener());
+
         PanelShowPatients panelShowPatients = view.getPanelShowPatients();
-        panelShowPatients.addSearchButtonListener(new SearchButtonListener());
-        panelShowPatients.addModifyButtonListener(new ModifyButtonListener());
+        panelShowPatients.addSearchButtonListener(new PatientSearchButtonListener());
+        panelShowPatients.addAddPatientButtonListener(new MenuButtonListener(panelAddPatient));
+        panelShowPatients.addViewPatientButtonListener(new PatientViewButtonListener());
+        panelShowPatients.addModifyButtonListener(new PatientModifyButtonListener());
         panelShowPatients.addDeleteButtonListener(new PatientDeleteButtonListener());
 
         PanelSearchPatient panelSearchPatient = new PanelSearchPatient();
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
-
-        PanelAddPatient panelAddPatient = new PanelAddPatient();
-        panelAddPatient.addSaveButtonListener(new SaveButtonListener());
-        panelAddPatient.addCancelButtonListener(new CancelButtonListener());
 
         gPanelSMS = new PanelShowMedicalServices();
         gPanelSMS.updateTable(model.getMedicalServices(cnp));
@@ -48,29 +50,28 @@ public class MrController {
 
         view.addBtnShowPatientsListener(new MenuButtonListener(panelShowPatients));
         view.addBtnSearchPatientListener(new MenuButtonListener(panelSearchPatient));
-        view.addBtnAddPatientListener(new MenuButtonListener(panelAddPatient));
         view.addBtnMedicalServicesListener(new MenuButtonListener(gPanelSMS));
         view.addBackButtonListener(new BackButtonListener(previousView));
     }
 
-    class SearchButtonListener implements ActionListener {
+    class PatientSearchButtonListener implements ActionListener {
 
-        PanelShowPatients panel;
+        private final PanelShowPatients panel;
 
-        public SearchButtonListener() {
+        public PatientSearchButtonListener() {
             panel = view.getPanelShowPatients();
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             List<Patient> patients = model.getPatients(panel.getTfLastname().getText(),
-                                                        panel.getTfFirstname().getText());
+                                                       panel.getTfFirstname().getText());
             panel.updateTable(patients);
         }
 
     }
 
-    class ModifyButtonListener implements ActionListener {
+    class PatientModifyButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -87,6 +88,28 @@ public class MrController {
                 panel.addSaveButtonListener(new SaveButtonListener());
                 panel.addCancelButtonListener(new CancelButtonListener());
                 view.setRightPanel(panel);
+            }
+            patientsTable.clearSelection();
+        }
+
+    }
+
+    class PatientViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTable patientsTable = view.getPanelShowPatients().getJTable();
+
+            if (patientsTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact un pacient.");
+            } else {
+                int row = patientsTable.getSelectedRow();
+                Patient patient = model.getPatient((String) patientsTable.getValueAt(row, 2));
+
+                view.getPanelShowPatients().setVisible(false);
+                PanelViewPatient panelVP = new PanelViewPatient(patient);
+                panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
+                view.setRightPanel(panelVP);
             }
             patientsTable.clearSelection();
         }
@@ -118,7 +141,7 @@ public class MrController {
 
     class ServiceDeleteButtonListener implements ActionListener {
 
-        private PanelShowMedicalServices panel;
+        private final PanelShowMedicalServices panel;
 
         public ServiceDeleteButtonListener(PanelShowMedicalServices panel) {
             this.panel = panel;
@@ -181,6 +204,23 @@ public class MrController {
                 view.setRightPanel(panel);
             }
             servicesTable.clearSelection();
+        }
+
+    }
+
+    class ReportSearchButtonListener implements ActionListener {
+
+        private final PanelShowReports panel;
+
+        public ReportSearchButtonListener(PanelShowReports panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.updateTable(model.getReports(panel.getPatient().getCnp(),
+                                            panel.getUtilDateModelMin().getValue(),
+                                            panel.getUtilDateModelMax().getValue()));
         }
 
     }
@@ -350,6 +390,7 @@ public class MrController {
                 view.setRightPanel(view.getPanelShowPatients());
             } else if (panel instanceof PanelAddPatient) {
                 ((PanelAddPatient) panel).reset();
+                view.setRightPanel(view.getPanelShowPatients());
             } else if (panel instanceof PanelAddMedicalService) {
                 ((PanelAddMedicalService) panel).reset();
                 view.setRightPanel(gPanelSMS);
@@ -364,7 +405,7 @@ public class MrController {
 
     class SearchByCnpButtonListener implements ActionListener {
 
-        PanelSearchPatient panel;
+        private final PanelSearchPatient panel;
 
         public SearchByCnpButtonListener(PanelSearchPatient panel) {
             this.panel = panel;
@@ -383,7 +424,7 @@ public class MrController {
 
     class PatientHistoryButtonListener implements ActionListener {
 
-        private PanelViewPatient panel;
+        private final PanelViewPatient panel;
 
         public PatientHistoryButtonListener(PanelViewPatient panel) {
             this.panel = panel;
@@ -394,6 +435,7 @@ public class MrController {
             List<Report> reports = model.getReports(panel.getPatient().getCnp(), null, null);
 
             PanelShowReports panelSR = new PanelShowReports(panel.getPatient());
+            panelSR.addBtnSearchListener(new ReportSearchButtonListener(panelSR));
             panelSR.addBtnViewReportListener(new ReportViewButtonListener());
             panelSR.addBtnAddReportListener(new AddReportButtonListener(panelSR));
             panelSR.updateTable(reports);
@@ -404,7 +446,7 @@ public class MrController {
 
     class AddReportButtonListener implements ActionListener {
 
-        private PanelShowReports panel;
+        private final PanelShowReports panel;
 
         public AddReportButtonListener(PanelShowReports panel) {
             this.panel = panel;
@@ -422,7 +464,7 @@ public class MrController {
     }
 
     class MenuButtonListener implements ActionListener {
-        private JPanel panel;
+        private final JPanel panel;
 
         public MenuButtonListener(JPanel panel) {
             this.panel = panel;

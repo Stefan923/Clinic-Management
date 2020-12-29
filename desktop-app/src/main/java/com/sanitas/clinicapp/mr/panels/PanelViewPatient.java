@@ -42,12 +42,12 @@ public class PanelViewPatient extends JPanel {
         cnpPanel.add(tfCnp);
 
         JPanel lastnamePanel = new JPanel(new FlowLayout());
-        lastnamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        lastnamePanel.setBorder(new EmptyBorder(20, 10, 10, 10));
         lastnamePanel.add(new JLabel("Nume:"));
         lastnamePanel.add(tfLastname);
 
         JPanel firstnamePanel = new JPanel(new FlowLayout());
-        firstnamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        firstnamePanel.setBorder(new EmptyBorder(20, 10, 10, 10));
         firstnamePanel.add(new JLabel("Prenume:"));
         firstnamePanel.add(tfFirstname);
 
@@ -65,6 +65,7 @@ public class PanelViewPatient extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnShowHistory);
         buttonsPanel.add(btnShowAnalyses);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         add(patientData, BorderLayout.NORTH);
         add(buttonsPanel, BorderLayout.SOUTH);
