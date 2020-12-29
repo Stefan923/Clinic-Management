@@ -75,18 +75,6 @@ public class MrView extends JFrame {
         return currentPanel;
     }
 
-    public JButton getBtnShowPatients() {
-        return btnShowPatients;
-    }
-
-    public JButton getBtnSearchPatient() {
-        return btnSearchPatient;
-    }
-
-    public JButton getBtnAddPatient() {
-        return btnAddPatient;
-    }
-
     public void sendError(String message) {
         JOptionPane.showMessageDialog(this, message, "Eroare!", JOptionPane.ERROR_MESSAGE);
     }
