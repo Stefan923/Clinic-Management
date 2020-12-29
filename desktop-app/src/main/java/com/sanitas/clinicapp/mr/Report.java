@@ -1,9 +1,8 @@
 package com.sanitas.clinicapp.mr;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Report {
+public class Report implements Comparable<Report> {
 
     private int id;
 
@@ -79,6 +78,11 @@ public class Report {
 
     public void setRecommendation(String recommendation) {
         this.recommendation = recommendation;
+    }
+
+    @Override
+    public int compareTo(Report o) {
+        return date.compareTo(o.date);
     }
 
 }
