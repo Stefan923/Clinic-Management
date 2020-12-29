@@ -82,7 +82,7 @@ public class Report implements Comparable<Report> {
 
     @Override
     public int compareTo(Report o) {
-        return date.compareTo(o.date);
+        return Integer.compare(0, date.compareTo(o.date));
     }
 
 }

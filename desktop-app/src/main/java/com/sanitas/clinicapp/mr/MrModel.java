@@ -127,10 +127,10 @@ public class MrModel {
             PreparedStatement preparedStatement = database.preparedStatement(query.toString());
             preparedStatement.setString(1, cnp);
             if (startDate != null) {
-                preparedStatement.setDate(++index, (java.sql.Date) startDate);
+                preparedStatement.setTimestamp(index++, new Timestamp(startDate.getTime()));
             }
             if (endDate != null) {
-                preparedStatement.setDate(index, (java.sql.Date) endDate);
+                preparedStatement.setTimestamp(index, new Timestamp(endDate.getTime()));
             }
             preparedStatement.execute();
 
@@ -150,6 +150,8 @@ public class MrModel {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+
+        reports.sort(Report::compareTo);
 
         return reports;
     }
