@@ -5,6 +5,7 @@ import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -37,10 +38,20 @@ public class MrView extends JFrame {
         menuContent.add(btnSearchPatient);
         menuContent.add(btnAddPatient);
         menuContent.add(btnMedicalServices);
+        menuContent.setBackground(Colors.MENU_COLOR.getColor());
+        menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
+
+        JPanel backBtnPanel = new JPanel(new GridLayout(1, 1));
+        backBtnPanel.add(btnBack);
+        backBtnPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
+        backBtnPanel.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel leftContent = new JPanel(new BorderLayout());
         leftContent.add(menuContent, BorderLayout.NORTH);
-        leftContent.add(btnBack, BorderLayout.SOUTH);
+        leftContent.add(backBtnPanel, BorderLayout.SOUTH);
+        leftContent.setBorder(BorderFactory
+                .createMatteBorder(0, 0, 0, 1, Colors.MENU_BORDER_COLOR.getColor()));
+        leftContent.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel content = new JPanel(new BorderLayout());
         content.add(leftContent, BorderLayout.WEST);
