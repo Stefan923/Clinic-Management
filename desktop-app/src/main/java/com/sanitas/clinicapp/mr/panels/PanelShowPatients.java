@@ -26,8 +26,6 @@ public class PanelShowPatients extends JPanel {
     public PanelShowPatients(MrModel model) {
         super(new BorderLayout());
 
-        btnSearch.setBackground(Colors.MAIN_COLOR.getColor());
-
         patientTable = initializeTable(model);
 
         JScrollPane jScrollPane = new JScrollPane(patientTable);
