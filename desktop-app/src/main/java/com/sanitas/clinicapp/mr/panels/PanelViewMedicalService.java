@@ -26,9 +26,9 @@ public class PanelViewMedicalService extends JPanel {
 
     private String cnpDoctor;
 
-    Map<Integer, String> specialities;
-    Map<Integer, String> accreditations;
-    Map<Integer, String> equipments;
+    private Map<Integer, String> specialities;
+    private Map<Integer, String> accreditations;
+    private Map<Integer, String> equipments;
 
     private int idMedicalService;
 
