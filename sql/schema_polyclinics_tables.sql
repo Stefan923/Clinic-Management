@@ -380,6 +380,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`patient_analyses` (
   `idAnalyse` INT NULL,
   `value` DECIMAL(5,2) NULL DEFAULT NULL,
   `isPositive` TINYINT NULL DEFAULT NULL,
+  `date` TIMESTAMP NOT NULL,
   INDEX `fk_patient_analyses_cnpPatient_idx` (`cnpPatient` ASC) VISIBLE,
   INDEX `fk_patient_analyses_idAnalyse_idx` (`idAnalyse` ASC) VISIBLE,
   PRIMARY KEY (`id`),
