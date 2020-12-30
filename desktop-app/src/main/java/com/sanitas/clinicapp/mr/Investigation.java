@@ -10,20 +10,20 @@ public class Investigation {
     private String serviceName;
     private String doctorFullName;
     private final String remarks;
-    private final Date date;
+    private Date date;
 
     public Investigation(int id, int idService, String serviceName, String doctorFullName, String remarks, Date date) {
-        this(id, idService, remarks, date);
+        this(idService, remarks);
 
+        this.id = id;
         this.serviceName = serviceName;
         this.doctorFullName = doctorFullName;
+        this.date = date;
     }
 
-    public Investigation(int id, int idService, String remarks, Date date) {
-        this.id = id;
+    public Investigation(int idService, String remarks) {
         this.idService = idService;
         this.remarks = remarks;
-        this.date = date;
     }
 
     public int getId() {
