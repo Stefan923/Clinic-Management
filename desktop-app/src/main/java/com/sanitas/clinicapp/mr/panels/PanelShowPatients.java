@@ -31,7 +31,7 @@ public class PanelShowPatients extends JPanel {
 
         JScrollPane jScrollPane = new JScrollPane(patientTable);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        jScrollPane.setPreferredSize(new Dimension(500, 200));
+        jScrollPane.setPreferredSize(new Dimension(500, 240));
         JPanel tablePanel = new JPanel(new FlowLayout());
         tablePanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         tablePanel.add(jScrollPane);
