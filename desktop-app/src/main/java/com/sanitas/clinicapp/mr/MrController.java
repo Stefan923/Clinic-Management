@@ -252,6 +252,7 @@ public class MrController {
                 panel.addConfirmButtonListener(new ReportConfirmButtonListener());
                 panel.addCancelButtonListener(new CancelButtonListener());
                 panel.loadReportData(report);
+                panel.updateTable();
                 view.setRightPanel(panel);
             }
             reportsTable.clearSelection();
@@ -490,6 +491,7 @@ public class MrController {
                 Investigation investigation = report.getInvestigations().get(row);
 
                 PanelViewInvestigation panel = new PanelViewInvestigation(investigation, panelVR);
+                panel.addCancelButtonListener(new CancelButtonListener());
                 view.setRightPanel(panel);
             }
             investigationsTable.clearSelection();
@@ -510,6 +512,7 @@ public class MrController {
             PanelAddInvestigation panelAI = new PanelAddInvestigation(panel.getReport(), panel);
             panelAI.addSaveButtonListener(new SaveButtonListener());
             panelAI.addCancelButtonListener(new CancelButtonListener());
+            panelAI.updateCbServices(model.getMedicalServices(cnp));
             view.setRightPanel(panelAI);
         }
 
