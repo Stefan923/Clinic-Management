@@ -403,6 +403,31 @@ public class MrController {
                 } else {
                     view.sendError("Nu s-a putut adauga investigatia.");
                 }
+            } else if (panel instanceof PanelAddAnalyse) {
+                PanelAddAnalyse panelAA = (PanelAddAnalyse) panel;
+                String cnpPatient = panelAA.getPatient().getCnp();
+                float value = 0.0f;
+
+                try {
+                    value = Float.parseFloat(panelAA.getTfValue().getText());
+                } catch (NumberFormatException ex) {
+                    view.sendError("Valoarea rezultatului trebuie sa fie un numar!");
+                    return;
+                }
+
+                boolean validation = model.addAnalyse(
+                        new Analyse(
+                                panelAA.getIdAnalyse(),
+                                value),
+                        cnpPatient);
+
+                if (validation) {
+                    view.sendSuccessMessage("Analiza a fost adaugata cu succes.");
+
+                    ((PanelShowAnalyses) panelAA.getPreviousPanel()).updateTable(model.getPatientAnalyses(cnpPatient, null, null));
+                } else {
+                    view.sendError("Nu s-a putut adauga analiza.");
+                }
             }
         }
 
@@ -433,6 +458,8 @@ public class MrController {
                 view.setRightPanel(((PanelViewInvestigation) panel).getPreviousPanel());
             } else if (panel instanceof PanelShowAnalyses) {
                 view.setRightPanel(((PanelShowAnalyses) panel).getPreviousPanel());
+            } else if (panel instanceof PanelAddAnalyse) {
+                view.setRightPanel(((PanelAddAnalyse) panel).getPreviousPanel());
             }
         }
 
@@ -530,6 +557,9 @@ public class MrController {
         @Override
         public void actionPerformed(ActionEvent e) {
             PanelAddAnalyse panelAA = new PanelAddAnalyse(panel.getPatient(), panel);
+            panelAA.addSaveButtonListener(new SaveButtonListener());
+            panelAA.addCancelButtonListener(new CancelButtonListener());
+            panelAA.updateCbAnalyses(model.getAnalyses());
             view.setRightPanel(panelAA);
         }
 

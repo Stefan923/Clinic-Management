@@ -79,11 +79,10 @@ public class PanelShowAnalyses extends JPanel {
 
         JPanel tablePanel = new JPanel(new FlowLayout());
         tablePanel.add(jScrollPane);
-        tablePanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
         JPanel dataPanel = new JPanel(new FlowLayout());
         dataPanel.add(tablePanel);
-        dataPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+        dataPanel.setBorder(new EmptyBorder(15, 0, 0, 0));
 
         return dataPanel;
     }

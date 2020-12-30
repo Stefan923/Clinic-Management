@@ -499,7 +499,7 @@ public class MrModel {
                         resultSet.getInt(5),
                         resultSet.getFloat(6),
                         resultSet.getFloat(7),
-                        resultSet.getDate(8)));
+                        resultSet.getTimestamp(8)));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -529,6 +529,23 @@ public class MrModel {
         }
 
         return analyses;
+    }
+
+    public boolean addAnalyse(Analyse analyse, String cnpPacient) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_ANALYSE(?, ?, ?, ?)");
+            callableStatement.setString(1, cnpPacient);
+            callableStatement.setInt(2, analyse.getIdAnalyse());
+            callableStatement.setFloat(3, analyse.getValue());
+            callableStatement.registerOutParameter(4, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(4);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return false;
     }
 
 }
