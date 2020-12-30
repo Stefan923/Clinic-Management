@@ -36,7 +36,7 @@ public class PanelViewReport extends JPanel {
 
     private Report report;
 
-    JTable investigationsTable = new JTable();
+    private JTable investigationsTable = new JTable();
 
     public PanelViewReport(PanelShowReports previousPanel) {
         super(new BorderLayout());
@@ -199,6 +199,10 @@ public class PanelViewReport extends JPanel {
 
     public JTextArea getTfRecommendation() {
         return tfRecommendation;
+    }
+
+    public JTable getInvestigationsTable() {
+        return investigationsTable;
     }
 
     public Report getReport() {
