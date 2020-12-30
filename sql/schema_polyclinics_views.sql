@@ -57,4 +57,4 @@ DROP VIEW IF EXISTS `polyclinics`.`view_doctors`;
 CREATE VIEW `polyclinics`.`view_doctors` AS
 	SELECT * FROM `doctors`;
 
-SELECT * FROM `view_investigations`;
+SELECT `idInvestigation`, `idService`, `serviceName`, CONCAT(`d_lastName`, ' ', `d_firstName`) AS `doctorName`, `remarks`, `date` FROM `view_investigations`;
