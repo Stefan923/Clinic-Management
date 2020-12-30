@@ -11,9 +11,9 @@ import java.util.List;
 
 public class PanelAddAnalyse extends JPanel {
 
-    private final JTextField tfNe
-
     private final JComboBox<String> cbAnalyses = new JComboBox<>();
+
+    private final JTextField tfValue = new JTextField(15);
 
     private final JButton btnSave = new StyledJButton("Salveaza").getButton();
     private final JButton btnCancel = new StyledJButton("Anuleaza").getButton();
@@ -37,10 +37,11 @@ public class PanelAddAnalyse extends JPanel {
     }
 
     private JPanel getDataPanel() {
-
-
         JPanel dataPanel = new JPanel();
-        dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
+        dataPanel.setLayout(new FlowLayout());
+        dataPanel.add(cbAnalyses);
+        dataPanel.add(tfValue);
+        dataPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
         return dataPanel;
     }
