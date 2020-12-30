@@ -27,6 +27,7 @@ public class PanelShowMedicalServices extends JPanel {
         buttonsPanel.add(btnAdd);
         buttonsPanel.add(btnView);
         buttonsPanel.add(btnDelete);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         medicalServicesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         medicalServicesTable.setFillsViewportHeight(true);
