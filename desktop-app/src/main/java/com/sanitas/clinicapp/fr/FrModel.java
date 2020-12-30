@@ -3,10 +3,10 @@ package com.sanitas.clinicapp.fr;
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
 
-import java.sql.CallableStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import javax.xml.transform.Result;
+import java.sql.*;
 import java.util.Date;
+import java.util.HashMap;
 
 public class FrModel {
     private final Database database;
@@ -15,8 +15,7 @@ public class FrModel {
         database = ClinicApplication.getDatabase();
     }
 
-    public double getMedicalUnitProfit(int id, Date startDate, Date endDate)
-    {
+    public double getMedicalUnitProfit(int id, Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_MEDICAL_UNIT_PROFIT(?, ?, ?, ?);");
             callableStatement.setInt(1, id);
@@ -32,8 +31,8 @@ public class FrModel {
 
         return 0.0;
     }
-    public double getProfitByDoctor(String cnp, Date startDate, Date endDate)
-    {
+
+    public double getProfitByDoctor(String cnp, Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_PROFIT_BY_DOCTOR(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
@@ -49,8 +48,8 @@ public class FrModel {
 
         return 0.0;
     }
-    public double getProfitBySpeciality(String cnp, Date startDate, Date endDate)
-    {
+
+    public double getProfitBySpeciality(String cnp, Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_PROFIT_BY_SPECIALITY(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
@@ -67,8 +66,8 @@ public class FrModel {
         return 0.0;
 
     }
-    public double getTotalProfit(Date startDate, Date endDate)
-    {
+
+    public double getTotalProfit(Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_TOTAL_PROFIT(?, ?, ?);");
             callableStatement.setDate(1, (java.sql.Date) startDate);
@@ -84,8 +83,8 @@ public class FrModel {
         return 0.0;
 
     }
-    public double getEmployeeSalary(String cnp, Date startDate, Date endDate)
-    {
+
+    public double getEmployeeSalary(String cnp, Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_EMPLOYEE_SALARY(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
@@ -101,8 +100,8 @@ public class FrModel {
 
         return 0.0;
     }
-    public double getDoctorSalary(String cnp, Date startDate, Date endDate)
-    {
+
+    public double getDoctorSalary(String cnp, Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_DOCTOR_SALARY(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
@@ -118,13 +117,13 @@ public class FrModel {
 
         return 0.0;
     }
-    public double getDoctorProfitTotal(String cnp, Date startDate, Date endDate)
-    {
+
+    public double getDoctorProfitTotal(String cnp, Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_DOCTOR_PROFIT_TOTAL(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
-            callableStatement.setDate(2, (java.sql.Date) startDate);
-            callableStatement.setDate(3, (java.sql.Date) endDate);
+            callableStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            callableStatement.setDate(3, new java.sql.Date(endDate.getTime()));
             callableStatement.registerOutParameter(4, Types.DOUBLE);
             callableStatement.execute();
 
@@ -134,6 +133,22 @@ public class FrModel {
         }
 
         return 0.0;
+    }
+
+    public HashMap<String, String> getMedicalUnits() {
+        HashMap<String, String> medicalUnits = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_medical_units`;");
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                medicalUnits.put(result.getString(1),
+                        result.getString(2));
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return medicalUnits;
     }
 
 
