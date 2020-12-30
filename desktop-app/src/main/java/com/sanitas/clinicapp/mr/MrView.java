@@ -31,21 +31,35 @@ public class MrView extends JFrame {
         btnMedicalServices.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
+        JPanel btnShowPatientsPanel = new JPanel(new GridLayout(1, 1));
+        btnShowPatientsPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+        btnShowPatientsPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnShowPatientsPanel.add(btnShowPatients);
+
+        JPanel btnSearchPatientPanel = new JPanel(new GridLayout(1, 1));
+        btnSearchPatientPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+        btnSearchPatientPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnSearchPatientPanel.add(btnSearchPatient);
+
+        JPanel btnMedicalServicesPanel = new JPanel(new GridLayout(1, 1));
+        btnMedicalServicesPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnMedicalServicesPanel.add(btnMedicalServices);
+
         JPanel menuContent = new JPanel(new GridLayout(4, 1));
-        menuContent.add(btnShowPatients);
-        menuContent.add(btnSearchPatient);
-        menuContent.add(btnMedicalServices);
+        menuContent.add(btnShowPatientsPanel);
+        menuContent.add(btnSearchPatientPanel);
+        menuContent.add(btnMedicalServicesPanel);
         menuContent.setBackground(Colors.MENU_COLOR.getColor());
         menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
 
-        JPanel backBtnPanel = new JPanel(new GridLayout(1, 1));
-        backBtnPanel.add(btnBack);
-        backBtnPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
-        backBtnPanel.setBackground(Colors.MENU_COLOR.getColor());
+        JPanel btnBackPanel = new JPanel(new GridLayout(1, 1));
+        btnBackPanel.add(btnBack);
+        btnBackPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
+        btnBackPanel.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel leftContent = new JPanel(new BorderLayout());
         leftContent.add(menuContent, BorderLayout.NORTH);
-        leftContent.add(backBtnPanel, BorderLayout.SOUTH);
+        leftContent.add(btnBackPanel, BorderLayout.SOUTH);
         leftContent.setBorder(BorderFactory
                 .createMatteBorder(0, 0, 0, 1, Colors.MENU_BORDER_COLOR.getColor()));
         leftContent.setBackground(Colors.MENU_COLOR.getColor());
