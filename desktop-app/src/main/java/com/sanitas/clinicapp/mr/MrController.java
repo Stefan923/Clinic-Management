@@ -246,6 +246,8 @@ public class MrController {
                 Report report = panelSR.getReports().get(row);
 
                 PanelViewReport panel = new PanelViewReport(panelSR);
+                panel.addAddInvestigationButton(new InvestigationAddButtonListener(panel));
+                panel.addViewInvestigationButton(new InvestigationViewButtonListener());
                 panel.addSaveButtonListener(new SaveButtonListener());
                 panel.addConfirmButtonListener(new ReportConfirmButtonListener());
                 panel.addCancelButtonListener(new CancelButtonListener());
@@ -376,6 +378,24 @@ public class MrController {
                 } else {
                     view.sendError("Nu s-a putut salva raportul medical.");
                 }
+            } else if (panel instanceof PanelAddInvestigation) {
+                PanelAddInvestigation panelAI = (PanelAddInvestigation) panel;
+                int idReport = panelAI.getReport().getId();
+
+                boolean validation = model.addInvestigation(
+                        new Investigation(
+                                panelAI.getIdService(),
+                                panelAI.getTaRemarks().getText()),
+                        idReport);
+
+                if (validation) {
+                    view.sendSuccessMessage("Investigatia a fost adaugata cu succes.");
+
+                    panelAI.getReport().setInvestigations(model.getInvestigations(idReport));
+                    ((PanelViewReport) panelAI.getPreviousPanel()).updateTable();
+                } else {
+                    view.sendError("Nu s-a putut adauga investigatia.");
+                }
             }
         }
 
@@ -441,18 +461,65 @@ public class MrController {
             PanelShowReports panelSR = new PanelShowReports(panel.getPatient());
             panelSR.addBtnSearchListener(new ReportSearchButtonListener(panelSR));
             panelSR.addBtnViewReportListener(new ReportViewButtonListener());
-            panelSR.addBtnAddReportListener(new AddReportButtonListener(panelSR));
+            panelSR.addBtnAddReportListener(new ReportAddButtonListener(panelSR));
             panelSR.updateTable(reports);
             view.setRightPanel(panelSR);
         }
 
     }
 
-    class AddReportButtonListener implements ActionListener {
+    class InvestigationViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel currentPanel = view.getCurrentPanel();
+
+            if (!(currentPanel instanceof PanelViewReport)) {
+                view.sendError("A avut loc o eroare.");
+                return;
+            }
+
+            PanelViewReport panelVR = (PanelViewReport) currentPanel;
+            JTable investigationsTable = panelVR.getInvestigationsTable();
+            Report report = panelVR.getReport();
+
+            if (investigationsTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact un raport medical.");
+            } else {
+                int row = investigationsTable.getSelectedRow();
+                Investigation investigation = report.getInvestigations().get(row);
+
+                PanelViewInvestigation panel = new PanelViewInvestigation(investigation, panelVR);
+                view.setRightPanel(panel);
+            }
+            investigationsTable.clearSelection();
+        }
+
+    }
+
+    class InvestigationAddButtonListener implements ActionListener {
+
+        private final PanelViewReport panel;
+
+        public InvestigationAddButtonListener(PanelViewReport panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelAddInvestigation panelAI = new PanelAddInvestigation(panel.getReport(), panel);
+            panelAI.addSaveButtonListener(new SaveButtonListener());
+            panelAI.addCancelButtonListener(new CancelButtonListener());
+            view.setRightPanel(panelAI);
+        }
+
+    }
+
+    class ReportAddButtonListener implements ActionListener {
 
         private final PanelShowReports panel;
 
-        public AddReportButtonListener(PanelShowReports panel) {
+        public ReportAddButtonListener(PanelShowReports panel) {
             this.panel = panel;
         }
 
