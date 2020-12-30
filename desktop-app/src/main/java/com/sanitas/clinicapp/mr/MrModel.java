@@ -5,6 +5,7 @@ import com.sanitas.clinicapp.Database;
 
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 public class MrModel {
 
@@ -487,6 +488,50 @@ public class MrModel {
         }
 
         return false;
+    }
+
+    public List<Analyse> getAnalyses(String cnp, Date startDate, Date endDate) {
+        List<Analyse> analyses = new ArrayList<>();
+        int index = 2;
+
+        StringBuilder query = new StringBuilder("SELECT * FROM `view_patient_analyses` WHERE `cnpPatient` = ?");
+        if (startDate != null) {
+            query.append(" AND `date` >= ?");
+        }
+        if (endDate != null) {
+            query.append(" AND `date` <= ?");
+        }
+        query.append(";");
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement(query.toString());
+            preparedStatement.setString(1, cnp);
+            if (startDate != null) {
+                preparedStatement.setTimestamp(index++, new Timestamp(startDate.getTime()));
+            }
+            if (endDate != null) {
+                preparedStatement.setTimestamp(index, new Timestamp(endDate.getTime()));
+            }
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                analyses.add(new Analyse(
+                        resultSet.getString(2),
+                        resultSet.getFloat(3),
+                        resultSet.getBoolean(4),
+                        resultSet.getInt(5),
+                        resultSet.getFloat(6),
+                        resultSet.getFloat(7),
+                        resultSet.getDate(8)));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        analyses.sort(Analyse::compareTo);
+
+        return analyses;
     }
 
 }

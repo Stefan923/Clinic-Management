@@ -2,9 +2,8 @@ package com.sanitas.clinicapp.mr;
 
 import java.util.Date;
 
-public class Analyse {
+public class Analyse implements Comparable<Analyse> {
 
-    private int id;
     private String name;
     private float value;
     private boolean isPositive;
@@ -15,22 +14,18 @@ public class Analyse {
     private float minimum;
     private float maximum;
 
-    public Analyse(int id, String name, float value, boolean isPositive, int idAnalyse, float minimum, float maximum, Date date) {
+    public Analyse(String name, float value, boolean isPositive, int idAnalyse, float minimum, float maximum, Date date) {
         this(idAnalyse, value, isPositive);
-        this.id = id;
         this.name = name;
         this.minimum = minimum;
         this.maximum = maximum;
+        this.date = date;
     }
 
     public Analyse(int idAnalyse, float value, boolean isPositive) {
         this.idAnalyse = idAnalyse;
         this.value = value;
         this.isPositive = isPositive;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -59,6 +54,11 @@ public class Analyse {
 
     public float getMaximum() {
         return maximum;
+    }
+
+    @Override
+    public int compareTo(Analyse o) {
+        return Integer.compare(0, date.compareTo(o.date));
     }
 
 }

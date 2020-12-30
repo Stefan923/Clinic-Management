@@ -109,6 +109,7 @@ public class MrController {
                 view.getPanelShowPatients().setVisible(false);
                 PanelViewPatient panelVP = new PanelViewPatient(patient);
                 panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
+                panelVP.addShowAnalysesButtonListener(new PatientAnalysesButtonListener(panelVP));
                 view.setRightPanel(panelVP);
             }
             patientsTable.clearSelection();
@@ -430,6 +431,8 @@ public class MrController {
                 view.setRightPanel(((PanelAddInvestigation) panel).getPreviousPanel());
             } else if (panel instanceof PanelViewInvestigation) {
                 view.setRightPanel(((PanelViewInvestigation) panel).getPreviousPanel());
+            } else if (panel instanceof PanelShowAnalyses) {
+                view.setRightPanel(((PanelShowAnalyses) panel).getPreviousPanel());
             }
         }
 
@@ -473,6 +476,61 @@ public class MrController {
             panelSR.addCancelButtonListener(new CancelButtonListener());
             panelSR.updateTable(reports);
             view.setRightPanel(panelSR);
+        }
+
+    }
+
+    class PatientAnalysesButtonListener implements ActionListener {
+
+        private final PanelViewPatient panel;
+
+        public PatientAnalysesButtonListener(PanelViewPatient panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            List<Analyse> analyses = model.getAnalyses(panel.getPatient().getCnp(), null, null);
+
+            PanelShowAnalyses panelSA = new PanelShowAnalyses(panel.getPatient(), panel);
+            panelSA.addSearchButtonListener(new AnalyseSearchButtonListener(panelSA));
+            panelSA.addAddButtonListener(new AnalyseAddButtonListener(panelSA));
+            panelSA.addCancelButtonListener(new CancelButtonListener());
+            panelSA.updateTable(analyses);
+            view.setRightPanel(panelSA);
+        }
+
+    }
+
+    class AnalyseSearchButtonListener implements ActionListener {
+
+        private final PanelShowAnalyses panel;
+
+        public AnalyseSearchButtonListener(PanelShowAnalyses panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.updateTable(model.getAnalyses(panel.getPatient().getCnp(),
+                    panel.getUtilDateModelMin().getValue(),
+                    panel.getUtilDateModelMax().getValue()));
+        }
+
+    }
+
+    class AnalyseAddButtonListener implements ActionListener {
+
+        private final PanelShowAnalyses panel;
+
+        public AnalyseAddButtonListener(PanelShowAnalyses panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelAddAnalyse panelAA = new PanelAddAnalyse(panel.getPatient(), panel);
+            view.setRightPanel(panelAA);
         }
 
     }
