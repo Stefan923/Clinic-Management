@@ -87,6 +87,10 @@ public class PanelAddInvestigation extends JPanel {
         return services;
     }
 
+    public JPanel getPreviousPanel() {
+        return previousPanel;
+    }
+
     public void addSaveButtonListener(ActionListener actionListener) {
         btnSave.addActionListener(actionListener);
     }
