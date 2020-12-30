@@ -73,6 +73,10 @@ public class PanelAddInvestigation extends JPanel {
         return report;
     }
 
+    public JTextArea getTaRemarks() {
+        return taRemarks;
+    }
+
     public Integer getIdService() {
         String selectedItem = (String) cbServices.getSelectedItem();
 
