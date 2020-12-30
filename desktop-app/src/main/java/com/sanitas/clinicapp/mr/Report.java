@@ -1,6 +1,8 @@
 package com.sanitas.clinicapp.mr;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Report implements Comparable<Report> {
 
@@ -18,6 +20,8 @@ public class Report implements Comparable<Report> {
 
     private Date date;
     private Date lastEdit;
+
+    private final List<Investigation> investigations = new ArrayList<>();
 
     public Report(int id, String patientLastName, String patientFirstName, String sealCode, String doctorLastName, String doctorFirstName, String diagnostic, String recommendation, Date date, Date lastEdit) {
         this.id = id;
@@ -78,6 +82,10 @@ public class Report implements Comparable<Report> {
 
     public void setRecommendation(String recommendation) {
         this.recommendation = recommendation;
+    }
+
+    public List<Investigation> getInvestigations() {
+        return investigations;
     }
 
     @Override

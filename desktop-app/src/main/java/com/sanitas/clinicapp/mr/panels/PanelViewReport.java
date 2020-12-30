@@ -1,13 +1,17 @@
 package com.sanitas.clinicapp.mr.panels;
 
+import com.sanitas.clinicapp.mr.Investigation;
+import com.sanitas.clinicapp.mr.MedicalService;
 import com.sanitas.clinicapp.mr.Report;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class PanelViewReport extends JPanel {
 
@@ -30,7 +34,11 @@ public class PanelViewReport extends JPanel {
 
     private Report report;
 
+    JTable investigationsTable = new JTable();
+
     public PanelViewReport(PanelShowReports previousPanel) {
+        super(new BorderLayout());
+
         this.previousPanel = previousPanel;
 
         tfPatientLastName.setEditable(false);
@@ -40,50 +48,48 @@ public class PanelViewReport extends JPanel {
         tfDate.setEditable(false);
         tfLastEdit.setEditable(false);
 
-        setLayout(new BorderLayout());
-
         JPanel patientLastNamePanel = new JPanel(new FlowLayout());
-        patientLastNamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        patientLastNamePanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         patientLastNamePanel.add(new JLabel("Nume:"));
         patientLastNamePanel.add(tfPatientLastName);
 
         JPanel patientFirstNamePanel = new JPanel(new FlowLayout());
-        patientFirstNamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        patientFirstNamePanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         patientFirstNamePanel.add(new JLabel("Prenume:"));
         patientFirstNamePanel.add(tfPatientFirstName);
 
         JPanel sealCodePanel = new JPanel(new FlowLayout());
-        sealCodePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        sealCodePanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         sealCodePanel.add(new JLabel("Parafa:"));
         sealCodePanel.add(tfSealCode);
 
         JPanel doctorFullNamePanel = new JPanel(new FlowLayout());
-        doctorFullNamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        doctorFullNamePanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         doctorFullNamePanel.add(new JLabel("Doctor:"));
         doctorFullNamePanel.add(tfDoctorFullName);
 
         JPanel datePanel = new JPanel(new FlowLayout());
-        datePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        datePanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         datePanel.add(new JLabel("Data crearii:"));
         datePanel.add(tfDate);
 
         JPanel lastEditPanel = new JPanel(new FlowLayout());
-        lastEditPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        lastEditPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         lastEditPanel.add(new JLabel("Ultima modificare:"));
         lastEditPanel.add(tfLastEdit);
 
         JPanel diagnosticPanel = new JPanel(new FlowLayout());
-        diagnosticPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        diagnosticPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         diagnosticPanel.add(new JLabel("Diagnostic:"));
         diagnosticPanel.add(tfDiagnostic);
 
         JPanel recommendationPanel = new JPanel(new FlowLayout());
-        recommendationPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        recommendationPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
         recommendationPanel.add(new JLabel("Recomandari:"));
         recommendationPanel.add(tfRecommendation);
 
         JPanel firstLinePanel = new JPanel(new GridLayout(1, 2));
-        firstLinePanel.setBorder(new EmptyBorder(15, 0, 0, 0));
+        firstLinePanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         firstLinePanel.add(patientLastNamePanel);
         firstLinePanel.add(patientFirstNamePanel);
 
@@ -101,12 +107,25 @@ public class PanelViewReport extends JPanel {
         JPanel fifthLinePanel = new JPanel(new GridLayout(1, 1));
         fifthLinePanel.add(recommendationPanel);
 
-        JPanel reportData = new JPanel(new GridLayout(5, 1));
-        reportData.add(firstLinePanel);
-        reportData.add(secondLinePanel);
-        reportData.add(thirdLinePanel);
-        reportData.add(fourthLinePanel);
-        reportData.add(fifthLinePanel);
+        JPanel sixthLinePanel = new JPanel(new FlowLayout());
+        JScrollPane tableScrollPane = new JScrollPane(investigationsTable);
+        tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        tableScrollPane.setPreferredSize(new Dimension(500, 60));
+        sixthLinePanel.add(tableScrollPane);
+
+        JPanel reportDataPanel = new JPanel();
+        reportDataPanel.setLayout(new BoxLayout(reportDataPanel, BoxLayout.Y_AXIS));
+        reportDataPanel.add(firstLinePanel);
+        reportDataPanel.add(secondLinePanel);
+        reportDataPanel.add(thirdLinePanel);
+        reportDataPanel.add(fourthLinePanel);
+        reportDataPanel.add(fifthLinePanel);
+        reportDataPanel.add(sixthLinePanel);
+
+        JScrollPane dataScrollPane = new JScrollPane(reportDataPanel);
+        dataScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        dataScrollPane.setPreferredSize(new Dimension(600, 325));
+        dataScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnSave);
@@ -114,7 +133,7 @@ public class PanelViewReport extends JPanel {
         buttonsPanel.add(btnCancel);
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        add(reportData, BorderLayout.NORTH);
+        add(dataScrollPane, BorderLayout.NORTH);
         add(buttonsPanel, BorderLayout.SOUTH);
 
         setVisible(false);
@@ -139,6 +158,27 @@ public class PanelViewReport extends JPanel {
             tfDiagnostic.setEditable(false);
             tfRecommendation.setEditable(false);
         }
+    }
+
+    public void updateTable() {
+        List<Investigation> investigations = report.getInvestigations();
+        String[] columns = { "Serviciu medical", "Doctor", "Data" };
+
+        Object[][] servicesData = new Object[investigations.size()][columns.length];
+        for (int i = 0; i < investigations.size(); ++i) {
+            Investigation investigation = investigations.get(i);
+
+            servicesData[i][0] = investigation.getServiceName();
+            servicesData[i][1] = investigation.getDoctorFullName();
+            servicesData[i][2] = investigation.getDate();
+        }
+
+        investigationsTable.setModel(new DefaultTableModel(servicesData, columns) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
     }
 
     public PanelShowReports getPreviousPanel() {
