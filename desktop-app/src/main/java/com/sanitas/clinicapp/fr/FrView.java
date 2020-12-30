@@ -109,6 +109,7 @@ public class FrView extends JFrame {
     public JButton getBtnBack() {
         return btnBack;
     }
+
     public void sendError(String message) {
         JOptionPane.showMessageDialog(this, message, "Eroare!", JOptionPane.ERROR_MESSAGE);
     }
