@@ -37,18 +37,29 @@ public class PanelViewInvestigation extends JPanel {
     }
 
     private JPanel getDataPanel() {
+        JPanel doctorPanel = new JPanel(new FlowLayout());
+        doctorPanel.add(new JLabel("Doctor:"));
+        doctorPanel.add(tfDoctor);
+        doctorPanel.setBorder(new EmptyBorder(0, 0, 0, 10));
+
+        JPanel servicePanel = new JPanel(new FlowLayout());
+        servicePanel.add(new JLabel("Serviciu:"));
+        servicePanel.add(tfService);
+        servicePanel.setBorder(new EmptyBorder(0, 10, 0, 0));
+
         JPanel firstLinePanel = new JPanel(new FlowLayout());
-        firstLinePanel.add(new JLabel("Doctor:"));
-        firstLinePanel.add(tfDoctor);
-        firstLinePanel.add(new JLabel("Serviciu:"));
-        firstLinePanel.add(tfService);
+        firstLinePanel.add(doctorPanel);
+        firstLinePanel.add(servicePanel);
+        firstLinePanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         JPanel secondLinePanel = new JPanel(new FlowLayout());
         secondLinePanel.add(new JLabel("Data investigatiei:"));
         secondLinePanel.add(tfDate);
+        secondLinePanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         JPanel thirdLinePanel = new JPanel(new FlowLayout());
         thirdLinePanel.add(new JLabel("Observatii:"));
+        thirdLinePanel.add(taRemarks);
 
         JPanel dataPanel = new JPanel();
         dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
