@@ -398,6 +398,10 @@ public class MrController {
                 view.setRightPanel(gPanelSMS);
             } else if (panel instanceof PanelViewReport) {
                 view.setRightPanel(((PanelViewReport) panel).getPreviousPanel());
+            } else if (panel instanceof PanelAddInvestigation) {
+                view.setRightPanel(((PanelAddInvestigation) panel).getPreviousPanel());
+            } else if (panel instanceof PanelViewInvestigation) {
+                view.setRightPanel(((PanelViewInvestigation) panel).getPreviousPanel());
             }
         }
 
