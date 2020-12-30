@@ -37,5 +37,11 @@ DROP VIEW IF EXISTS `polyclinics`.`view_equipments`;
 CREATE VIEW `polyclinics`.`view_equipments` AS
 	SELECT `id`, `name`
     FROM `equipments`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
+CREATE VIEW `polyclinics`.`view_medical_units` AS
+	SELECT `name`, `iban`
+    FROM `medical_units`;
 
-SELECT `id`, `name` FROM `view_equipments`;
+SELECT * FROM `view_medical_units`;
+
