@@ -21,7 +21,7 @@ public class Report implements Comparable<Report> {
     private Date date;
     private Date lastEdit;
 
-    private final List<Investigation> investigations = new ArrayList<>();
+    private List<Investigation> investigations = new ArrayList<>();
 
     public Report(int id, String patientLastName, String patientFirstName, String sealCode, String doctorLastName, String doctorFirstName, String diagnostic, String recommendation, Date date, Date lastEdit) {
         this.id = id;
@@ -86,6 +86,10 @@ public class Report implements Comparable<Report> {
 
     public List<Investigation> getInvestigations() {
         return investigations;
+    }
+
+    public void setInvestigations(List<Investigation> investigations) {
+        this.investigations = investigations;
     }
 
     @Override
