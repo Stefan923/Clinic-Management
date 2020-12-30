@@ -102,6 +102,7 @@ public class PanelAddMedicalService extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnSave);
         buttonsPanel.add(btnCancel);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         add(serviceData, BorderLayout.NORTH);
         add(buttonsPanel, BorderLayout.SOUTH);

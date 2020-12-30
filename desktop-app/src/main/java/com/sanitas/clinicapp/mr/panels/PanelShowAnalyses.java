@@ -1,7 +1,7 @@
 package com.sanitas.clinicapp.mr.panels;
 
+import com.sanitas.clinicapp.mr.Analyse;
 import com.sanitas.clinicapp.mr.Patient;
-import com.sanitas.clinicapp.mr.Report;
 import com.sanitas.clinicapp.ui.DateLabelFormatter;
 import com.sanitas.clinicapp.ui.StyledJButton;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -17,31 +17,37 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 
-public class PanelShowReports extends JPanel {
+public class PanelShowAnalyses extends JPanel {
 
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private final JTable reportsTable = new JTable();
-
-    private List<Report> reports;
-
     private final JButton btnSearch = new StyledJButton("Cauta").getButton();
-    private final JButton btnViewReport = new StyledJButton("Afiseaza").getButton();
-    private final JButton btnAddReport = new StyledJButton("Raport nou").getButton();
+    private final JButton btnAdd = new StyledJButton("Adauga o analiza").getButton();
     private final JButton btnCancel = new StyledJButton("Anuleaza").getButton();
 
     private final UtilDateModel utilDateModelMin = new UtilDateModel();
     private final UtilDateModel utilDateModelMax = new UtilDateModel();
 
+    private final JTable analysesTable = new JTable();
+
     private final JPanel previousPanel;
     private final Patient patient;
 
-    public PanelShowReports(Patient patient, JPanel previousPanel) {
+    public PanelShowAnalyses(Patient patient, JPanel previousPanel) {
+        super(new BorderLayout());
         this.previousPanel = previousPanel;
         this.patient = patient;
 
-        setLayout(new BorderLayout());
+        loadContent();
+    }
 
+    private void loadContent() {
+        add(getSearchPanel(), BorderLayout.NORTH);
+        add(getDataPanel(), BorderLayout.CENTER);
+        add(getButtonsPanel(), BorderLayout.SOUTH);
+    }
+
+    private JPanel getSearchPanel() {
         Properties properties = new Properties();
         properties.put("text.today","Today");
         properties.put("text.month","Month");
@@ -61,48 +67,62 @@ public class PanelShowReports extends JPanel {
         searchPanel.add(btnSearch);
         searchPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.add(btnViewReport);
-        buttonsPanel.add(btnAddReport);
-        buttonsPanel.add(btnCancel);
-        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+        return searchPanel;
+    }
 
-        reportsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        reportsTable.setFillsViewportHeight(true);
-        JScrollPane jScrollPane = new JScrollPane(reportsTable);
+    private JPanel getDataPanel() {
+        analysesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        analysesTable.setFillsViewportHeight(true);
+        JScrollPane jScrollPane = new JScrollPane(analysesTable);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setPreferredSize(new Dimension(540, 240));
 
         JPanel tablePanel = new JPanel(new FlowLayout());
-        tablePanel.setBorder(new EmptyBorder(20, 0, 0, 0));
         tablePanel.add(jScrollPane);
+        tablePanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
-        add(searchPanel, BorderLayout.NORTH);
-        add(tablePanel, BorderLayout.CENTER);
-        add(buttonsPanel, BorderLayout.SOUTH);
+        JPanel dataPanel = new JPanel(new FlowLayout());
+        dataPanel.add(tablePanel);
+        dataPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        return dataPanel;
     }
 
-    public void updateTable(List<Report> reports) {
-        this.reports = reports;
+    private JPanel getButtonsPanel() {
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.add(btnAdd);
+        buttonsPanel.add(btnCancel);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        String[] columns = { "Numar", "Data scrierii", "Ultima editare", "Parafa" };
+        return buttonsPanel;
+    }
 
-        Object[][] reportsData = new Object[reports.size()][columns.length];
-        for (int i = 0; i < reports.size(); ++i) {
-            Report report = reports.get(i);
+    public void updateTable(List<Analyse> analyses) {
 
-            reportsData[i][0] = i + 1;
-            reportsData[i][1] = DATE_FORMAT.format(report.getDate());
-            reportsData[i][2] = DATE_FORMAT.format(report.getLastEdit());
-            reportsData[i][3] = report.getSealCode() == null ? "" : report.getSealCode();
+        String[] columns = { "Analiza", "Rezultat", "Valoare", "Minimum", "Maximum", "Data" };
+
+        Object[][] analysesData = new Object[analyses.size()][columns.length];
+        for (int i = 0; i < analyses.size(); ++i) {
+            Analyse analyse = analyses.get(i);
+
+            analysesData[i][0] = analyse.getName();
+            analysesData[i][1] = analyse.isPositive() ? "Pozitiv" : "Negativ";
+            analysesData[i][2] = analyse.getValue();
+            analysesData[i][3] = analyse.getMinimum();
+            analysesData[i][4] = analyse.getMaximum();
+            analysesData[i][5] = DATE_FORMAT.format(analyse.getDate());
         }
 
-        reportsTable.setModel(new DefaultTableModel(reportsData, columns) {
+        analysesTable.setModel(new DefaultTableModel(analysesData, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         });
+    }
+
+    public Patient getPatient() {
+        return patient;
     }
 
     public UtilDateModel getUtilDateModelMin() {
@@ -113,18 +133,6 @@ public class PanelShowReports extends JPanel {
         return utilDateModelMax;
     }
 
-    public JTable getReportsTable() {
-        return reportsTable;
-    }
-
-    public List<Report> getReports() {
-        return reports;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
     public JPanel getPreviousPanel() {
         return previousPanel;
     }
@@ -133,12 +141,8 @@ public class PanelShowReports extends JPanel {
         btnSearch.addActionListener(actionListener);
     }
 
-    public void addViewButtonListener(ActionListener actionListener) {
-        btnViewReport.addActionListener(actionListener);
-    }
-
     public void addAddButtonListener(ActionListener actionListener) {
-        btnAddReport.addActionListener(actionListener);
+        btnAdd.addActionListener(actionListener);
     }
 
     public void addCancelButtonListener(ActionListener actionListener) {

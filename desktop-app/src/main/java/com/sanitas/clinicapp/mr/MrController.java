@@ -28,17 +28,19 @@ public class MrController {
     }
 
     private void loadListeners(JFrame previousView) {
+        PanelAddPatient panelAddPatient = new PanelAddPatient();
+        panelAddPatient.addSaveButtonListener(new SaveButtonListener());
+        panelAddPatient.addCancelButtonListener(new CancelButtonListener());
+
         PanelShowPatients panelShowPatients = view.getPanelShowPatients();
-        panelShowPatients.addSearchButtonListener(new SearchButtonListener());
-        panelShowPatients.addModifyButtonListener(new ModifyButtonListener());
+        panelShowPatients.addSearchButtonListener(new PatientSearchButtonListener());
+        panelShowPatients.addAddPatientButtonListener(new MenuButtonListener(panelAddPatient));
+        panelShowPatients.addViewPatientButtonListener(new PatientViewButtonListener());
+        panelShowPatients.addModifyButtonListener(new PatientModifyButtonListener());
         panelShowPatients.addDeleteButtonListener(new PatientDeleteButtonListener());
 
         PanelSearchPatient panelSearchPatient = new PanelSearchPatient();
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
-
-        PanelAddPatient panelAddPatient = new PanelAddPatient();
-        panelAddPatient.addSaveButtonListener(new SaveButtonListener());
-        panelAddPatient.addCancelButtonListener(new CancelButtonListener());
 
         gPanelSMS = new PanelShowMedicalServices();
         gPanelSMS.updateTable(model.getMedicalServices(cnp));
@@ -48,29 +50,28 @@ public class MrController {
 
         view.addBtnShowPatientsListener(new MenuButtonListener(panelShowPatients));
         view.addBtnSearchPatientListener(new MenuButtonListener(panelSearchPatient));
-        view.addBtnAddPatientListener(new MenuButtonListener(panelAddPatient));
         view.addBtnMedicalServicesListener(new MenuButtonListener(gPanelSMS));
         view.addBackButtonListener(new BackButtonListener(previousView));
     }
 
-    class SearchButtonListener implements ActionListener {
+    class PatientSearchButtonListener implements ActionListener {
 
-        PanelShowPatients panel;
+        private final PanelShowPatients panel;
 
-        public SearchButtonListener() {
+        public PatientSearchButtonListener() {
             panel = view.getPanelShowPatients();
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             List<Patient> patients = model.getPatients(panel.getTfLastname().getText(),
-                                                        panel.getTfFirstname().getText());
+                                                       panel.getTfFirstname().getText());
             panel.updateTable(patients);
         }
 
     }
 
-    class ModifyButtonListener implements ActionListener {
+    class PatientModifyButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -87,6 +88,29 @@ public class MrController {
                 panel.addSaveButtonListener(new SaveButtonListener());
                 panel.addCancelButtonListener(new CancelButtonListener());
                 view.setRightPanel(panel);
+            }
+            patientsTable.clearSelection();
+        }
+
+    }
+
+    class PatientViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTable patientsTable = view.getPanelShowPatients().getJTable();
+
+            if (patientsTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact un pacient.");
+            } else {
+                int row = patientsTable.getSelectedRow();
+                Patient patient = model.getPatient((String) patientsTable.getValueAt(row, 2));
+
+                view.getPanelShowPatients().setVisible(false);
+                PanelViewPatient panelVP = new PanelViewPatient(patient);
+                panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
+                panelVP.addShowAnalysesButtonListener(new PatientAnalysesButtonListener(panelVP));
+                view.setRightPanel(panelVP);
             }
             patientsTable.clearSelection();
         }
@@ -118,7 +142,7 @@ public class MrController {
 
     class ServiceDeleteButtonListener implements ActionListener {
 
-        private PanelShowMedicalServices panel;
+        private final PanelShowMedicalServices panel;
 
         public ServiceDeleteButtonListener(PanelShowMedicalServices panel) {
             this.panel = panel;
@@ -181,6 +205,93 @@ public class MrController {
                 view.setRightPanel(panel);
             }
             servicesTable.clearSelection();
+        }
+
+    }
+
+    class ReportSearchButtonListener implements ActionListener {
+
+        private final PanelShowReports panel;
+
+        public ReportSearchButtonListener(PanelShowReports panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.updateTable(model.getReports(panel.getPatient().getCnp(),
+                                            panel.getUtilDateModelMin().getValue(),
+                                            panel.getUtilDateModelMax().getValue()));
+        }
+
+    }
+
+    class ReportViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel currentPanel = view.getCurrentPanel();
+
+            if (!(currentPanel instanceof PanelShowReports)) {
+                view.sendError("A avut loc o eroare.");
+                return;
+            }
+
+            PanelShowReports panelSR = (PanelShowReports) currentPanel;
+            JTable reportsTable = panelSR.getReportsTable();
+
+            if (reportsTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact un raport medical.");
+            } else {
+                int row = reportsTable.getSelectedRow();
+                Report report = panelSR.getReports().get(row);
+
+                PanelViewReport panel = new PanelViewReport(panelSR);
+                panel.addAddInvestigationButton(new InvestigationAddButtonListener(panel));
+                panel.addViewInvestigationButton(new InvestigationViewButtonListener());
+                panel.addSaveButtonListener(new SaveButtonListener());
+                panel.addConfirmButtonListener(new ReportConfirmButtonListener());
+                panel.addCancelButtonListener(new CancelButtonListener());
+                panel.loadReportData(report);
+                report.setInvestigations(model.getInvestigations(report.getId()));
+                panel.updateTable();
+                view.setRightPanel(panel);
+            }
+            reportsTable.clearSelection();
+        }
+
+    }
+
+    class ReportConfirmButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel currentPanel = view.getCurrentPanel();
+
+            if (!(currentPanel instanceof PanelViewReport)) {
+                view.sendError("A avut loc o eroare.");
+                return;
+            }
+
+            PanelViewReport panelVR = (PanelViewReport) currentPanel;
+
+            Report report = panelVR.getReport();
+            boolean validation = model
+                    .confirmReport(report, model.getDoctor(cnp).getSealCode());
+
+            if (validation) {
+                view.sendSuccessMessage("Raportul medical a fost parafat cu succes.");
+
+                PanelShowReports panelSR = panelVR.getPreviousPanel();
+                panelSR.updateTable(model.getReports(panelSR.getPatient().getCnp(), null, null));
+
+                int reportId = report.getId();
+                Report updatedReport = model.getReport(reportId);
+                updatedReport.setInvestigations(model.getInvestigations(reportId));
+                panelVR.loadReportData(updatedReport);
+            } else {
+                view.sendError("Nu s-a putut parafa raportul medical.");
+            }
         }
 
     }
@@ -259,6 +370,39 @@ public class MrController {
                 } else {
                     view.sendError("Nu s-a putut salva serviciul.");
                 }
+            } else if (panel instanceof PanelViewReport) {
+                PanelViewReport panelVR = (PanelViewReport) panel;
+
+                Report report = panelVR.getReport();
+                report.setDiagnostic(panelVR.getTfDiagnostic().getText());
+                report.setRecommendation(panelVR.getTfRecommendation().getText());
+                boolean validation = model.saveReport(report);
+
+                if (validation) {
+                    view.sendSuccessMessage("Modificarile au fost salvate cu succes.");
+
+                    gPanelSMS.updateTable(model.getMedicalServices(cnp));
+                } else {
+                    view.sendError("Nu s-a putut salva raportul medical.");
+                }
+            } else if (panel instanceof PanelAddInvestigation) {
+                PanelAddInvestigation panelAI = (PanelAddInvestigation) panel;
+                int idReport = panelAI.getReport().getId();
+
+                boolean validation = model.addInvestigation(
+                        new Investigation(
+                                panelAI.getIdService(),
+                                panelAI.getTaRemarks().getText()),
+                        idReport);
+
+                if (validation) {
+                    view.sendSuccessMessage("Investigatia a fost adaugata cu succes.");
+
+                    panelAI.getReport().setInvestigations(model.getInvestigations(idReport));
+                    ((PanelViewReport) panelAI.getPreviousPanel()).updateTable();
+                } else {
+                    view.sendError("Nu s-a putut adauga investigatia.");
+                }
             }
         }
 
@@ -273,11 +417,22 @@ public class MrController {
                 view.setRightPanel(view.getPanelShowPatients());
             } else if (panel instanceof PanelAddPatient) {
                 ((PanelAddPatient) panel).reset();
+                view.setRightPanel(view.getPanelShowPatients());
             } else if (panel instanceof PanelAddMedicalService) {
                 ((PanelAddMedicalService) panel).reset();
                 view.setRightPanel(gPanelSMS);
             } else if (panel instanceof PanelViewMedicalService) {
                 view.setRightPanel(gPanelSMS);
+            } else if (panel instanceof PanelShowReports) {
+                view.setRightPanel(((PanelShowReports) panel).getPreviousPanel());
+            } else if (panel instanceof PanelViewReport) {
+                view.setRightPanel(((PanelViewReport) panel).getPreviousPanel());
+            } else if (panel instanceof PanelAddInvestigation) {
+                view.setRightPanel(((PanelAddInvestigation) panel).getPreviousPanel());
+            } else if (panel instanceof PanelViewInvestigation) {
+                view.setRightPanel(((PanelViewInvestigation) panel).getPreviousPanel());
+            } else if (panel instanceof PanelShowAnalyses) {
+                view.setRightPanel(((PanelShowAnalyses) panel).getPreviousPanel());
             }
         }
 
@@ -285,7 +440,7 @@ public class MrController {
 
     class SearchByCnpButtonListener implements ActionListener {
 
-        PanelSearchPatient panel;
+        private final PanelSearchPatient panel;
 
         public SearchByCnpButtonListener(PanelSearchPatient panel) {
             this.panel = panel;
@@ -304,7 +459,7 @@ public class MrController {
 
     class PatientHistoryButtonListener implements ActionListener {
 
-        private PanelViewPatient panel;
+        private final PanelViewPatient panel;
 
         public PatientHistoryButtonListener(PanelViewPatient panel) {
             this.panel = panel;
@@ -314,19 +469,132 @@ public class MrController {
         public void actionPerformed(ActionEvent e) {
             List<Report> reports = model.getReports(panel.getPatient().getCnp(), null, null);
 
-            PanelShowReports panelShowReports = new PanelShowReports(panel.getPatient());
-            panelShowReports.addBtnAddReportListener(new AddReportButtonListener(panelShowReports));
-            panelShowReports.updateTable(reports);
-            view.setRightPanel(panelShowReports);
+            PanelShowReports panelSR = new PanelShowReports(panel.getPatient(), panel);
+            panelSR.addSearchButtonListener(new ReportSearchButtonListener(panelSR));
+            panelSR.addViewButtonListener(new ReportViewButtonListener());
+            panelSR.addAddButtonListener(new ReportAddButtonListener(panelSR));
+            panelSR.addCancelButtonListener(new CancelButtonListener());
+            panelSR.updateTable(reports);
+            view.setRightPanel(panelSR);
         }
 
     }
 
-    class AddReportButtonListener implements ActionListener {
+    class PatientAnalysesButtonListener implements ActionListener {
 
-        private PanelShowReports panel;
+        private final PanelViewPatient panel;
 
-        public AddReportButtonListener(PanelShowReports panel) {
+        public PatientAnalysesButtonListener(PanelViewPatient panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            List<Analyse> analyses = model.getAnalyses(panel.getPatient().getCnp(), null, null);
+
+            PanelShowAnalyses panelSA = new PanelShowAnalyses(panel.getPatient(), panel);
+            panelSA.addSearchButtonListener(new AnalyseSearchButtonListener(panelSA));
+            panelSA.addAddButtonListener(new AnalyseAddButtonListener(panelSA));
+            panelSA.addCancelButtonListener(new CancelButtonListener());
+            panelSA.updateTable(analyses);
+            view.setRightPanel(panelSA);
+        }
+
+    }
+
+    class AnalyseSearchButtonListener implements ActionListener {
+
+        private final PanelShowAnalyses panel;
+
+        public AnalyseSearchButtonListener(PanelShowAnalyses panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.updateTable(model.getAnalyses(panel.getPatient().getCnp(),
+                    panel.getUtilDateModelMin().getValue(),
+                    panel.getUtilDateModelMax().getValue()));
+        }
+
+    }
+
+    class AnalyseAddButtonListener implements ActionListener {
+
+        private final PanelShowAnalyses panel;
+
+        public AnalyseAddButtonListener(PanelShowAnalyses panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelAddAnalyse panelAA = new PanelAddAnalyse(panel.getPatient(), panel);
+            view.setRightPanel(panelAA);
+        }
+
+    }
+
+    class InvestigationViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel currentPanel = view.getCurrentPanel();
+
+            if (!(currentPanel instanceof PanelViewReport)) {
+                view.sendError("A avut loc o eroare.");
+                return;
+            }
+
+            PanelViewReport panelVR = (PanelViewReport) currentPanel;
+            JTable investigationsTable = panelVR.getInvestigationsTable();
+            Report report = panelVR.getReport();
+
+            if (investigationsTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact o investigatie.");
+            } else {
+                int row = investigationsTable.getSelectedRow();
+                Investigation investigation = report.getInvestigations().get(row);
+
+                PanelViewInvestigation panel = new PanelViewInvestigation(investigation, panelVR);
+                panel.addCancelButtonListener(new CancelButtonListener());
+                view.setRightPanel(panel);
+            }
+            investigationsTable.clearSelection();
+        }
+
+    }
+
+    class InvestigationAddButtonListener implements ActionListener {
+
+        private final PanelViewReport panel;
+
+        public InvestigationAddButtonListener(PanelViewReport panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Report report = panel.getReport();
+            if (panel.getReport().getSealCode() != null) {
+                view.sendError("Nu se pot adauga investigatii noi!");
+                return;
+            }
+
+            PanelAddInvestigation panelAI = new PanelAddInvestigation(report, panel);
+            panelAI.addSaveButtonListener(new SaveButtonListener());
+            panelAI.addCancelButtonListener(new CancelButtonListener());
+            panelAI.updateCbServices(model.getMedicalServices(cnp));
+            view.setRightPanel(panelAI);
+        }
+
+    }
+
+    class ReportAddButtonListener implements ActionListener {
+
+        private final PanelShowReports panel;
+
+        public ReportAddButtonListener(PanelShowReports panel) {
             this.panel = panel;
         }
 
@@ -342,7 +610,7 @@ public class MrController {
     }
 
     class MenuButtonListener implements ActionListener {
-        private JPanel panel;
+        private final JPanel panel;
 
         public MenuButtonListener(JPanel panel) {
             this.panel = panel;

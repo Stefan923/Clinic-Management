@@ -4,8 +4,8 @@ import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
 
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
+import java.util.Date;
 
 public class MrModel {
 
@@ -110,11 +110,11 @@ public class MrModel {
         return false;
     }
 
-    public List<Report> getReports(String cnp, Date startDate, Date endDate) {
+    public List<Report> getReports(String cnp, java.util.Date startDate, java.util.Date endDate) {
         List<Report> reports = new ArrayList<>();
         int index = 2;
 
-        StringBuilder query = new StringBuilder("SELECT `date`, `lastEdit`, `sealCode` FROM `reports` WHERE `cnpPatient` = ?");
+        StringBuilder query = new StringBuilder("SELECT * FROM `view_reports` WHERE `cnpPatient` = ?");
         if (startDate != null) {
             query.append(" AND `date` >= ?");
         }
@@ -127,24 +127,61 @@ public class MrModel {
             PreparedStatement preparedStatement = database.preparedStatement(query.toString());
             preparedStatement.setString(1, cnp);
             if (startDate != null) {
-                preparedStatement.setDate(++index, (java.sql.Date) startDate);
+                preparedStatement.setTimestamp(index++, new Timestamp(startDate.getTime()));
             }
             if (endDate != null) {
-                preparedStatement.setDate(index, (java.sql.Date) endDate);
+                preparedStatement.setTimestamp(index, new Timestamp(endDate.getTime()));
             }
             preparedStatement.execute();
 
             ResultSet resultSet = preparedStatement.getResultSet();
             while (resultSet.next()) {
-                reports.add(new Report(resultSet.getDate(1),
-                        resultSet.getDate(2),
-                        resultSet.getInt(3)));
+                reports.add(new Report(resultSet.getInt(1),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getString(8),
+                        resultSet.getString(9),
+                        resultSet.getTimestamp(10),
+                        resultSet.getTimestamp(11)));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
+        reports.sort(Report::compareTo);
+
         return reports;
+    }
+
+    public Report getReport(int id) {
+        Report report = null;
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_reports` WHERE `id` = ?;");
+            preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            if (resultSet.next()) {
+                report = new Report(resultSet.getInt(1),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getString(8),
+                        resultSet.getString(9),
+                        resultSet.getTimestamp(10),
+                        resultSet.getTimestamp(11));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return report;
     }
 
     public boolean addReport(String cnp) {
@@ -155,6 +192,39 @@ public class MrModel {
             callableStatement.execute();
 
             return callableStatement.getBoolean(2);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean saveReport(Report report) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL UPDATE_REPORT(?, ?, ?, ?);");
+            callableStatement.setInt(1, report.getId());
+            callableStatement.setString(2, report.getDiagnostic());
+            callableStatement.setString(3, report.getRecommendation());
+            callableStatement.registerOutParameter(4, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(4);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean confirmReport(Report report, String sealCode) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL CONFIRM_REPORT(?, ?, ?);");
+            callableStatement.setInt(1, report.getId());
+            callableStatement.setString(2, sealCode);
+            callableStatement.registerOutParameter(3, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(3);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -330,6 +400,138 @@ public class MrModel {
         }
 
         return equipments;
+    }
+
+    public Doctor getDoctor(String cnp) {
+        Doctor doctor = null;
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_doctors` WHERE `cnpEmployee` = ?;");
+            preparedStatement.setString(1, cnp);
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            if (resultSet.next()) {
+                doctor = new Doctor(cnp,
+                        resultSet.getString(2),
+                        resultSet.getFloat(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return doctor;
+    }
+
+    public List<Investigation> getInvestigations(int idReport) {
+        List<Investigation> investigations = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `idInvestigation`, `idService`, `serviceName`, CONCAT(`d_lastName`, ' ', `d_firstName`) AS `doctorName`, `remarks`, `date` FROM `view_investigations` WHERE `idReport` = ?;");
+            preparedStatement.setInt(1, idReport);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                investigations.add(new Investigation(
+                        resultSet.getInt(1),
+                        resultSet.getInt(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getTimestamp(6)));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return investigations;
+    }
+
+    public Investigation getInvestigation(int idInvestigation) {
+        Investigation investigation = null;
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `idInvestigation`, `idService`, `serviceName`, CONCAT(`d_lastName`, ' ', `d_firstName`) AS `doctorName`, `remarks`, `date` FROM `view_investigations` WHERE `idInvestigation` = ?;");
+            preparedStatement.setInt(1, idInvestigation);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                investigation = new Investigation(
+                        resultSet.getInt(1),
+                        resultSet.getInt(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getTimestamp(6));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return investigation;
+    }
+
+    public boolean addInvestigation(Investigation investigation, int idReport) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_REPORT_INVESTIGATION(?, ?, ?, ?)");
+            callableStatement.setInt(1, idReport);
+            callableStatement.setInt(2, investigation.getIdService());
+            callableStatement.setString(3, investigation.getRemarks());
+            callableStatement.registerOutParameter(4, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(4);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<Analyse> getAnalyses(String cnp, Date startDate, Date endDate) {
+        List<Analyse> analyses = new ArrayList<>();
+        int index = 2;
+
+        StringBuilder query = new StringBuilder("SELECT * FROM `view_patient_analyses` WHERE `cnpPatient` = ?");
+        if (startDate != null) {
+            query.append(" AND `date` >= ?");
+        }
+        if (endDate != null) {
+            query.append(" AND `date` <= ?");
+        }
+        query.append(";");
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement(query.toString());
+            preparedStatement.setString(1, cnp);
+            if (startDate != null) {
+                preparedStatement.setTimestamp(index++, new Timestamp(startDate.getTime()));
+            }
+            if (endDate != null) {
+                preparedStatement.setTimestamp(index, new Timestamp(endDate.getTime()));
+            }
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                analyses.add(new Analyse(
+                        resultSet.getString(2),
+                        resultSet.getFloat(3),
+                        resultSet.getBoolean(4),
+                        resultSet.getInt(5),
+                        resultSet.getFloat(6),
+                        resultSet.getFloat(7),
+                        resultSet.getDate(8)));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        analyses.sort(Analyse::compareTo);
+
+        return analyses;
     }
 
 }

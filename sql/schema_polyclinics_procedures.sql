@@ -320,7 +320,7 @@ END;
 
 DROP PROCEDURE IF EXISTS UPDATE_REPORT;
 DELIMITER //
-CREATE PROCEDURE UPDATE_REPORT(IN `_cnp` VARCHAR(13), IN `_diagnostic` VARCHAR(255), IN `_recommendation` VARCHAR(255), OUT `validation` INT)
+CREATE PROCEDURE UPDATE_REPORT(IN `_id` VARCHAR(13), IN `_diagnostic` VARCHAR(255), IN `_recommendation` VARCHAR(255), OUT `validation` INT)
 BEGIN
 	IF ((SELECT COUNT(*) FROM `reports` WHERE `id` = `_id` AND `sealCode` IS NULL) = 1) THEN
         
@@ -350,7 +350,8 @@ DROP PROCEDURE IF EXISTS INSERT_REPORT_INVESTIGATION;
 DELIMITER //
 CREATE PROCEDURE INSERT_REPORT_INVESTIGATION(IN `_idReport` INT, IN `_idService` INT, IN `_remarks` VARCHAR(255), OUT `validation` INT)
 BEGIN
-	IF ((SELECT COUNT(*) FROM `reports` WHERE `id` = `_idReport`) = 1) THEN
+	IF ((SELECT COUNT(*) FROM `reports` WHERE `id` = `_idReport`) = 1
+		AND (SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_idService`) = 1) THEN
         
         INSERT INTO `report_investigations` (`idReport`, `idService`, `remarks`, `date`) VALUE (`_idReport`, `_idService`, `_remarks`, NOW());
 		SET `validation` = 1;
@@ -395,7 +396,7 @@ END;
 
 DROP PROCEDURE IF EXISTS SAVE_MEDICAL_SERVICE;
 DELIMITER //
-CREATE PROCEDURE SAVE_MEDICAL_SERVICE(IN `_id` VARCHAR(13), IN `_name` VARCHAR(45), IN `_idSpeciality` INT, IN `_idAccreditation` INT, IN `_idEquipment` INT, IN `_price` DECIMAL(8, 2), IN `_duration` INT, OUT `validation` INT)
+CREATE PROCEDURE SAVE_MEDICAL_SERVICE(IN `_id` INT, IN `_cnp` VARCHAR(13), IN `_name` VARCHAR(45), IN `_idSpeciality` INT, IN `_idAccreditation` INT, IN `_idEquipment` INT, IN `_price` DECIMAL(8, 2), IN `_duration` INT, OUT `validation` INT)
 BEGIN
 	IF ((SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_id`) = 1
 		AND (SELECT COUNT(*) FROM `doctor_specialities` WHERE `cnpDoctor` = `_cnp` AND `idSpeciality` = `_idSpeciality`) > 0
