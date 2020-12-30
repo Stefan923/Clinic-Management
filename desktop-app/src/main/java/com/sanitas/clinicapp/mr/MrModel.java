@@ -4,7 +4,6 @@ import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
 
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
 
 public class MrModel {
@@ -423,6 +422,71 @@ public class MrModel {
         }
 
         return doctor;
+    }
+
+    public List<Investigation> getInvestigations(int idReport) {
+        List<Investigation> investigations = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `idInvestigation`, `idService`, `serviceName`, CONCAT(`d_lastName`, ' ', `d_firstName`) AS `doctorName`, `remarks`, `date` FROM `view_investigations` WHERE `idReport` = ?;");
+            preparedStatement.setInt(1, idReport);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                investigations.add(new Investigation(
+                        resultSet.getInt(1),
+                        resultSet.getInt(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getTimestamp(6)));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return investigations;
+    }
+
+    public Investigation getInvestigation(int idInvestigation) {
+        Investigation investigation = null;
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `idInvestigation`, `idService`, `serviceName`, CONCAT(`d_lastName`, ' ', `d_firstName`) AS `doctorName`, `remarks`, `date` FROM `view_investigations` WHERE `idInvestigation` = ?;");
+            preparedStatement.setInt(1, idInvestigation);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                investigation = new Investigation(
+                        resultSet.getInt(1),
+                        resultSet.getInt(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getTimestamp(6));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return investigation;
+    }
+
+    public boolean addInvestigation(Investigation investigation, int idReport) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_REPORT_INVESTIGATION(?, ?, ?, ?)");
+            callableStatement.setInt(1, idReport);
+            callableStatement.setInt(2, investigation.getIdService());
+            callableStatement.setString(3, investigation.getRemarks());
+            callableStatement.registerOutParameter(4, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(4);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return false;
     }
 
 }
