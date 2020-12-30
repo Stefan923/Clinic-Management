@@ -38,4 +38,23 @@ CREATE VIEW `polyclinics`.`view_equipments` AS
 	SELECT `id`, `name`
     FROM `equipments`;
 
-SELECT `id`, `name` FROM `view_equipments`;
+DROP VIEW IF EXISTS `polyclinics`.`view_reports`;
+CREATE VIEW `polyclinics`.`view_reports` AS
+	SELECT R.`id`, P.`cnp` AS `cnpPatient`, P.`lastName` AS `p_lastname`, P.`firstName` AS `p_firstname`, R.`sealCode`, E.`lastName` AS `e_lastname`, E.`firstName` AS `e_firstname`, R.`diagnostic`, R.`recommendation`, R.`date`, R.`lastEdit`
+    FROM `reports` R
+		INNER JOIN `patients` P ON P.`cnp` = R.`cnpPatient`
+        LEFT OUTER JOIN `doctors` D ON D.`sealCode` = R.`sealCode`
+        LEFT OUTER JOIN `employees` E ON E.`cnp` = D.`cnpEmployee`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_investigations`;
+CREATE VIEW `polyclinics`.`view_investigations` AS
+	SELECT RI.`id` AS `idInvestigation`, RI.`idReport`, RI.`idService`, MS.`name` AS `serviceName`, RI.`remarks`, RI.`date`, E.`lastName` AS `d_lastName`, E.`firstName` AS `d_firstName`
+    FROM `report_investigations` RI
+		INNER JOIN `medical_services` MS ON MS.`id` = RI.`idService`
+		INNER JOIN `employees` E ON E.`cnp` = MS.`cnpDoctor`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_doctors`;
+CREATE VIEW `polyclinics`.`view_doctors` AS
+	SELECT * FROM `doctors`;
+
+SELECT * FROM `view_investigations`;
