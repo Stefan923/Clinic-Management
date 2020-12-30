@@ -39,7 +39,7 @@ public class PanelAddInvestigation extends JPanel {
     private JPanel getDataPanel() {
         JPanel cbServicesPanel = new JPanel(new FlowLayout());
         cbServicesPanel.add(new JLabel("Serviciu:"));
-        cbServicesPanel.add(cbServicesPanel);
+        cbServicesPanel.add(cbServices);
         cbServicesPanel.setBorder(new EmptyBorder(20, 5, 20, 5));
 
         JPanel taRemarksPanel = new JPanel(new FlowLayout());
@@ -58,6 +58,7 @@ public class PanelAddInvestigation extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnSave);
         buttonsPanel.add(btnCancel);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         return buttonsPanel;
     }

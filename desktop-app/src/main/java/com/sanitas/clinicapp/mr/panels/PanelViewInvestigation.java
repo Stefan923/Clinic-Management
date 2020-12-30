@@ -4,6 +4,7 @@ import com.sanitas.clinicapp.mr.Investigation;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -54,6 +55,7 @@ public class PanelViewInvestigation extends JPanel {
         dataPanel.add(firstLinePanel);
         dataPanel.add(secondLinePanel);
         dataPanel.add(thirdLinePanel);
+        dataPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
         loadInvestigationData();
 
@@ -75,6 +77,7 @@ public class PanelViewInvestigation extends JPanel {
     private JPanel getButtonsPanel() {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnCancel);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         return buttonsPanel;
     }
