@@ -422,6 +422,8 @@ public class MrController {
                 view.setRightPanel(gPanelSMS);
             } else if (panel instanceof PanelViewMedicalService) {
                 view.setRightPanel(gPanelSMS);
+            } else if (panel instanceof PanelShowReports) {
+                view.setRightPanel(((PanelShowReports) panel).getPreviousPanel());
             } else if (panel instanceof PanelViewReport) {
                 view.setRightPanel(((PanelViewReport) panel).getPreviousPanel());
             } else if (panel instanceof PanelAddInvestigation) {
@@ -464,10 +466,11 @@ public class MrController {
         public void actionPerformed(ActionEvent e) {
             List<Report> reports = model.getReports(panel.getPatient().getCnp(), null, null);
 
-            PanelShowReports panelSR = new PanelShowReports(panel.getPatient());
-            panelSR.addBtnSearchListener(new ReportSearchButtonListener(panelSR));
-            panelSR.addBtnViewReportListener(new ReportViewButtonListener());
-            panelSR.addBtnAddReportListener(new ReportAddButtonListener(panelSR));
+            PanelShowReports panelSR = new PanelShowReports(panel.getPatient(), panel);
+            panelSR.addSearchButtonListener(new ReportSearchButtonListener(panelSR));
+            panelSR.addViewButtonListener(new ReportViewButtonListener());
+            panelSR.addAddButtonListener(new ReportAddButtonListener(panelSR));
+            panelSR.addCancelButtonListener(new CancelButtonListener());
             panelSR.updateTable(reports);
             view.setRightPanel(panelSR);
         }

@@ -25,16 +25,19 @@ public class PanelShowReports extends JPanel {
 
     private List<Report> reports;
 
-    private JButton btnSearch = new StyledJButton("Cauta").getButton();
-    private JButton btnViewReport = new StyledJButton("Afiseaza").getButton();
-    private JButton btnAddReport = new StyledJButton("Raport nou").getButton();
+    private final JButton btnSearch = new StyledJButton("Cauta").getButton();
+    private final JButton btnViewReport = new StyledJButton("Afiseaza").getButton();
+    private final JButton btnAddReport = new StyledJButton("Raport nou").getButton();
+    private final JButton btnCancel = new StyledJButton("Anuleaza").getButton();
 
     private final UtilDateModel utilDateModelMin = new UtilDateModel();
     private final UtilDateModel utilDateModelMax = new UtilDateModel();
 
+    private final JPanel previousPanel;
     private final Patient patient;
 
-    public PanelShowReports(Patient patient) {
+    public PanelShowReports(Patient patient, JPanel previousPanel) {
+        this.previousPanel = previousPanel;
         this.patient = patient;
 
         setLayout(new BorderLayout());
@@ -61,6 +64,7 @@ public class PanelShowReports extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnViewReport);
         buttonsPanel.add(btnAddReport);
+        buttonsPanel.add(btnCancel);
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         reportsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -121,16 +125,24 @@ public class PanelShowReports extends JPanel {
         return patient;
     }
 
-    public void addBtnSearchListener(ActionListener actionListener) {
+    public JPanel getPreviousPanel() {
+        return previousPanel;
+    }
+
+    public void addSearchButtonListener(ActionListener actionListener) {
         btnSearch.addActionListener(actionListener);
     }
 
-    public void addBtnViewReportListener(ActionListener actionListener) {
+    public void addViewButtonListener(ActionListener actionListener) {
         btnViewReport.addActionListener(actionListener);
     }
 
-    public void addBtnAddReportListener(ActionListener actionListener) {
+    public void addAddButtonListener(ActionListener actionListener) {
         btnAddReport.addActionListener(actionListener);
+    }
+
+    public void addCancelButtonListener(ActionListener actionListener) {
+        btnCancel.addActionListener(actionListener);
     }
 
 }
