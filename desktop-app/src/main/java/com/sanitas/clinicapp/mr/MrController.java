@@ -252,6 +252,7 @@ public class MrController {
                 panel.addConfirmButtonListener(new ReportConfirmButtonListener());
                 panel.addCancelButtonListener(new CancelButtonListener());
                 panel.loadReportData(report);
+                report.setInvestigations(model.getInvestigations(report.getId()));
                 panel.updateTable();
                 view.setRightPanel(panel);
             }
@@ -282,7 +283,11 @@ public class MrController {
 
                 PanelShowReports panelSR = panelVR.getPreviousPanel();
                 panelSR.updateTable(model.getReports(panelSR.getPatient().getCnp(), null, null));
-                panelVR.loadReportData(model.getReport(report.getId()));
+
+                int reportId = report.getId();
+                Report updatedReport = model.getReport(reportId);
+                updatedReport.setInvestigations(model.getInvestigations(reportId));
+                panelVR.loadReportData(updatedReport);
             } else {
                 view.sendError("Nu s-a putut parafa raportul medical.");
             }
@@ -485,7 +490,7 @@ public class MrController {
             Report report = panelVR.getReport();
 
             if (investigationsTable.getSelectedRows().length != 1) {
-                view.sendError("Trebuie sa selectezi exact un raport medical.");
+                view.sendError("Trebuie sa selectezi exact o investigatie.");
             } else {
                 int row = investigationsTable.getSelectedRow();
                 Investigation investigation = report.getInvestigations().get(row);
@@ -509,7 +514,13 @@ public class MrController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            PanelAddInvestigation panelAI = new PanelAddInvestigation(panel.getReport(), panel);
+            Report report = panel.getReport();
+            if (panel.getReport().getSealCode() != null) {
+                view.sendError("Nu se pot adauga investigatii noi!");
+                return;
+            }
+
+            PanelAddInvestigation panelAI = new PanelAddInvestigation(report, panel);
             panelAI.addSaveButtonListener(new SaveButtonListener());
             panelAI.addCancelButtonListener(new CancelButtonListener());
             panelAI.updateCbServices(model.getMedicalServices(cnp));
