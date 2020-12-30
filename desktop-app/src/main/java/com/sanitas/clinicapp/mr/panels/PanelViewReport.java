@@ -28,6 +28,8 @@ public class PanelViewReport extends JPanel {
     private JTextArea tfDiagnostic = new JTextArea(2, 46);
     private JTextArea tfRecommendation = new JTextArea(2, 45);
 
+    private JButton btnAddInvestigation = new StyledJButton("Adauga o investigatie").getButton();
+    private JButton btnViewInvestigation = new StyledJButton("Afiseaza investigatia").getButton();
     private JButton btnSave = new StyledJButton("Salveaza").getButton();
     private JButton btnConfirm = new StyledJButton("Parafeaza").getButton();
     private JButton btnCancel = new StyledJButton("Anuleaza").getButton();
@@ -112,6 +114,11 @@ public class PanelViewReport extends JPanel {
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         tableScrollPane.setPreferredSize(new Dimension(500, 60));
         sixthLinePanel.add(tableScrollPane);
+        sixthLinePanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+
+        JPanel seventhLinePanel = new JPanel(new FlowLayout());
+        seventhLinePanel.add(btnAddInvestigation);
+        seventhLinePanel.add(btnViewInvestigation);
 
         JPanel reportDataPanel = new JPanel();
         reportDataPanel.setLayout(new BoxLayout(reportDataPanel, BoxLayout.Y_AXIS));
@@ -121,6 +128,7 @@ public class PanelViewReport extends JPanel {
         reportDataPanel.add(fourthLinePanel);
         reportDataPanel.add(fifthLinePanel);
         reportDataPanel.add(sixthLinePanel);
+        reportDataPanel.add(seventhLinePanel);
 
         JScrollPane dataScrollPane = new JScrollPane(reportDataPanel);
         dataScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -195,6 +203,14 @@ public class PanelViewReport extends JPanel {
 
     public Report getReport() {
         return report;
+    }
+
+    public void addAddInvestigationButton(ActionListener actionListener) {
+        btnAddInvestigation.addActionListener(actionListener);
+    }
+
+    public void addViewInvestigationButton(ActionListener actionListener) {
+        btnViewInvestigation.addActionListener(actionListener);
     }
 
     public void addSaveButtonListener(ActionListener actionListener) {
