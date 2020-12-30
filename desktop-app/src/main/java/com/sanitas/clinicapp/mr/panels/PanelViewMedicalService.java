@@ -1,7 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
 import com.sanitas.clinicapp.mr.MedicalService;
-import com.sanitas.clinicapp.mr.Patient;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
@@ -149,18 +148,6 @@ public class PanelViewMedicalService extends JPanel {
 
     public JTextField getTfName() {
         return tfName;
-    }
-
-    public JComboBox<String> getCbSpeciality() {
-        return cbSpeciality;
-    }
-
-    public JComboBox<String> getCbAccreditation() {
-        return cbAccreditation;
-    }
-
-    public JComboBox<String> getCbEquipment() {
-        return cbEquipment;
     }
 
     public JTextField getTfDuration() {
