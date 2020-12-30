@@ -34,7 +34,7 @@ public class MrModel {
     }
 
     public List<Patient> getPatients(String lastname, String firstname) {
-        List<Patient> patients = new ArrayList<Patient>();
+        List<Patient> patients = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = database.preparedStatement("SELECT `cnp`, `lastname`, `firstname` FROM `patients` WHERE `lastname` LIKE CONCAT('%', ?, '%') AND  `firstname` LIKE CONCAT('%', ?, '%');");
             preparedStatement.setString(1, lastname);
@@ -449,30 +449,6 @@ public class MrModel {
         return investigations;
     }
 
-    public Investigation getInvestigation(int idInvestigation) {
-        Investigation investigation = null;
-
-        try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `idInvestigation`, `idService`, `serviceName`, CONCAT(`d_lastName`, ' ', `d_firstName`) AS `doctorName`, `remarks`, `date` FROM `view_investigations` WHERE `idInvestigation` = ?;");
-            preparedStatement.setInt(1, idInvestigation);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                investigation = new Investigation(
-                        resultSet.getInt(1),
-                        resultSet.getInt(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4),
-                        resultSet.getString(5),
-                        resultSet.getTimestamp(6));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return investigation;
-    }
-
     public boolean addInvestigation(Investigation investigation, int idReport) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL INSERT_REPORT_INVESTIGATION(?, ?, ?, ?)");
@@ -490,7 +466,7 @@ public class MrModel {
         return false;
     }
 
-    public List<Analyse> getAnalyses(String cnp, Date startDate, Date endDate) {
+    public List<Analyse> getPatientAnalyses(String cnp, Date startDate, Date endDate) {
         List<Analyse> analyses = new ArrayList<>();
         int index = 2;
 
@@ -530,6 +506,27 @@ public class MrModel {
         }
 
         analyses.sort(Analyse::compareTo);
+
+        return analyses;
+    }
+
+    public List<Analyse> getAnalyses() {
+        List<Analyse> analyses = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_analyses`;");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                analyses.add(new Analyse(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getFloat(3),
+                        resultSet.getFloat(4)));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
         return analyses;
     }

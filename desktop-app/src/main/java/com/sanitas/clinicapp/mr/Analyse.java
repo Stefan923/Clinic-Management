@@ -28,6 +28,13 @@ public class Analyse implements Comparable<Analyse> {
         this.isPositive = isPositive;
     }
 
+    public Analyse(int idAnalyse, String name, float minimum, float maximum) {
+        this.idAnalyse = idAnalyse;
+        this.name = name;
+        this.minimum = minimum;
+        this.maximum = maximum;
+    }
+
     public String getName() {
         return name;
     }

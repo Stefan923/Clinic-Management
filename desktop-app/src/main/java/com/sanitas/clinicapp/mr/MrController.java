@@ -490,7 +490,7 @@ public class MrController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            List<Analyse> analyses = model.getAnalyses(panel.getPatient().getCnp(), null, null);
+            List<Analyse> analyses = model.getPatientAnalyses(panel.getPatient().getCnp(), null, null);
 
             PanelShowAnalyses panelSA = new PanelShowAnalyses(panel.getPatient(), panel);
             panelSA.addSearchButtonListener(new AnalyseSearchButtonListener(panelSA));
@@ -512,7 +512,7 @@ public class MrController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            panel.updateTable(model.getAnalyses(panel.getPatient().getCnp(),
+            panel.updateTable(model.getPatientAnalyses(panel.getPatient().getCnp(),
                     panel.getUtilDateModelMin().getValue(),
                     panel.getUtilDateModelMax().getValue()));
         }
