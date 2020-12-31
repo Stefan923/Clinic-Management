@@ -36,7 +36,7 @@ public class PanelViewPatient extends JPanel {
         tfFirstname.setText(patient.getFirstname());
         tfFirstname.setEditable(false);
 
-        JTextField tfIban = new JTextField(15);
+        JTextField tfIban = new JTextField(17);
         tfIban.setText(patient.getIban());
         tfIban.setEditable(false);
 
