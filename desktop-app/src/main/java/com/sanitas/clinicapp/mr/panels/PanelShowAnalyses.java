@@ -71,8 +71,6 @@ public class PanelShowAnalyses extends JPanel {
     }
 
     private JPanel getDataPanel() {
-        analysesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        analysesTable.setFillsViewportHeight(true);
         JScrollPane jScrollPane = new JScrollPane(analysesTable);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setPreferredSize(new Dimension(540, 240));
@@ -118,6 +116,9 @@ public class PanelShowAnalyses extends JPanel {
                 return false;
             }
         });
+        analysesTable.getColumn("Data").setPreferredWidth(120);
+        analysesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        analysesTable.setFillsViewportHeight(true);
     }
 
     public Patient getPatient() {
