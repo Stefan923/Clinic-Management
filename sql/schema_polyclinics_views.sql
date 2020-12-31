@@ -38,6 +38,10 @@ CREATE VIEW `polyclinics`.`view_equipments` AS
 	SELECT `id`, `name`
     FROM `equipments`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_patients`;
+CREATE VIEW `polyclinics`.`view_patients` AS
+	SELECT * FROM `patients`;
+
 DROP VIEW IF EXISTS `polyclinics`.`view_reports`;
 CREATE VIEW `polyclinics`.`view_reports` AS
 	SELECT R.`id`, P.`cnp` AS `cnpPatient`, P.`lastName` AS `p_lastname`, P.`firstName` AS `p_firstname`, R.`sealCode`, E.`lastName` AS `e_lastname`, E.`firstName` AS `e_firstname`, R.`diagnostic`, R.`recommendation`, R.`date`, R.`lastEdit`
