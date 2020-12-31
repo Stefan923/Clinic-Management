@@ -36,7 +36,7 @@ public class MrModel {
     public List<Patient> getPatients(String lastname, String firstname) {
         List<Patient> patients = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `cnp`, `lastname`, `firstname` FROM `patients` WHERE `lastname` LIKE CONCAT('%', ?, '%') AND  `firstname` LIKE CONCAT('%', ?, '%');");
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `cnp`, `lastname`, `firstname` FROM `view_patients` WHERE `lastname` LIKE CONCAT('%', ?, '%') AND  `firstname` LIKE CONCAT('%', ?, '%');");
             preparedStatement.setString(1, lastname);
             preparedStatement.setString(2, firstname);
             preparedStatement.execute();
@@ -59,7 +59,7 @@ public class MrModel {
         Patient patient = null;
 
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `lastname`, `firstname`, `iban` FROM `patients` WHERE `cnp` = ?;");
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `lastname`, `firstname`, `iban` FROM `view_patients` WHERE `cnp` = ?;");
             preparedStatement.setString(1, cnp);
             preparedStatement.execute();
 
