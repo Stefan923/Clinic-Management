@@ -11,22 +11,22 @@ import java.util.Optional;
 
 public class PanelAddMedicalService extends JPanel {
 
-    private JTextField tfCnp = new JTextField(15);
-    private JTextField tfName = new JTextField(15);
-    private JComboBox<String> cbSpeciality = new JComboBox<>();
-    private JComboBox<String> cbAccreditation = new JComboBox<>();
-    private JComboBox<String> cbEquipment = new JComboBox<>();
-    private JTextField tfPrice = new JTextField(15);
-    private JTextField tfDuration = new JTextField(15);
+    private final JTextField tfCnp = new JTextField(15);
+    private final JTextField tfName = new JTextField(15);
+    private final JComboBox<String> cbSpeciality = new JComboBox<>();
+    private final JComboBox<String> cbAccreditation = new JComboBox<>();
+    private final JComboBox<String> cbEquipment = new JComboBox<>();
+    private final JTextField tfPrice = new JTextField(15);
+    private final JTextField tfDuration = new JTextField(15);
 
-    private JButton btnSave = new StyledJButton("Salveaza").getButton();
-    private JButton btnCancel = new StyledJButton("Anuleaza").getButton();
+    private final JButton btnSave = new StyledJButton("Salveaza").getButton();
+    private final JButton btnCancel = new StyledJButton("Anuleaza").getButton();
 
-    private String cnpDoctor;
+    private final String cnpDoctor;
 
-    Map<Integer, String> specialities;
-    Map<Integer, String> accreditations;
-    Map<Integer, String> equipments;
+    private Map<Integer, String> specialities;
+    private Map<Integer, String> accreditations;
+    private Map<Integer, String> equipments;
 
     public PanelAddMedicalService() {
         this(null);
@@ -114,7 +114,7 @@ public class PanelAddMedicalService extends JPanel {
         this.specialities = specialities;
 
         cbSpeciality.removeAllItems();
-        specialities.values().forEach(speciality -> cbSpeciality.addItem(speciality));
+        specialities.values().forEach(cbSpeciality::addItem);
     }
 
     public void updateCbAccreditation(Map<Integer, String> accreditations) {
@@ -122,7 +122,7 @@ public class PanelAddMedicalService extends JPanel {
 
         cbAccreditation.removeAllItems();
         cbAccreditation.addItem("-");
-        accreditations.values().forEach(accreditation -> cbAccreditation.addItem(accreditation));
+        accreditations.values().forEach(cbAccreditation::addItem);
     }
 
     public void updateCbEquipment(Map<Integer, String> equipments) {
@@ -130,7 +130,7 @@ public class PanelAddMedicalService extends JPanel {
 
         cbEquipment.removeAllItems();
         cbEquipment.addItem("-");
-        equipments.values().forEach(equipment -> cbEquipment.addItem(equipment));
+        equipments.values().forEach(cbEquipment::addItem);
     }
 
     public JTextField getTfCnp() {
@@ -139,18 +139,6 @@ public class PanelAddMedicalService extends JPanel {
 
     public JTextField getTfName() {
         return tfName;
-    }
-
-    public JComboBox<String> getCbSpeciality() {
-        return cbSpeciality;
-    }
-
-    public JComboBox<String> getCbAccreditation() {
-        return cbAccreditation;
-    }
-
-    public JComboBox<String> getCbEquipment() {
-        return cbEquipment;
     }
 
     public JTextField getTfDuration() {
