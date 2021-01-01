@@ -65,10 +65,22 @@ DROP VIEW IF EXISTS `polyclinics`.`view_patient_analyses`;
 CREATE VIEW `view_patient_analyses` AS
     SELECT PA.`cnpPatient`, A.`name`, PA.`value`, PA.`isPositive`, PA.`idAnalyse`, A.`minimum`, A.`maximum`, PA.`date`
     FROM `patient_analyses` PA
-        INNER JOIN `analyse` A ON ((A.`id` = PA.`idAnalyse`));
+        INNER JOIN `analyse` A ON A.`id` = PA.`idAnalyse`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_doctors`;
 CREATE VIEW `polyclinics`.`view_doctors` AS
 	SELECT * FROM `doctors`;
 
-SELECT * FROM `view_investigations`;
+DROP VIEW IF EXISTS `polyclinics`.`view_appointments`;
+CREATE VIEW `view_appointments` AS
+    SELECT A.`id`, A.`cnpPatient`, A.`cnpDoctor`, A.`date`, CONCAT(P.`lastName`, ' ', P.`firstName`) AS `patientName`, CONCAT(E.`lastName`, ' ', P.`firstName`) AS `doctorName`, C.`name` AS `cabinetName`, S.`name` AS `specialityName`, SUM(MS.`duration`)
+    FROM `appointments` A
+        INNER JOIN `patients` P ON P.`cnp` = A.`cnpPatient`
+        INNER JOIN `employees` E ON E.`cnp` = A.`cnpDoctor`
+        INNER JOIN `cabinets` C ON C.`id` = A.`idCabinet`
+        INNER JOIN `specialities` S on S.`id` = A.`idSpeciality`
+        LEFT OUTER JOIN `appointment_services` APS on APS.`idAppointment` = A.`id`
+        LEFT OUTER JOIN `medical_services` MS on MS.`id` = APS.`idMedicalService`
+        GROUP BY A.`id`;
+
+SELECT * FROM `view_appointments`;
