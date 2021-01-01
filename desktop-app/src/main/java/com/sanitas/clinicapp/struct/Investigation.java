@@ -1,4 +1,4 @@
-package com.sanitas.clinicapp.mr;
+package com.sanitas.clinicapp.struct;
 
 import java.util.Date;
 

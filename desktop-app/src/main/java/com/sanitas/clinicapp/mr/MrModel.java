@@ -2,6 +2,7 @@ package com.sanitas.clinicapp.mr;
 
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
+import com.sanitas.clinicapp.struct.*;
 
 import java.sql.*;
 import java.util.*;

@@ -2,6 +2,7 @@ package com.sanitas.clinicapp.mr;
 
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.mr.panels.*;
+import com.sanitas.clinicapp.struct.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

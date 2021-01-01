@@ -1,6 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
-import com.sanitas.clinicapp.mr.Investigation;
+import com.sanitas.clinicapp.struct.Investigation;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;

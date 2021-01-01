@@ -1,4 +1,4 @@
-package com.sanitas.clinicapp.mr;
+package com.sanitas.clinicapp.struct;
 
 public class MedicalService {
 
