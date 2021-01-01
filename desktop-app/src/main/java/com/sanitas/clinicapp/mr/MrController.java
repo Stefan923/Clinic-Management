@@ -16,10 +16,11 @@ public class MrController {
 
     private PanelShowMedicalServices gPanelSMS;
 
+    private ClinicApplication.Account account;
     private String cnp;
 
     public MrController(MrModel model, MrView view, JFrame previousView) {
-        ClinicApplication.Account account = ClinicApplication.getUser();
+        account = ClinicApplication.getUser();
         cnp = (account.hasPermission("mr.medical_services.read.others") ? "" : account.getCnp());
 
         this.model = model;
@@ -43,6 +44,9 @@ public class MrController {
         PanelSearchPatient panelSearchPatient = new PanelSearchPatient();
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
 
+        PanelShowAppointments panelShowAppointments = new PanelShowAppointments();
+        panelShowAppointments.updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments() : model.getAppointments(cnp));
+
         gPanelSMS = new PanelShowMedicalServices();
         gPanelSMS.updateTable(model.getMedicalServices(cnp));
         gPanelSMS.addBtnAddListener(new ServiceAddButtonListener());
@@ -51,6 +55,7 @@ public class MrController {
 
         view.addBtnShowPatientsListener(new MenuButtonListener(panelShowPatients));
         view.addBtnSearchPatientListener(new MenuButtonListener(panelSearchPatient));
+        view.addBtnAppointmentsListener(new MenuButtonListener(panelShowAppointments));
         view.addBtnMedicalServicesListener(new MenuButtonListener(gPanelSMS));
         view.addBackButtonListener(new BackButtonListener(previousView));
     }
