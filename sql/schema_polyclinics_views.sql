@@ -56,5 +56,10 @@ CREATE VIEW `polyclinics`.`view_investigations` AS
 DROP VIEW IF EXISTS `polyclinics`.`view_doctors`;
 CREATE VIEW `polyclinics`.`view_doctors` AS
 	SELECT * FROM `doctors`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_specialities`;
+CREATE VIEW `polyclinics`.`view_specialities` AS
+	SELECT `id`, `name`
+    FROM `specialities`;
 
-SELECT * FROM `view_investigations`;
+SELECT * FROM `view_specialities`;

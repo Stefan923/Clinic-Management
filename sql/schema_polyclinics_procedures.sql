@@ -441,8 +441,8 @@ BEGIN
     -- CALL INSERT_EMPLOYEE('2700735934101', 'Spatariu', 'Diana', 'Cluj-Napoca, str. Nicolae Iorga nr. 6', '0783527882', 'spatariu.diana@gmail.com', 'RO64RZBR3277465196914272', '30', '2017-02-20', 'Receptioner', '3470', '120', @output);
     -- CALL DELETE_EMPLOYEE('2700735934101', @output);
     -- CALL UPDATE_EMPLOYEE('2700735934101', 'contractNum', '31', @output);
-    CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
-    -- CALL GET_MEDICAL_UNIT_PROFIT('2', '2019-01-01', '2019-12-31', @output);
+    -- CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
+    CALL GET_MEDICAL_UNIT_PROFIT('2', '2019-01-01', '2019-12-31', @output);
     -- CALL GET_PROFIT_BY_SPECIALITY('1', '2020-01-01', '2020-12-15', @output);
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL GET_DOCTOR_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
