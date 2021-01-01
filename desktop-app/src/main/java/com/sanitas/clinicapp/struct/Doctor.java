@@ -5,10 +5,21 @@ public class Doctor {
     private String cnp;
     private String sealCode;
 
+    private String name;
+
     private float commission;
 
     private String scientificTitle;
     private String didacticTitle;
+
+    public Doctor(String cnp, String sealCode, String name, float commission, String scientificTitle, String didacticTitle) {
+        this.cnp = cnp;
+        this.sealCode = sealCode;
+        this.name = name;
+        this.commission = commission;
+        this.scientificTitle = scientificTitle;
+        this.didacticTitle = didacticTitle;
+    }
 
     public Doctor(String cnp, String sealCode, float commission, String scientificTitle, String didacticTitle) {
         this.cnp = cnp;
@@ -24,6 +35,10 @@ public class Doctor {
 
     public String getSealCode() {
         return sealCode;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public float getCommission() {
