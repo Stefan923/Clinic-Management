@@ -73,7 +73,7 @@ CREATE VIEW `polyclinics`.`view_doctors` AS
 
 DROP VIEW IF EXISTS `polyclinics`.`view_appointments`;
 CREATE VIEW `view_appointments` AS
-    SELECT A.`id`, A.`cnpPatient`, A.`cnpDoctor`, A.`date`, CONCAT(P.`lastName`, ' ', P.`firstName`) AS `patientName`, CONCAT(E.`lastName`, ' ', P.`firstName`) AS `doctorName`, C.`name` AS `cabinetName`, S.`name` AS `specialityName`, SUM(MS.`duration`)
+    SELECT A.`id`, A.`cnpPatient`, A.`cnpDoctor`, A.`date`, CONCAT(P.`lastName`, ' ', P.`firstName`) AS `patientName`, CONCAT(E.`lastName`, ' ', E.`firstName`) AS `doctorName`, C.`name` AS `cabinetName`, S.`name` AS `specialityName`, SUM(MS.`duration`) AS `duration`
     FROM `appointments` A
         INNER JOIN `patients` P ON P.`cnp` = A.`cnpPatient`
         INNER JOIN `employees` E ON E.`cnp` = A.`cnpDoctor`
