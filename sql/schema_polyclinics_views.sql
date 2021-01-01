@@ -57,6 +57,16 @@ CREATE VIEW `polyclinics`.`view_investigations` AS
 		INNER JOIN `medical_services` MS ON MS.`id` = RI.`idService`
 		INNER JOIN `employees` E ON E.`cnp` = MS.`cnpDoctor`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_analyses`;
+CREATE VIEW `polyclinics`.`view_analyses` AS
+    SELECT * FROM `analyse`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_patient_analyses`;
+CREATE VIEW `view_patient_analyses` AS
+    SELECT PA.`cnpPatient`, A.`name`, PA.`value`, PA.`isPositive`, PA.`idAnalyse`, A.`minimum`, A.`maximum`, PA.`date`
+    FROM `patient_analyses` PA
+        INNER JOIN `analyse` A ON ((A.`id` = PA.`idAnalyse`));
+
 DROP VIEW IF EXISTS `polyclinics`.`view_doctors`;
 CREATE VIEW `polyclinics`.`view_doctors` AS
 	SELECT * FROM `doctors`;
