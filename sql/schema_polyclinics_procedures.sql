@@ -427,6 +427,52 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS INSERT_APPOINTMENT;
+DELIMITER //
+CREATE PROCEDURE INSERT_APPOINTMENT(IN `_cnpPatient` VARCHAR(13), IN `_cnpDoctor` VARCHAR(13), IN `_idCabinet` INT, IN `_idSpeciality` INT, IN `_date` TIMESTAMP, OUT `result` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `doctors` WHERE `cnpEmployee` = `_cnpDoctor`) = 1
+		AND (SELECT COUNT(*) FROM `patients` WHERE `cnp` = `_cnpPatient`) = 1
+		AND (SELECT COUNT(*) FROM `cabinets` WHERE `id` = `_idCabinet`) = 1
+		AND (SELECT COUNT(*) FROM `specialities` WHERE `id` = `_idSpeciality`) = 1) THEN
+        
+        INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`) VALUE (`_cnpPatient`, `_cnpDoctor`, `_idCabinet`, `_idSpeciality`, `_date`);
+		SET `result` = (SELECT `id` FROM `appointments` ORDER BY `id` DESC LIMIT 1);
+    ELSE
+		SET `result` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS INSERT_APPOINTMENT_SERVICE;
+DELIMITER //
+CREATE PROCEDURE INSERT_APPOINTMENT_SERVICE(IN `_idMedicalService` INT, IN `_idAppointment` INT, OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_idMedicalService`) = 1
+		AND (SELECT COUNT(*) FROM `appointments` WHERE `id` = `_idAppointment`) = 1) THEN
+        
+        INSERT INTO `appointment_services` (`idMedicalService`, `idAppointment`) VALUE (`_idMedicalService`, `_idAppointment`);
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DELETE_APPOINTMENT;
+DELIMITER //
+CREATE PROCEDURE DELETE_APPOINTMENT(IN `_id` INT, OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `appointments` WHERE `id` = `_id`) > 0) THEN
+        
+        DELETE FROM `appointments` WHERE `id` = `_id`;
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
 -- teste
 DROP PROCEDURE IF EXISTS TEST;
 DELIMITER //
