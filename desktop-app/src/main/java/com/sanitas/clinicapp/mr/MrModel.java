@@ -45,14 +45,32 @@ public class MrModel {
             ResultSet resultSet = preparedStatement.getResultSet();
             while (resultSet.next()) {
                 patients.add(new Patient(resultSet.getString(1),
-                                        resultSet.getString(2),
-                                        resultSet.getString(3)));
+                        resultSet.getString(2),
+                        resultSet.getString(3)));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
         patients.sort(Patient::compareTo);
+        return patients;
+    }
+
+    public Map<String, String> getPatients() {
+        Map<String, String> patients = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `cnp`, CONCAT(`lastname`, ' ', `firstname`) AS `name` FROM `view_patients` ORDER BY `name` ASC;");
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                patients.put(resultSet.getString(1),
+                        resultSet.getString(2));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
         return patients;
     }
 
@@ -247,15 +265,61 @@ public class MrModel {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 medicalServices.add(new MedicalService(resultSet.getInt(1),
-                                                    resultSet.getString(2),
-                                                    resultSet.getString(3),
-                                                    resultSet.getDouble(4),
-                                                    resultSet.getInt(5),
-                                                    resultSet.getString(6),
-                                                    resultSet.getString(7),
-                                                    resultSet.getString(8),
-                                                    resultSet.getString(9),
-                                                    resultSet.getString(10)));
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getDouble(4),
+                        resultSet.getInt(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getString(8),
+                        resultSet.getString(9),
+                        resultSet.getString(10)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return medicalServices;
+    }
+
+    public List<MedicalService> getMedicalServices(String cnpDoctor, int idSpeciality, int idCabinet) {
+        List<MedicalService> medicalServices = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `serviceName`, `duration`, `price` FROM `view_services_by_cabinet` WHERE `cnpDoctor` = ? AND `idSpeciality` = ? AND `idCabinet` = ?;");
+            preparedStatement.setString(1, cnpDoctor);
+            preparedStatement.setInt(2, idSpeciality);
+            preparedStatement.setInt(3, idCabinet);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                medicalServices.add(new MedicalService(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getInt(3),
+                        resultSet.getDouble(4)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return medicalServices;
+    }
+
+    public List<MedicalService> getMedicalServices(int idAppointment) {
+        List<MedicalService> medicalServices = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `idMedicalService`, `name`, `duration`, `price` FROM `view_appointment_services` WHERE `idAppointment` = ?;");
+            preparedStatement.setInt(1, idAppointment);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                medicalServices.add(new MedicalService(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getInt(3),
+                        resultSet.getDouble(4)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -348,7 +412,28 @@ public class MrModel {
 
             while (resultSet.next()) {
                 specialities.put(resultSet.getInt(1),
-                                resultSet.getString(2));
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return specialities;
+    }
+
+    public Map<Integer, String> getSpecialities() {
+        Map<Integer, String> specialities = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_specialities`;");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                specialities.put(resultSet.getInt(1),
+                        resultSet.getString(2));
             }
 
             resultSet.close();
@@ -401,6 +486,48 @@ public class MrModel {
         }
 
         return equipments;
+    }
+
+    public Map<Integer, String> getCabintes(int idMedicalUnit) {
+        Map<Integer, String> cabinets = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_cabinets` WHERE `idMedicalUnit` = ? ORDER BY `name` ASC;");
+            preparedStatement.setInt(1, idMedicalUnit);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                cabinets.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return cabinets;
+    }
+
+    public Map<String, String> getDoctors(int idSpeciality, int idMedicalUnit) {
+        Map<String, String> doctors = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT VS.`cnp`, VS.`name` FROM `view_doctors_by_speciality` VS, `view_doctors_by_medical_unit` VM WHERE VS.`id` = ? AND VM.`cnpEmployee` = VS.`cnp` AND VM.`idMedicalUnit` = ? ORDER BY `name` ASC;");
+            preparedStatement.setInt(1, idSpeciality);
+            preparedStatement.setInt(2, idMedicalUnit);
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                doctors.put(resultSet.getString(1),
+                        resultSet.getString(2));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return doctors;
     }
 
     public Doctor getDoctor(String cnp) {
@@ -602,4 +729,247 @@ public class MrModel {
         return appointments;
     }
 
+    public boolean checkAppointmentByDoctor(String cnpDoctor, Date startDate, Date endDate) {
+        boolean result = false;
+
+        Timestamp start = new Timestamp(startDate.getTime());
+        Timestamp end = new Timestamp(endDate.getTime());
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT COUNT(*) FROM `view_appointments` WHERE `cnpDoctor` = ? AND ((`date` < ? AND `endDate` > ?) OR (`date` < ? AND `endDate` > ?) OR (`date` >= ? AND `endDate` <= ?));");
+            preparedStatement.setString(1, cnpDoctor);
+            preparedStatement.setTimestamp(2, start);
+            preparedStatement.setTimestamp(3, start);
+            preparedStatement.setTimestamp(4, end);
+            preparedStatement.setTimestamp(5, end);
+            preparedStatement.setTimestamp(6, start);
+            preparedStatement.setTimestamp(7, end);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) == 0) {
+                result = true;
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean checkAppointmentByDoctorSchedule(String cnpDoctor, int idMedicalUnit, Date startDate, Date endDate) {
+        boolean result = false;
+
+        Timestamp start = new Timestamp(startDate.getTime());
+        Timestamp end = new Timestamp(endDate.getTime());
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT COUNT(*) FROM `view_employee_schedule` WHERE `cnpEmployee` = ? AND `idMedicalUnit` = ? AND `dayOfWeek` LIKE DAYNAME(?) AND `startHour` <= TIME(?) AND `endHour` >= TIME(?);");
+            preparedStatement.setString(1, cnpDoctor);
+            preparedStatement.setInt(2, idMedicalUnit);
+            preparedStatement.setTimestamp(3, start);
+            preparedStatement.setTimestamp(4, start);
+            preparedStatement.setTimestamp(5, end);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                result = resultSet.getInt(1) > 0;
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean checkAppointmentByDoctorHolidays(String cnpDoctor, Date startDate) {
+        boolean result = false;
+
+        Timestamp start = new Timestamp(startDate.getTime());
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT COUNT(*) FROM `view_holidays` WHERE `cnpEmployee` = ? AND `startDate` <= DATE(?) AND `endDate` >= DATE(?);");
+            preparedStatement.setString(1, cnpDoctor);
+            preparedStatement.setTimestamp(2, start);
+            preparedStatement.setTimestamp(3, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                result = resultSet.getInt(1) == 0;
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean checkAppointmentByPacient(String cnpPacient, Date startDate, Date endDate) {
+        boolean result = false;
+
+        Timestamp start = new Timestamp(startDate.getTime());
+        Timestamp end = new Timestamp(endDate.getTime());
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT COUNT(*) FROM `view_appointments` WHERE `cnpPatient` = ? AND ((`date` < ? AND `endDate` > ?) OR (`date` < ? AND `endDate` > ?) OR (`date` >= ? AND `endDate` <= ?));");
+            preparedStatement.setString(1, cnpPacient);
+            preparedStatement.setTimestamp(2, start);
+            preparedStatement.setTimestamp(3, start);
+            preparedStatement.setTimestamp(4, end);
+            preparedStatement.setTimestamp(5, end);
+            preparedStatement.setTimestamp(6, start);
+            preparedStatement.setTimestamp(7, end);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                result = resultSet.getInt(1) == 0;
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean checkAppointmentBySpeciality(int idSpeciality, Date startDate, Date endDate) {
+        boolean result = false;
+
+        Timestamp start = new Timestamp(startDate.getTime());
+        Timestamp end = new Timestamp(endDate.getTime());
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT COUNT(*) FROM `view_appointments` WHERE `idSpeciality` = ? AND ((`date` < ? AND `endDate` > ?) OR (`date` < ? AND `endDate` > ?) OR (`date` >= ? AND `endDate` <= ?));");
+            preparedStatement.setInt(1, idSpeciality);
+            preparedStatement.setTimestamp(2, start);
+            preparedStatement.setTimestamp(3, start);
+            preparedStatement.setTimestamp(4, end);
+            preparedStatement.setTimestamp(5, end);
+            preparedStatement.setTimestamp(6, start);
+            preparedStatement.setTimestamp(7, end);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) == 0) {
+                result = true;
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean checkAppointmentByCabinet(int idCabinet, Date startDate, Date endDate) {
+        boolean result = false;
+
+        Timestamp start = new Timestamp(startDate.getTime());
+        Timestamp end = new Timestamp(endDate.getTime());
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT COUNT(*) FROM `view_appointments` WHERE `idCabinet` = ? AND ((`date` < ? AND `endDate` > ?) OR (`date` < ? AND `endDate` > ?) OR (`date` >= ? AND `endDate` <= ?));");
+            preparedStatement.setInt(1, idCabinet);
+            preparedStatement.setTimestamp(2, start);
+            preparedStatement.setTimestamp(3, start);
+            preparedStatement.setTimestamp(4, end);
+            preparedStatement.setTimestamp(5, end);
+            preparedStatement.setTimestamp(6, start);
+            preparedStatement.setTimestamp(7, end);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) == 0) {
+                result = true;
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public Appointment getAppointment(int idAppointment) {
+        Appointment appointment = null;
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `patientName`, `doctorName`, `cabinetName`, `specialityName`, `duration`, `date` FROM `view_appointments` WHERE `id` = ?;");
+            preparedStatement.setInt(1, idAppointment);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                appointment = new Appointment(
+                        idAppointment,
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getInt(5),
+                        resultSet.getTimestamp(6));
+                appointment.setServices(getMedicalServices(idAppointment));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return appointment;
+    }
+
+    public int addAppointment(Appointment appointment) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_APPOINTMENT(?, ?, ?, ?, ?, ?)");
+            callableStatement.setString(1, appointment.getCnpPatient());
+            callableStatement.setString(2, appointment.getCnpDoctor());
+            callableStatement.setInt(3, appointment.getIdCabinet());
+            callableStatement.setInt(4, appointment.getIdSpeciality());
+            callableStatement.setTimestamp(5, new Timestamp(appointment.getDate().getTime()));
+            callableStatement.registerOutParameter(6, Types.INTEGER);
+            callableStatement.execute();
+
+            return callableStatement.getInt(6);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public boolean addAppointmentServices(int idAppointment, List<MedicalService> services) {
+        final boolean[] result = {true};
+
+        services.forEach(medicalService -> {
+            try {
+                CallableStatement callableStatement = database.callableStatement("CALL INSERT_APPOINTMENT_SERVICE(?, ?, ?)");
+                callableStatement.setInt(1, medicalService.getId());
+                callableStatement.setInt(2, idAppointment);
+                callableStatement.registerOutParameter(3, Types.BOOLEAN);
+                callableStatement.execute();
+
+                result[0] = result[0] && callableStatement.getBoolean(3);
+            } catch (SQLException ex) {
+                result[0] = false;
+                ex.printStackTrace();
+            }
+        });
+
+        return result[0];
+    }
+
 }
+

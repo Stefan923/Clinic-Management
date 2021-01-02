@@ -30,6 +30,8 @@ public class PanelShowAppointments extends JPanel {
 
     private final JTable appointmentsTable = new JTable();
 
+    private List<Appointment> appointments;
+
     public PanelShowAppointments() {
         super(new BorderLayout());
 
@@ -79,16 +81,9 @@ public class PanelShowAppointments extends JPanel {
         return dataPanel;
     }
 
-    private JPanel getButtonsPanel() {
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.add(btnAdd);
-        buttonsPanel.add(btnDelete);
-        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
-
-        return buttonsPanel;
-    }
-
     public void updateTable(List<Appointment> appointments) {
+        this.appointments = appointments;
+
         String[] columns = { "Pacient", "Doctor", "Cabinet", "Specialitate", "Durata", "Data" };
 
         Object[][] analysesData = new Object[appointments.size()][columns.length];
@@ -114,6 +109,24 @@ public class PanelShowAppointments extends JPanel {
         appointmentsTable.getColumn("Data").setPreferredWidth(120);
         appointmentsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         appointmentsTable.setFillsViewportHeight(true);
+    }
+
+    private JPanel getButtonsPanel() {
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.add(btnAdd);
+        buttonsPanel.add(btnView);
+        buttonsPanel.add(btnDelete);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+
+        return buttonsPanel;
+    }
+
+    public JTable getAppointmentsTable() {
+        return appointmentsTable;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
     }
 
     public void addSearchButtonListener(ActionListener actionListener) {

@@ -7,16 +7,17 @@ import com.sanitas.clinicapp.struct.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.List;
 
 public class MrController {
 
-    private MrModel model;
-    private MrView view;
+    private final MrModel model;
+    private final MrView view;
 
     private PanelShowMedicalServices gPanelSMS;
 
-    private ClinicApplication.Account account;
+    private final ClinicApplication.Account account;
     private String cnp;
 
     public MrController(MrModel model, MrView view, JFrame previousView) {
@@ -45,6 +46,8 @@ public class MrController {
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
 
         PanelShowAppointments panelShowAppointments = new PanelShowAppointments();
+        panelShowAppointments.addAddButtonListener(new AppointmentAddButtonListener(panelShowAppointments));
+        panelShowAppointments.addViewButtonListener(new AppointmentViewButtonListener(panelShowAppointments));
         panelShowAppointments.updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments() : model.getAppointments(cnp));
 
         gPanelSMS = new PanelShowMedicalServices();
@@ -469,6 +472,10 @@ public class MrController {
                 view.setRightPanel(((PanelShowAnalyses) panel).getPreviousPanel());
             } else if (panel instanceof PanelAddAnalyse) {
                 view.setRightPanel(((PanelAddAnalyse) panel).getPreviousPanel());
+            } else if (panel instanceof PanelAddAppointment) {
+                view.setRightPanel(((PanelAddAppointment) panel).getPreviousPanel());
+            } else if (panel instanceof PanelViewAppointment) {
+                view.setRightPanel(((PanelViewAppointment) panel).getPreviousPanel());
             }
         }
 
@@ -485,6 +492,11 @@ public class MrController {
         @Override
         public void actionPerformed(ActionEvent e) {
             Patient patient = model.getPatient(panel.getTfCnp().getText());
+
+            if (patient == null) {
+                view.sendError("Nu a fost gasit niciun pacient!");
+                return;
+            }
 
             PanelViewPatient panelVP = new PanelViewPatient(panel, patient);
             panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
@@ -646,6 +658,263 @@ public class MrController {
             List<Report> reports = model.getReports(panel.getPatient().getCnp(), null, null);
             panel.updateTable(reports);
             view.setRightPanel(panel);
+        }
+
+    }
+
+    class AppointmentAddButtonListener implements ActionListener {
+
+        private final PanelShowAppointments panel;
+
+        public AppointmentAddButtonListener(PanelShowAppointments panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelAddAppointment panelAA = new PanelAddAppointment(panel);
+            panelAA.addSaveButtonListener(new AppointmentSaveButtonListener(panelAA));
+            panelAA.addCancelButtonListener(new CancelButtonListener());
+            panelAA.addAddButtonListener(new AppointmentAddServiceButtonListener(panelAA));
+            panelAA.addDeleteButtonListener(new AppointmentDeleteServiceButtonListener(panelAA));
+
+            panelAA.updateCbPatient(model.getPatients());
+            panelAA.updateCbSpeciality(model.getSpecialities());
+            panelAA.updateCbCabinet(model.getCabintes(1));
+
+            int idSpeciality = panelAA.getIdSpeciality();
+            panelAA.updateCbDoctor(model.getDoctors(idSpeciality, account.getIdMedicalUnit()));
+            panelAA.updateCbService(model
+                    .getMedicalServices(panelAA.getCnpDoctor(),
+                            idSpeciality,
+                            panelAA.getIdCabinet()));
+
+            panelAA.addSpecialityComboBoxListener(new AppointmentSpecialityComboBoxListener(panelAA));
+            panelAA.addDoctorComboBoxListener(new AppointmentDoctorComboBoxListener(panelAA));
+            panelAA.addCabinetComboBoxListener(new AppointmentCabinetComboBoxListener(panelAA));
+
+            view.setRightPanel(panelAA);
+        }
+
+    }
+
+    class AppointmentViewButtonListener implements ActionListener {
+
+        private final PanelShowAppointments panel;
+
+        public AppointmentViewButtonListener(PanelShowAppointments panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTable appointmentsTable = panel.getAppointmentsTable();
+
+            if (appointmentsTable.getSelectedRows().length != 1) {
+                view.sendError("Trebuie sa selectezi exact o programare.");
+            } else {
+                int idAppointment = panel.getAppointments().get(appointmentsTable.getSelectedRow()).getId();
+
+                Appointment appointment = model.getAppointment(idAppointment);
+
+                view.getPanelShowPatients().setVisible(false);
+                PanelViewAppointment panelVA = new PanelViewAppointment(appointment, panel);
+                panelVA.addCancelButtonListener(new CancelButtonListener());
+                view.setRightPanel(panelVA);
+            }
+            appointmentsTable.clearSelection();
+        }
+
+    }
+
+    class AppointmentAddServiceButtonListener implements ActionListener {
+
+        private final PanelAddAppointment panel;
+
+        public AppointmentAddServiceButtonListener(PanelAddAppointment panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            MedicalService medicalService = panel.getMedicalService();
+            List<MedicalService> medicalServices = panel.getMedicalServices();
+
+            if (medicalServices == null) {
+                view.sendError("Trebuie sa selectati un serviciu!");
+                return;
+            }
+
+            if (medicalServices.contains(medicalService)) {
+                view.sendError("Acest serviciu este deja inclus in progranare!");
+                return;
+            }
+
+            medicalServices.add(medicalService);
+            panel.updateTable();
+        }
+
+    }
+
+    class AppointmentDeleteServiceButtonListener implements ActionListener {
+
+        private final PanelAddAppointment panel;
+
+        public AppointmentDeleteServiceButtonListener(PanelAddAppointment panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            MedicalService medicalService = panel.getMedicalService();
+            List<MedicalService> medicalServices = panel.getMedicalServices();
+
+            if (medicalServices == null) {
+                view.sendError("Trebuie sa selectati un serviciu!");
+                return;
+            }
+            if (!medicalServices.contains(medicalService)) {
+                view.sendError("Acest serviciu nu este inclus in progranare!");
+                return;
+            }
+
+            medicalServices.remove(medicalService);
+            panel.updateTable();
+        }
+
+    }
+
+    class AppointmentSpecialityComboBoxListener implements ActionListener {
+
+        private final PanelAddAppointment panel;
+
+        public AppointmentSpecialityComboBoxListener(PanelAddAppointment panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.updateCbDoctor(model.getDoctors(panel.getIdSpeciality(), account.getIdMedicalUnit()));
+            panel.updateCbService(model.getMedicalServices(
+                    panel.getCnpDoctor(),
+                    panel.getIdSpeciality(),
+                    panel.getIdCabinet()
+            ));
+
+            panel.getMedicalServices().clear();
+            panel.updateTable();
+        }
+
+    }
+
+    class AppointmentDoctorComboBoxListener implements ActionListener {
+
+        private final PanelAddAppointment panel;
+
+        public AppointmentDoctorComboBoxListener(PanelAddAppointment panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.updateCbService(model.getMedicalServices(
+                    panel.getCnpDoctor(),
+                    panel.getIdSpeciality(),
+                    panel.getIdCabinet()
+            ));
+
+            panel.getMedicalServices().clear();
+            panel.updateTable();
+        }
+
+    }
+
+    class AppointmentCabinetComboBoxListener implements ActionListener {
+
+        private final PanelAddAppointment panel;
+
+        public AppointmentCabinetComboBoxListener(PanelAddAppointment panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.updateCbService(model.getMedicalServices(
+                    panel.getCnpDoctor(),
+                    panel.getIdSpeciality(),
+                    panel.getIdCabinet()
+            ));
+
+            panel.getMedicalServices().clear();
+            panel.updateTable();
+        }
+
+    }
+
+    class AppointmentSaveButtonListener implements ActionListener {
+
+        private final PanelAddAppointment panel;
+
+        public AppointmentSaveButtonListener(PanelAddAppointment panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String cnpDoctor = panel.getCnpDoctor();
+            String cnpPatient = panel.getCnpPatient();
+            int idCabinet = panel.getIdCabinet();
+
+            if (panel.getUtilDateModel().getValue() == null) {
+                view.sendError("Trebuie sa selectati o data pentru programare!");
+                return;
+            }
+
+            Date startDate = panel.getTime();
+            int duration = panel.getMedicalServices().stream().mapToInt(MedicalService::getDuration).sum();
+            System.out.println(duration);
+            Date endDate = new Date(startDate.getTime() + duration * 60 * 1000);
+
+            if (panel.getMedicalServices().isEmpty()) {
+                view.sendError("Trebuie sa introduceti cel putin un serviciu medical!");
+                return;
+            }
+
+            if (!model.checkAppointmentByDoctor(cnpDoctor, startDate, endDate)) {
+                view.sendError("Doctorul este ocupat!");
+                return;
+            }
+
+            if (!model.checkAppointmentByPacient(cnpPatient, startDate, endDate)) {
+                view.sendError("Pacientul este ocupat!");
+                return;
+            }
+
+            if (!model.checkAppointmentByDoctorSchedule(cnpDoctor, account.getIdMedicalUnit(), startDate, endDate)) {
+                view.sendError("Doctorul nu lucreaza!");
+                return;
+            }
+
+            if (!model.checkAppointmentByDoctorHolidays(cnpDoctor, startDate)) {
+                view.sendError("Doctorul este in concediu!");
+                return;
+            }
+
+            if (!model.checkAppointmentByCabinet(idCabinet, startDate, endDate)) {
+                view.sendError("Cabinetul este ocupat!");
+                return;
+            }
+
+            int idAppointment = model.addAppointment(new Appointment(cnpPatient, cnpDoctor, idCabinet, panel.getIdSpeciality(), startDate));
+
+            if (idAppointment != 0 && model.addAppointmentServices(idAppointment, panel.getMedicalServices())) {
+                ((PanelShowAppointments) panel.getPreviousPanel()).updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments() : model.getAppointments(cnp));
+
+                view.sendSuccessMessage("Programarea a fost adaugata.");
+                return;
+            }
+
+            view.sendError("Nu s-a putut adauga programarea.");
         }
 
     }
