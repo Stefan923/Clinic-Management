@@ -5,6 +5,14 @@ CREATE VIEW `polyclinics`.`view_employees` AS
 DROP VIEW IF EXISTS `polyclinics`.`view_accounts`;
 CREATE VIEW `polyclinics`.`view_accounts` AS
 	SELECT `username`, `cnpEmployee` as `cnp` FROM `accounts`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_employee_schedule`;
+CREATE VIEW `polyclinics`.`view_employee_schedule` AS
+	SELECT `idMedicalUnit`, `cnpEmployee`, `dayOfWeek`, `startHour`, `endHour` FROM `employee_schedule`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_holidays`;
+CREATE VIEW `polyclinics`.`view_holidays` AS
+	SELECT `cnpEmployee`, `startDate`, `endDate` FROM `holidays`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_services`;
 CREATE VIEW `polyclinics`.`view_services` AS
@@ -83,6 +91,12 @@ DROP VIEW IF EXISTS `polyclinics`.`view_doctors`;
 CREATE VIEW `polyclinics`.`view_doctors` AS
 	SELECT * FROM `doctors`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_doctors_by_medical_unit`;
+CREATE VIEW `polyclinics`.`view_doctors_by_medical_unit` AS
+	SELECT D.`cnpEmployee`, ES.`idMedicalUnit` FROM `doctors` D
+		INNER JOIN `employee_schedule` ES ON ES.`cnpEmployee` = D.`cnpEmployee`
+        GROUP BY D.`cnpEmployee`, ES.`idMedicalUnit`;
+
 DROP VIEW IF EXISTS `polyclinics`.`view_doctors_by_speciality`;
 CREATE VIEW `polyclinics`.`view_doctors_by_speciality` AS
 	SELECT S.`id`, E.`cnp`, CONCAT(E.`lastName`, ' ', E.`firstName`) AS `name`
@@ -93,7 +107,7 @@ CREATE VIEW `polyclinics`.`view_doctors_by_speciality` AS
 
 DROP VIEW IF EXISTS `polyclinics`.`view_appointments`;
 CREATE VIEW `view_appointments` AS
-    SELECT A.`id`, A.`cnpPatient`, A.`cnpDoctor`, A.`date`, CONCAT(P.`lastName`, ' ', P.`firstName`) AS `patientName`, CONCAT(E.`lastName`, ' ', E.`firstName`) AS `doctorName`, C.`name` AS `cabinetName`, S.`name` AS `specialityName`, SUM(MS.`duration`) AS `duration`
+    SELECT A.`id`, A.`cnpPatient`, A.`cnpDoctor`, A.`date`, CONCAT(P.`lastName`, ' ', P.`firstName`) AS `patientName`, CONCAT(E.`lastName`, ' ', E.`firstName`) AS `doctorName`, A.`idCabinet`, C.`name` AS `cabinetName`, S.`name` AS `specialityName`, SUM(MS.`duration`) AS `duration`, TIMESTAMPADD(MINUTE, SUM(MS.`duration`), A.`date`) AS `endDate`
     FROM `appointments` A
         INNER JOIN `patients` P ON P.`cnp` = A.`cnpPatient`
         INNER JOIN `employees` E ON E.`cnp` = A.`cnpDoctor`
@@ -113,5 +127,5 @@ CREATE VIEW `view_appointment_services` AS
 DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
-
-SELECT `idMedicalService`, `name`, `duration`, `price` FROM `view_appointment_services`;
+    
+SELECT * FROM `view_holidays`;
