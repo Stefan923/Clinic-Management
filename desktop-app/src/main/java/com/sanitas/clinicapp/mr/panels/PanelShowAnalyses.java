@@ -1,7 +1,7 @@
 package com.sanitas.clinicapp.mr.panels;
 
-import com.sanitas.clinicapp.mr.Analyse;
-import com.sanitas.clinicapp.mr.Patient;
+import com.sanitas.clinicapp.struct.Analyse;
+import com.sanitas.clinicapp.struct.Patient;
 import com.sanitas.clinicapp.ui.DateLabelFormatter;
 import com.sanitas.clinicapp.ui.StyledJButton;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -71,19 +71,16 @@ public class PanelShowAnalyses extends JPanel {
     }
 
     private JPanel getDataPanel() {
-        analysesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        analysesTable.setFillsViewportHeight(true);
         JScrollPane jScrollPane = new JScrollPane(analysesTable);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setPreferredSize(new Dimension(540, 240));
 
         JPanel tablePanel = new JPanel(new FlowLayout());
         tablePanel.add(jScrollPane);
-        tablePanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
         JPanel dataPanel = new JPanel(new FlowLayout());
         dataPanel.add(tablePanel);
-        dataPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+        dataPanel.setBorder(new EmptyBorder(15, 0, 0, 0));
 
         return dataPanel;
     }
@@ -119,6 +116,9 @@ public class PanelShowAnalyses extends JPanel {
                 return false;
             }
         });
+        analysesTable.getColumn("Data").setPreferredWidth(120);
+        analysesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        analysesTable.setFillsViewportHeight(true);
     }
 
     public Patient getPatient() {

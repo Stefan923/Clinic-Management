@@ -336,7 +336,8 @@ DROP PROCEDURE IF EXISTS CONFIRM_REPORT;
 DELIMITER //
 CREATE PROCEDURE CONFIRM_REPORT(IN `_id` VARCHAR(13), IN `_sealCode` VARCHAR(5), OUT `validation` INT)
 BEGIN
-	IF ((SELECT COUNT(*) FROM `reports` WHERE `id` = `_id` AND `sealCode` IS NULL) = 1) THEN
+	IF ((SELECT COUNT(*) FROM `doctors` WHERE `sealCode` = `_sealCode`) = 1
+		AND (SELECT COUNT(*) FROM `reports` WHERE `id` = `_id` AND `sealCode` IS NULL) = 1) THEN
         
         UPDATE `reports` SET `sealCode` = `_sealCode` WHERE `id` = `_id`;
 		SET `validation` = 1;
@@ -354,6 +355,7 @@ BEGIN
 		AND (SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_idService`) = 1) THEN
         
         INSERT INTO `report_investigations` (`idReport`, `idService`, `remarks`, `date`) VALUE (`_idReport`, `_idService`, `_remarks`, NOW());
+        UPDATE `reports` SET `date` = NOW() WHERE `id` = `_idReport`;
 		SET `validation` = 1;
     ELSE
 		SET `validation` = 0;
@@ -369,7 +371,7 @@ BEGIN
 		AND (SELECT COUNT(*) FROM `analyse` WHERE `id` = `_idAnalyse`) = 1) THEN
         
         SET @isPositive = (SELECT COUNT(*) FROM `analyse` A WHERE `id` = `_idAnalyse` AND (`minimum` > `_value` OR `maximum` < `_value`));
-        INSERT INTO `patient_analyses` (`cnpPatient`, `idAnalyse`, `value`, `isPositive`) VALUE (`_cnp`, `_idAnalyse`, `_value`, @isPositive);
+        INSERT INTO `patient_analyses` (`cnpPatient`, `idAnalyse`, `value`, `isPositive`, `date`) VALUE (`_cnp`, `_idAnalyse`, `_value`, @isPositive, NOW());
 		SET `validation` = 1;
     ELSE
 		SET `validation` = 0;

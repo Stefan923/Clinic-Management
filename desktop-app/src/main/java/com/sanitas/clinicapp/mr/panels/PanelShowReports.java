@@ -1,7 +1,7 @@
 package com.sanitas.clinicapp.mr.panels;
 
-import com.sanitas.clinicapp.mr.Patient;
-import com.sanitas.clinicapp.mr.Report;
+import com.sanitas.clinicapp.struct.Patient;
+import com.sanitas.clinicapp.struct.Report;
 import com.sanitas.clinicapp.ui.DateLabelFormatter;
 import com.sanitas.clinicapp.ui.StyledJButton;
 import org.jdatepicker.impl.JDatePanelImpl;

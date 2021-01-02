@@ -83,7 +83,7 @@ public class PanelDoctorProfitTotal extends JPanel {
         return tfProfit;
     }
 
-    public void addViewButtonListener(ActionListener actionListener) {
+    public void addProfitButtonListener(ActionListener actionListener) {
         btnShowProfit.addActionListener(actionListener);
     }
 }

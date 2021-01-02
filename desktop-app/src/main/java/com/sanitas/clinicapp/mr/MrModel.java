@@ -2,6 +2,7 @@ package com.sanitas.clinicapp.mr;
 
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
+import com.sanitas.clinicapp.struct.*;
 
 import java.sql.*;
 import java.util.*;
@@ -36,7 +37,7 @@ public class MrModel {
     public List<Patient> getPatients(String lastname, String firstname) {
         List<Patient> patients = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `cnp`, `lastname`, `firstname` FROM `patients` WHERE `lastname` LIKE CONCAT('%', ?, '%') AND  `firstname` LIKE CONCAT('%', ?, '%');");
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `cnp`, `lastname`, `firstname` FROM `view_patients` WHERE `lastname` LIKE CONCAT('%', ?, '%') AND  `firstname` LIKE CONCAT('%', ?, '%');");
             preparedStatement.setString(1, lastname);
             preparedStatement.setString(2, firstname);
             preparedStatement.execute();
@@ -59,7 +60,7 @@ public class MrModel {
         Patient patient = null;
 
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `lastname`, `firstname`, `iban` FROM `patients` WHERE `cnp` = ?;");
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `lastname`, `firstname`, `iban` FROM `view_patients` WHERE `cnp` = ?;");
             preparedStatement.setString(1, cnp);
             preparedStatement.execute();
 
@@ -499,7 +500,7 @@ public class MrModel {
                         resultSet.getInt(5),
                         resultSet.getFloat(6),
                         resultSet.getFloat(7),
-                        resultSet.getDate(8)));
+                        resultSet.getTimestamp(8)));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -529,6 +530,23 @@ public class MrModel {
         }
 
         return analyses;
+    }
+
+    public boolean addAnalyse(Analyse analyse, String cnpPacient) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_ANALYSE(?, ?, ?, ?)");
+            callableStatement.setString(1, cnpPacient);
+            callableStatement.setInt(2, analyse.getIdAnalyse());
+            callableStatement.setFloat(3, analyse.getValue());
+            callableStatement.registerOutParameter(4, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(4);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return false;
     }
 
 }

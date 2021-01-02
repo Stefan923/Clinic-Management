@@ -7,6 +7,7 @@ import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FrModel {
     private final Database database;
@@ -19,8 +20,8 @@ public class FrModel {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_MEDICAL_UNIT_PROFIT(?, ?, ?, ?);");
             callableStatement.setInt(1, id);
-            callableStatement.setDate(2, (java.sql.Date) startDate);
-            callableStatement.setDate(3, (java.sql.Date) endDate);
+            callableStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            callableStatement.setDate(3, new java.sql.Date(endDate.getTime()));
             callableStatement.registerOutParameter(4, Types.DOUBLE);
             callableStatement.execute();
 
@@ -36,8 +37,8 @@ public class FrModel {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_PROFIT_BY_DOCTOR(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
-            callableStatement.setDate(2, (java.sql.Date) startDate);
-            callableStatement.setDate(3, (java.sql.Date) endDate);
+            callableStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            callableStatement.setDate(3, new java.sql.Date(endDate.getTime()));
             callableStatement.registerOutParameter(4, Types.DOUBLE);
             callableStatement.execute();
 
@@ -49,12 +50,12 @@ public class FrModel {
         return 0.0;
     }
 
-    public double getProfitBySpeciality(String cnp, Date startDate, Date endDate) {
+    public double getProfitBySpeciality(int id, Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_PROFIT_BY_SPECIALITY(?, ?, ?, ?);");
-            callableStatement.setString(1, cnp);
-            callableStatement.setDate(2, (java.sql.Date) startDate);
-            callableStatement.setDate(3, (java.sql.Date) endDate);
+            callableStatement.setInt(1, id);
+            callableStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            callableStatement.setDate(3, new java.sql.Date(endDate.getTime()));
             callableStatement.registerOutParameter(4, Types.DOUBLE);
             callableStatement.execute();
 
@@ -70,8 +71,8 @@ public class FrModel {
     public double getTotalProfit(Date startDate, Date endDate) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_TOTAL_PROFIT(?, ?, ?);");
-            callableStatement.setDate(1, (java.sql.Date) startDate);
-            callableStatement.setDate(2, (java.sql.Date) endDate);
+            callableStatement.setDate(1, new java.sql.Date(startDate.getTime()));
+            callableStatement.setDate(2, new java.sql.Date(endDate.getTime()));
             callableStatement.registerOutParameter(3, Types.DOUBLE);
             callableStatement.execute();
 
@@ -88,8 +89,8 @@ public class FrModel {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_EMPLOYEE_SALARY(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
-            callableStatement.setDate(2, (java.sql.Date) startDate);
-            callableStatement.setDate(3, (java.sql.Date) endDate);
+            callableStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            callableStatement.setDate(3, new java.sql.Date(endDate.getTime()));
             callableStatement.registerOutParameter(4, Types.DOUBLE);
             callableStatement.execute();
 
@@ -105,8 +106,8 @@ public class FrModel {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL GET_DOCTOR_SALARY(?, ?, ?, ?);");
             callableStatement.setString(1, cnp);
-            callableStatement.setDate(2, (java.sql.Date) startDate);
-            callableStatement.setDate(3, (java.sql.Date) endDate);
+            callableStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            callableStatement.setDate(3, new java.sql.Date(endDate.getTime()));
             callableStatement.registerOutParameter(4, Types.DOUBLE);
             callableStatement.execute();
 
@@ -151,5 +152,25 @@ public class FrModel {
         return medicalUnits;
     }
 
+    public Map<Integer, String> getSpecialities() {
+        Map<Integer, String> specialities = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_specialities`;");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                specialities.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return specialities;
+    }
 
 }
