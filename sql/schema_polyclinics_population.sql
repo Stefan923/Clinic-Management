@@ -452,7 +452,8 @@ INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `s
     (2931204115436,2, 'Tuesday', '12:30', '18:00');
 
 INSERT INTO `holidays` (`cnpEmployee`, `startDate`, `endDate`) VALUES
-	('2700927417309', '2020-12-02', '2020-12-03');
+	('2700927417309', '2020-12-02', '2020-12-03'),
+	('2700927417309', '2021-01-10', '2021-01-15');
 
 INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,`idAccreditation`,`price`,`duration`) VALUES
 	('2901204019549',1,3,'Consultatie Cardiologie',1,100,30),
