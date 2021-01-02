@@ -28,8 +28,8 @@ CREATE VIEW `polyclinics`.`view_services_by_cabinet` AS
 	SELECT MS.`id`, CE.`idCabinet`, MS.`cnpDoctor`, MS.`idSpeciality`, MS.`name` AS `serviceName`, MS.`price`, MS.`duration`
     FROM `medical_services` MS
 		INNER JOIN `employees` EMP ON EMP.`cnp` = MS.`cnpDoctor`
-        LEFT OUTER JOIN `cabinet_equipments` CE ON CE.`idEquipment` = MS.`idEquipment`
-        LEFT OUTER JOIN `cabinets` C ON C.`id` = CE.`idCabinet`;
+        LEFT JOIN `cabinet_equipments` CE ON CE.`idEquipment` = MS.`idEquipment`
+        LEFT JOIN `cabinets` C ON C.`id` = CE.`idCabinet`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_permissions`;
 CREATE VIEW `polyclinics`.`view_permissions` AS
@@ -128,4 +128,4 @@ DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
     
-SELECT * FROM `view_holidays`;
+SELECT * FROM `view_services_by_cabinet`;
