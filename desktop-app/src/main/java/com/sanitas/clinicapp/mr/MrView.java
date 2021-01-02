@@ -17,6 +17,7 @@ public class MrView extends JFrame {
 
     private JButton btnShowPatients = new StyledJButton("Afisare Pacienti").getButton();
     private JButton btnSearchPatient = new StyledJButton("Cautare Pacient").getButton();
+    private JButton btnAppointments = new StyledJButton("Programari").getButton();
     private JButton btnMedicalServices = new StyledJButton("Servicii Medicale").getButton();
 
     private JButton btnBack = new StyledJButton("Inapoi").getButton();
@@ -28,6 +29,7 @@ public class MrView extends JFrame {
 
         btnShowPatients.setBackground(Colors.MAIN_COLOR.getColor());
         btnSearchPatient.setBackground(Colors.MAIN_COLOR.getColor());
+        btnAppointments.setBackground(Colors.MAIN_COLOR.getColor());
         btnMedicalServices.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
@@ -41,6 +43,11 @@ public class MrView extends JFrame {
         btnSearchPatientPanel.setBackground(Colors.MENU_COLOR.getColor());
         btnSearchPatientPanel.add(btnSearchPatient);
 
+        JPanel btnAppointmentsPanel = new JPanel(new GridLayout(1, 1));
+        btnAppointmentsPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+        btnAppointmentsPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnAppointmentsPanel.add(btnAppointments);
+
         JPanel btnMedicalServicesPanel = new JPanel(new GridLayout(1, 1));
         btnMedicalServicesPanel.setBackground(Colors.MENU_COLOR.getColor());
         btnMedicalServicesPanel.add(btnMedicalServices);
@@ -48,6 +55,7 @@ public class MrView extends JFrame {
         JPanel menuContent = new JPanel(new GridLayout(4, 1));
         menuContent.add(btnShowPatientsPanel);
         menuContent.add(btnSearchPatientPanel);
+        menuContent.add(btnAppointmentsPanel);
         menuContent.add(btnMedicalServicesPanel);
         menuContent.setBackground(Colors.MENU_COLOR.getColor());
         menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
@@ -111,6 +119,10 @@ public class MrView extends JFrame {
 
     public void addBtnSearchPatientListener(ActionListener actionListener) {
         btnSearchPatient.addActionListener(actionListener);
+    }
+
+    public void addBtnAppointmentsListener(ActionListener actionListener) {
+        btnAppointments.addActionListener(actionListener);
     }
 
     public void addBtnMedicalServicesListener(ActionListener actionListener) {

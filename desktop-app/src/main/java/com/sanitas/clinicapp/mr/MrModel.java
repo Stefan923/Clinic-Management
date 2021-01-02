@@ -549,4 +549,57 @@ public class MrModel {
         return false;
     }
 
+    public List<Appointment> getAppointments() {
+        List<Appointment> appointments = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `patientName`, `doctorName`, `cabinetName`, `duration`, `specialityName`, `date` FROM `view_appointments`;");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                appointments.add(new Appointment(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getInt(6),
+                        resultSet.getTimestamp(7)));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        appointments.sort(Appointment::compareTo);
+
+        return appointments;
+    }
+
+    public List<Appointment> getAppointments(String cnpDoctor) {
+        List<Appointment> appointments = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `patientName`, `doctorName`, `cabinetName`, `specialityName`, `duration`, `date` FROM `view_appointments` WHERE `cnpDoctor` = ?;");
+            preparedStatement.setString(1, cnpDoctor);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                appointments.add(new Appointment(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getInt(6),
+                        resultSet.getTimestamp(7)));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        appointments.sort(Appointment::compareTo);
+
+        return appointments;
+    }
+
 }
