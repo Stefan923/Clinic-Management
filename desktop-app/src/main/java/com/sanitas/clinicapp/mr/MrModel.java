@@ -286,7 +286,7 @@ public class MrModel {
         List<MedicalService> medicalServices = new ArrayList<>();
 
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `serviceName`, `duration`, `price` FROM `view_services_by_cabinet` WHERE `cnpDoctor` = ? AND `idSpeciality` = ? AND `idCabinet` = ?;");
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `serviceName`, `duration`, `price` FROM `view_services_by_cabinet` WHERE `cnpDoctor` = ? AND `idSpeciality` = ? AND (`idCabinet` = ? OR `idCabinet` IS NULL);");
             preparedStatement.setString(1, cnpDoctor);
             preparedStatement.setInt(2, idSpeciality);
             preparedStatement.setInt(3, idCabinet);
