@@ -1,5 +1,7 @@
 package com.sanitas.clinicapp.hr;
 
+import com.sanitas.clinicapp.hr.panels.PanelShowEmployee;
+import com.sanitas.clinicapp.hr.panels.PanelViewEmployee;
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
@@ -9,17 +11,21 @@ import java.awt.event.ActionListener;
 
 public class HrView extends JFrame {
 
-    JButton btnShowEmployees = new StyledJButton("Afisare Angajati").getButton();
-    JButton btnSearchEmployee = new StyledJButton("Cautare Angajat").getButton();
+    private JButton btnShowEmployees = new StyledJButton("Adaugare Angajat").getButton();
+    private JButton btnSearchEmployee = new StyledJButton("Cautare Angajat").getButton();
 
-    JButton btnBack = new StyledJButton("Inapoi").getButton();
+    private JButton btnBack = new StyledJButton("Inapoi").getButton();
 
-    HrModel model;
-
-    openViewModel modelv = new openViewModel();
-    openViewView viewv = new openViewView(modelv);
+    private HrModel model;
+    private JPanel currentPanel;
+    private PanelShowEmployee viewv ;
 
     public HrView(HrModel model) {
+
+        viewv=new PanelShowEmployee(model);
+        currentPanel=viewv;
+        viewv.setVisible(true);
+
         btnShowEmployees.setBackground(Colors.MAIN_COLOR.getColor());
         btnSearchEmployee.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
@@ -28,20 +34,17 @@ public class HrView extends JFrame {
         menuContent.add(btnShowEmployees);
         menuContent.add(btnSearchEmployee);
 
-        JPanel rightContent = new JPanel(new BorderLayout());
-        rightContent.add(menuContent, BorderLayout.NORTH);
-        rightContent.add(btnBack, BorderLayout.SOUTH);
-        rightContent.setBackground(new Color(0XBDBEBF));
+        JPanel leftContent = new JPanel(new BorderLayout());
+        leftContent.add(menuContent, BorderLayout.NORTH);
+        leftContent.add(btnBack, BorderLayout.SOUTH);
+        leftContent.setBackground(new Color(0XBDBEBF));
 
         JPanel content = new JPanel(new BorderLayout());
-        content.add(rightContent, BorderLayout.WEST);
-        content.add(viewv, BorderLayout.EAST);
+        content.add(leftContent, BorderLayout.WEST);
+        content.add(viewv, BorderLayout.CENTER);
 
-        openViewController controller = new openViewController(modelv,viewv);
 
-        viewv.setVisible(false);
-
-        this.setPreferredSize(new Dimension(400, 300));
+        this.setPreferredSize(new Dimension(820, 420));
         this.setContentPane(content);
         this.pack();
 
@@ -54,6 +57,34 @@ public class HrView extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    public void setRightPanel(JPanel jPanel) {
+        currentPanel.setVisible(false);
+
+        getContentPane().add(jPanel, BorderLayout.CENTER);
+        currentPanel = jPanel;
+        currentPanel.setVisible(true);
+    }
+
+    public PanelShowEmployee getViewv() {
+        return viewv;
+    }
+
+    public JButton getBtnBack() {
+        return btnBack;
+    }
+
+    public JButton getBtnSearchEmployee() {
+        return btnSearchEmployee;
+    }
+
+    public JButton getBtnShowEmployees() {
+        return btnShowEmployees;
+    }
+
+    public JPanel getCurrentPanel() {
+        return currentPanel;
+    }
+
     public void addBtnAddEmployeesListener(ActionListener actionListener) {
         btnShowEmployees.addActionListener(actionListener);
     }
@@ -62,5 +93,17 @@ public class HrView extends JFrame {
         btnSearchEmployee.addActionListener(actionListener);
     }
 
-    public void setViewvVisible() {viewv.setVisible(true);}
+    public void addBackListener(ActionListener actionListener) {
+        btnBack.addActionListener(actionListener);
+    }
+
+    public void sendError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error!", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void sendSuccessMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Succes!", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
 }

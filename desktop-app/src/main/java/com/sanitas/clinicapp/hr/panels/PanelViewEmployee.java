@@ -1,4 +1,4 @@
-package com.sanitas.clinicapp.hr;
+package com.sanitas.clinicapp.hr.panels;
 
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
@@ -8,19 +8,19 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class openViewView extends JPanel {
+public class PanelViewEmployee extends JPanel {
 
     private JTextField TxtFirst = new JTextField(15);
     private JTextField TxtLast = new JTextField(15);
     private JTextField TxtPosition = new JTextField(15);
     private JButton search = new StyledJButton("Search").getButton();;
 
-    private openViewModel model;
 
-    openViewView(openViewModel model) {
-        this.model = model;
+    public PanelViewEmployee() {
+
         search.setBackground(Colors.MAIN_COLOR.getColor());
 
+        setLayout(new BorderLayout());
         JPanel lastname = new JPanel(new FlowLayout());
         lastname.add(new JLabel("Last Name: "));
         lastname.add(TxtLast);
@@ -34,15 +34,17 @@ public class openViewView extends JPanel {
         position.add(TxtPosition);
 
         JPanel searchData = new JPanel(new BorderLayout());
-        searchData.add(lastname, BorderLayout.NORTH);
+        searchData.add(lastname, BorderLayout.WEST);
         searchData.add(firstname, BorderLayout.CENTER);
-        searchData.add(position, BorderLayout.SOUTH);
+        searchData.add(position, BorderLayout.EAST);
         searchData.setBorder(new EmptyBorder(0, 0, 20, 0));
 
-        JPanel searchPanel = new JPanel(new BorderLayout());
-        searchPanel.add(searchData, BorderLayout.NORTH);
-        searchPanel.add(search, BorderLayout.CENTER);
-        searchPanel.setBorder(new EmptyBorder(0, 5, 10, 5));
+        JPanel button=new JPanel(new FlowLayout());
+        button.add(search);
+
+        add(searchData, BorderLayout.NORTH);
+        add(button, BorderLayout.CENTER);
+        setBorder(new EmptyBorder(0, 5, 10, 5));
 
     }
 
@@ -62,7 +64,4 @@ public class openViewView extends JPanel {
         return TxtPosition;
     }
 
-    public void sendError(String message) {
-        JOptionPane.showMessageDialog(this, message, "Angatajul nu a fost gasit!", JOptionPane.ERROR_MESSAGE);
-    }
 }

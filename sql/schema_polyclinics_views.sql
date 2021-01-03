@@ -6,6 +6,14 @@ DROP VIEW IF EXISTS `polyclinics`.`view_accounts`;
 CREATE VIEW `polyclinics`.`view_accounts` AS
 	SELECT `username`, `cnpEmployee` as `cnp` FROM `accounts`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_employee_schedule`;
+CREATE VIEW `polyclinics`.`view_employee_schedule` AS
+	SELECT `idMedicalUnit`, `cnpEmployee`, `dayOfWeek`, `startHour`, `endHour` FROM `employee_schedule`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_holidays`;
+CREATE VIEW `polyclinics`.`view_holidays` AS
+	SELECT `cnpEmployee`, `startDate`, `endDate` FROM `holidays`;
+
 DROP VIEW IF EXISTS `polyclinics`.`view_services`;
 CREATE VIEW `polyclinics`.`view_services` AS
 	SELECT MS.`id`, MS.`cnpDoctor`, MS.`name` AS `ms_name`, MS.`price`, MS.`duration`, EMP.`lastName`, EMP.`firstName`, S.`name` AS `s_name`, IFNULL(A.`name`, '') AS `a_name`, IFNULL(E.`name`, '') AS `e_name`
@@ -14,6 +22,14 @@ CREATE VIEW `polyclinics`.`view_services` AS
         INNER JOIN `specialities` S ON S.`id` = MS.`idSpeciality`
         LEFT OUTER JOIN `accreditations` A ON A.`id` = MS.`idAccreditation`
         LEFT OUTER JOIN `equipments` E ON E.`id` = MS.`idEquipment`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_services_by_cabinet`;
+CREATE VIEW `polyclinics`.`view_services_by_cabinet` AS
+	SELECT MS.`id`, CE.`idCabinet`, MS.`cnpDoctor`, MS.`idSpeciality`, MS.`name` AS `serviceName`, MS.`price`, MS.`duration`
+    FROM `medical_services` MS
+		INNER JOIN `employees` EMP ON EMP.`cnp` = MS.`cnpDoctor`
+        LEFT JOIN `cabinet_equipments` CE ON CE.`idEquipment` = MS.`idEquipment`
+        LEFT JOIN `cabinets` C ON C.`id` = CE.`idCabinet`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_permissions`;
 CREATE VIEW `polyclinics`.`view_permissions` AS
@@ -26,6 +42,10 @@ CREATE VIEW `polyclinics`.`view_specialities_by_doctor` AS
 	SELECT D.`cnpEmployee` as `cnp`, S.`id`, S.`name`
     FROM `specialities` S, `doctor_specialities` DS, `doctors` D
 	WHERE DS.`cnpDoctor` = D.`cnpEmployee` AND S.`id` = DS.`idSpeciality`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_specialities`;
+CREATE VIEW `polyclinics`.`view_specialities` AS
+	SELECT * FROM `specialities`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_accreditations_by_doctor`;
 CREATE VIEW `polyclinics`.`view_accreditations_by_doctor` AS
@@ -71,16 +91,30 @@ DROP VIEW IF EXISTS `polyclinics`.`view_doctors`;
 CREATE VIEW `polyclinics`.`view_doctors` AS
 	SELECT * FROM `doctors`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_doctors_by_medical_unit`;
+CREATE VIEW `polyclinics`.`view_doctors_by_medical_unit` AS
+	SELECT D.`cnpEmployee`, ES.`idMedicalUnit` FROM `doctors` D
+		INNER JOIN `employee_schedule` ES ON ES.`cnpEmployee` = D.`cnpEmployee`
+        GROUP BY D.`cnpEmployee`, ES.`idMedicalUnit`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_doctors_by_speciality`;
+CREATE VIEW `polyclinics`.`view_doctors_by_speciality` AS
+	SELECT S.`id`, E.`cnp`, CONCAT(E.`lastName`, ' ', E.`firstName`) AS `name`
+	FROM `doctors` D
+		INNER JOIN `employees` E ON E.`cnp` = D.`cnpEmployee`
+        INNER JOIN `doctor_specialities` DS ON DS.`cnpDoctor` = D.`cnpEmployee`
+        INNER JOIN `specialities` S ON S.`id` = DS.`idSpeciality`;
+
 DROP VIEW IF EXISTS `polyclinics`.`view_appointments`;
 CREATE VIEW `view_appointments` AS
-    SELECT A.`id`, A.`cnpPatient`, A.`cnpDoctor`, A.`date`, CONCAT(P.`lastName`, ' ', P.`firstName`) AS `patientName`, CONCAT(E.`lastName`, ' ', E.`firstName`) AS `doctorName`, C.`name` AS `cabinetName`, S.`name` AS `specialityName`, SUM(MS.`duration`) AS `duration`
+    SELECT A.`id`, A.`cnpPatient`, A.`cnpDoctor`, A.`date`, CONCAT(P.`lastName`, ' ', P.`firstName`) AS `patientName`, CONCAT(E.`lastName`, ' ', E.`firstName`) AS `doctorName`, A.`idCabinet`, C.`name` AS `cabinetName`, S.`name` AS `specialityName`, SUM(MS.`duration`) AS `duration`, TIMESTAMPADD(MINUTE, SUM(MS.`duration`), A.`date`) AS `endDate`
     FROM `appointments` A
         INNER JOIN `patients` P ON P.`cnp` = A.`cnpPatient`
         INNER JOIN `employees` E ON E.`cnp` = A.`cnpDoctor`
         INNER JOIN `cabinets` C ON C.`id` = A.`idCabinet`
-        INNER JOIN `specialities` S on S.`id` = A.`idSpeciality`
-        LEFT OUTER JOIN `appointment_services` APS on APS.`idAppointment` = A.`id`
-        LEFT OUTER JOIN `medical_services` MS on MS.`id` = APS.`idMedicalService`
+        INNER JOIN `specialities` S ON S.`id` = A.`idSpeciality`
+        LEFT OUTER JOIN `appointment_services` APS ON APS.`idAppointment` = A.`id`
+        LEFT OUTER JOIN `medical_services` MS ON MS.`id` = APS.`idMedicalService`
         GROUP BY A.`id`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_transactions`;
@@ -88,3 +122,15 @@ CREATE VIEW `polyclinics`.`view_transactions` AS
 	SELECT * FROM `transactions`;
 
 SELECT * FROM `view_transactions`;
+DROP VIEW IF EXISTS `polyclinics`.`view_appointment_services`;
+CREATE VIEW `view_appointment_services` AS
+    SELECT APS.`idAppointment`, APS.`idMedicalService`, MS.`name`, MS.`duration`, MS.`price`
+    FROM `appointments` A
+        INNER JOIN `appointment_services` APS ON APS.`idAppointment` = A.`id`
+        INNER JOIN `medical_services` MS ON MS.`id` = APS.`idMedicalService`;
+
+DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
+CREATE VIEW `polyclinics`.`view_cabinets` AS
+	SELECT * FROM `cabinets`;
+
+SELECT * FROM `view_services_by_cabinet`;

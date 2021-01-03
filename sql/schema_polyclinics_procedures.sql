@@ -98,6 +98,19 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS INSERT_DOCTOR;
+DELIMITER //
+CREATE PROCEDURE INSERT_DOCTOR(IN `_cnpEmployee` VARCHAR(13), IN `_sealcode` VARCHAR(25), IN `_commission` decimal(3,2), IN `_scientificTitle` VARCHAR(100), IN `_didacticTitle` VARCHAR(10),OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `doctors` WHERE `cnpEmployee`=`_cnpEmployee`) = 0) THEN
+		INSERT INTO `doctors` (`cnpEmployee`,`sealcode`,`commission`, `scientificTitle`, `didacticTitle`) VALUES (`_cnpEmployee`,`_sealcode`,`_commission`, `_scientificTitle`, `_didacticTitle`);
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
 DROP PROCEDURE IF EXISTS DELETE_EMPLOYEE;
 DELIMITER //
 CREATE PROCEDURE DELETE_EMPLOYEE(IN `_cnp` VARCHAR(13), OUT `validation` INT)
@@ -111,12 +124,13 @@ BEGIN
 END;
 // DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS UPDATE_EMPLOYEE;
 DELIMITER //
-CREATE PROCEDURE UPDATE_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `columnName` VARCHAR(45), IN `value` VARCHAR(100), OUT `validation` INT)
+CREATE PROCEDURE UPDATE_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `_lastName` VARCHAR(25), IN `_firstName` VARCHAR(50), IN `_position` VARCHAR(45), OUT `validation` INT)
 BEGIN
 	IF ((SELECT COUNT(*) FROM `employees` WHERE `cnp`=`_cnp`) = 1) THEN
-		SET @sqlAction = CONCAT('UPDATE employees SET ', `columnName`, '=', `value`, ' WHERE cnp=', `_cnp`, ';');
+		SET @sqlAction = CONCAT("UPDATE employees SET lastName = '", `_lastName`, "', firstName = '", `_firstName`, "', position = '", `_position`, "' WHERE cnp='", `_cnp`, "';");
 		PREPARE statement FROM @sqlAction;
 		EXECUTE statement;
 		SET `validation` = 1;
@@ -420,6 +434,52 @@ BEGIN
 	IF ((SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_id`) > 0) THEN
         
         DELETE FROM `medical_services` WHERE `id` = `_id`;
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS INSERT_APPOINTMENT;
+DELIMITER //
+CREATE PROCEDURE INSERT_APPOINTMENT(IN `_cnpPatient` VARCHAR(13), IN `_cnpDoctor` VARCHAR(13), IN `_idCabinet` INT, IN `_idSpeciality` INT, IN `_date` TIMESTAMP, OUT `result` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `doctors` WHERE `cnpEmployee` = `_cnpDoctor`) = 1
+		AND (SELECT COUNT(*) FROM `patients` WHERE `cnp` = `_cnpPatient`) = 1
+		AND (SELECT COUNT(*) FROM `cabinets` WHERE `id` = `_idCabinet`) = 1
+		AND (SELECT COUNT(*) FROM `specialities` WHERE `id` = `_idSpeciality`) = 1) THEN
+        
+        INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`) VALUE (`_cnpPatient`, `_cnpDoctor`, `_idCabinet`, `_idSpeciality`, `_date`);
+		SET `result` = (SELECT `id` FROM `appointments` ORDER BY `id` DESC LIMIT 1);
+    ELSE
+		SET `result` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS INSERT_APPOINTMENT_SERVICE;
+DELIMITER //
+CREATE PROCEDURE INSERT_APPOINTMENT_SERVICE(IN `_idMedicalService` INT, IN `_idAppointment` INT, OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `medical_services` WHERE `id` = `_idMedicalService`) = 1
+		AND (SELECT COUNT(*) FROM `appointments` WHERE `id` = `_idAppointment`) = 1) THEN
+        
+        INSERT INTO `appointment_services` (`idMedicalService`, `idAppointment`) VALUE (`_idMedicalService`, `_idAppointment`);
+		SET `validation` = 1;
+    ELSE
+		SET `validation` = 0;
+    END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DELETE_APPOINTMENT;
+DELIMITER //
+CREATE PROCEDURE DELETE_APPOINTMENT(IN `_id` INT, OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `appointments` WHERE `id` = `_id`) > 0) THEN
+        
+        DELETE FROM `appointments` WHERE `id` = `_id`;
 		SET `validation` = 1;
     ELSE
 		SET `validation` = 0;

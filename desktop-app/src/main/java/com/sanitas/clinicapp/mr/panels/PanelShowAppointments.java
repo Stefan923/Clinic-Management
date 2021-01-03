@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -23,13 +24,14 @@ public class PanelShowAppointments extends JPanel {
     private final JButton btnSearch = new StyledJButton("Cauta").getButton();
     private final JButton btnAdd = new StyledJButton("Adauga o programare").getButton();
     private final JButton btnView = new StyledJButton("Afiseaza").getButton();
-    private final JButton btnAddReceipt = new StyledJButton("Emitere Bon Fiscal").getButton();
     private final JButton btnDelete = new StyledJButton("Sterge").getButton();
 
     private final UtilDateModel utilDateModelMin = new UtilDateModel();
     private final UtilDateModel utilDateModelMax = new UtilDateModel();
 
     private final JTable appointmentsTable = new JTable();
+
+    private List<Appointment> appointments;
 
     public PanelShowAppointments() {
         super(new BorderLayout());
@@ -80,17 +82,9 @@ public class PanelShowAppointments extends JPanel {
         return dataPanel;
     }
 
-    private JPanel getButtonsPanel() {
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.add(btnAdd);
-        buttonsPanel.add(btnDelete);
-        buttonsPanel.add(btnAddReceipt);
-        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
-
-        return buttonsPanel;
-    }
-
     public void updateTable(List<Appointment> appointments) {
+        this.appointments = appointments;
+
         String[] columns = { "Pacient", "Doctor", "Cabinet", "Specialitate", "Durata", "Data" };
 
         Object[][] analysesData = new Object[appointments.size()][columns.length];
@@ -118,6 +112,32 @@ public class PanelShowAppointments extends JPanel {
         appointmentsTable.setFillsViewportHeight(true);
     }
 
+    private JPanel getButtonsPanel() {
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.add(btnAdd);
+        buttonsPanel.add(btnView);
+        buttonsPanel.add(btnDelete);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+
+        return buttonsPanel;
+    }
+
+    public Date getDateMin() {
+        return utilDateModelMin.getValue();
+    }
+
+    public Date getDateMax() {
+        return utilDateModelMax.getValue();
+    }
+
+    public JTable getAppointmentsTable() {
+        return appointmentsTable;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
     public void addSearchButtonListener(ActionListener actionListener) {
         btnSearch.addActionListener(actionListener);
     }
@@ -129,8 +149,6 @@ public class PanelShowAppointments extends JPanel {
     public void addViewButtonListener(ActionListener actionListener) {
         btnView.addActionListener(actionListener);
     }
-
-    public void addAddReceiptListener(ActionListener actionListener) { btnAddReceipt.addActionListener(actionListener); }
 
     public void addDeleteButtonListener(ActionListener actionListener) {
         btnDelete.addActionListener(actionListener);
