@@ -139,10 +139,10 @@ END;
 
 DROP PROCEDURE IF EXISTS GET_MEDICAL_UNIT_PROFIT;
 DELIMITER //
-CREATE PROCEDURE GET_MEDICAL_UNIT_PROFIT(IN `_id` INT, IN `startDate` DATE, IN `endDate` DATE, OUT `profit` DECIMAL(10,2))
+CREATE PROCEDURE GET_MEDICAL_UNIT_PROFIT(IN `_iban` VARCHAR(50), IN `startDate` DATE, IN `endDate` DATE, OUT `profit` DECIMAL(10,2))
 BEGIN
 	SET @income = 0, @outcome = 0;
-    SET @iban = (SELECT `iban` FROM `medical_units` WHERE `id` = `_id` LIMIT 1);
+    SET @iban = (SELECT `iban` FROM `medical_units` WHERE `iban` = `_iban` LIMIT 1);
     
     IF (@iban IS NOT NULL) THEN
 		SELECT IFNULL(SUM(`amount`), 0) INTO @income FROM `transactions` WHERE `receiver` = @iban AND DATE(`date`) >= `startDate` AND DATE(`date`) <= `endDate` AND `type` = 'income';
@@ -444,7 +444,7 @@ BEGIN
     -- CALL DELETE_EMPLOYEE('2700735934101', @output);
     -- CALL UPDATE_EMPLOYEE('2700735934101', 'contractNum', '31', @output);
     -- CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
-    CALL GET_MEDICAL_UNIT_PROFIT('2', '2019-01-01', '2019-12-31', @output);
+    CALL GET_MEDICAL_UNIT_PROFIT('RO29RZBR5523951481289988', '2019-01-01', '2019-12-31', @output);
     -- CALL GET_PROFIT_BY_SPECIALITY('1', '2020-01-01', '2020-12-15', @output);
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL GET_DOCTOR_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);

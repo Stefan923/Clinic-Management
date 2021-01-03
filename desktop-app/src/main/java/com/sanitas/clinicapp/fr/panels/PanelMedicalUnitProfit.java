@@ -113,13 +113,14 @@ public class PanelMedicalUnitProfit extends JPanel {
         tfIBAN.setText(iban);
     }
 
-    public String getIdMedicalUnit() {
+    public String getIbanMedicalUnit() {
         Optional<Map.Entry<String, String>> result = medicalUnits
                 .entrySet()
                 .stream()
-                .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbUnitsName.getSelectedItem()))
+                .filter(entry -> entry.getKey().equalsIgnoreCase((String) cbUnitsName.getSelectedItem()))
                 .findFirst();
-        return result.map(Map.Entry::getKey).orElse("1");
+        System.out.println(result);
+        return result.map(Map.Entry::getValue).orElse("1");
     }
 
     public void addUnitsNameComboBoxListener(ActionListener actionListener) { cbUnitsName.addActionListener(actionListener);

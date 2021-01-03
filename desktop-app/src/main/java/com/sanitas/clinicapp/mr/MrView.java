@@ -1,6 +1,7 @@
 package com.sanitas.clinicapp.mr;
 
 import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
+import com.sanitas.clinicapp.mr.panels.PanelShowReceipt;
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
@@ -132,5 +133,4 @@ public class MrView extends JFrame {
     public void addBackButtonListener(ActionListener actionListener) {
         btnBack.addActionListener(actionListener);
     }
-
 }

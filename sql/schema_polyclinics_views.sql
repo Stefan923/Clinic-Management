@@ -83,4 +83,8 @@ CREATE VIEW `view_appointments` AS
         LEFT OUTER JOIN `medical_services` MS on MS.`id` = APS.`idMedicalService`
         GROUP BY A.`id`;
 
-SELECT * FROM `view_appointments`;
+DROP VIEW IF EXISTS `polyclinics`.`view_transactions`;
+CREATE VIEW `polyclinics`.`view_transactions` AS
+	SELECT * FROM `transactions`;
+
+SELECT * FROM `view_transactions`;

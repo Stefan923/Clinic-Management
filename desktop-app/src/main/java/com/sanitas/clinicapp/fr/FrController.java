@@ -1,15 +1,20 @@
 package com.sanitas.clinicapp.fr;
 import com.sanitas.clinicapp.fr.panels.*;
 import com.sanitas.clinicapp.mr.MrController;
-import com.sanitas.clinicapp.mr.Patient;
 import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
 import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
+import com.sanitas.clinicapp.mr.panels.PanelShowReports;
+import com.sanitas.clinicapp.mr.panels.PanelViewReport;
+import com.sanitas.clinicapp.struct.Report;
+import com.sanitas.clinicapp.struct.Transaction;
 import com.sanitas.clinicapp.ui.Colors;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.List;
+import java.sql.Date;
 import java.util.Map;
 
 public class FrController {
@@ -51,6 +56,9 @@ public class FrController {
         PanelTotalProfit panelTotalProfit = new PanelTotalProfit();
         panelTotalProfit.addProfitButtonListener(new TotalProfitButtonListener());
 
+        PanelShowTransactions panelShowTransactions = new PanelShowTransactions();
+        panelShowTransactions.addViewButtonListener(new TransactionViewButtonListener());
+
         view.addBtnMedicalUnitProfitListener(new FrController.MenuButtonListener(panelMedicalUnitProfit));
         view.addBtnProfitByDoctorListener(new FrController.MenuButtonListener(panelProfitByDoctor));
         view.addBtnProfitBySpecialityListener(new FrController.MenuButtonListener(panelProfitBySpeciality));
@@ -58,6 +66,7 @@ public class FrController {
         view.addBtnEmployeeSalaryListener(new FrController.MenuButtonListener(panelEmployeeSalary));
         view.addBtnDoctorSalaryListener(new FrController.MenuButtonListener(panelDoctorSalary));
         view.addBtnDoctorProfitTotalListener(new FrController.MenuButtonListener(panelDoctorProfitTotal));
+        view.addBtnShowTransactionsListener(new FrController.MenuButtonListener(panelShowTransactions));
         view.addBackButtonListener(new FrController.BackButtonListener(previousView));
     }
 
@@ -207,13 +216,34 @@ public class FrController {
             if (panel instanceof PanelMedicalUnitProfit) {
                 PanelMedicalUnitProfit panelMUP = (PanelMedicalUnitProfit) panel;
 
-                double profit = model.getMedicalUnitProfit(Integer.parseInt(panelMUP.getIdMedicalUnit()),
+                double profit = model.getMedicalUnitProfit(panelMUP.getIbanMedicalUnit(),
                         panelMUP.getUtilDateModelMin().getValue(),
                         panelMUP.getUtilDateModelMax().getValue());
 
                 panelMUP.getTfProfit().setText(String.valueOf(profit));
             }
         }
+    }
+
+    class TransactionViewButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel currentPanel = view.getCurrentPanel();
+
+            if (!(currentPanel instanceof PanelShowTransactions)) {
+                view.sendError("A avut loc o eroare.");
+                return;
+            }
+
+            List<Transaction> transactions = model.getTransactions(((PanelShowTransactions) currentPanel).getUtilDateModelMin().getValue(),
+                                                                    ((PanelShowTransactions) currentPanel).getUtilDateModelMax().getValue());
+
+            PanelShowTransactions panelST = (PanelShowTransactions) currentPanel;
+            panelST.updateTable(transactions);
+            view.setRightPanel(panelST);
+        }
+
     }
 
 }
