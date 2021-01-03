@@ -1,6 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
-import com.sanitas.clinicapp.mr.Patient;
+import com.sanitas.clinicapp.struct.Patient;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
@@ -12,10 +12,14 @@ public class PanelViewPatient extends JPanel {
 
     private final Patient patient;
 
-    private final JButton btnShowHistory = new StyledJButton("Afisare raport").getButton();
-    private final JButton btnShowAnalyses = new StyledJButton("Afisare analize").getButton();
+    private final JButton btnShowHistory = new StyledJButton("Afiseaza raport").getButton();
+    private final JButton btnShowAnalyses = new StyledJButton("Afiseaza analize").getButton();
+    private final JButton btnCancel = new StyledJButton("Anuleaza").getButton();
 
-    public PanelViewPatient(Patient patient) {
+    private final JPanel previousPanel;
+
+    public PanelViewPatient(JPanel previousPanel, Patient patient) {
+        this.previousPanel = previousPanel;
         this.patient = patient;
 
         setLayout(new BorderLayout());
@@ -32,7 +36,7 @@ public class PanelViewPatient extends JPanel {
         tfFirstname.setText(patient.getFirstname());
         tfFirstname.setEditable(false);
 
-        JTextField tfIban = new JTextField(15);
+        JTextField tfIban = new JTextField(17);
         tfIban.setText(patient.getIban());
         tfIban.setEditable(false);
 
@@ -42,12 +46,12 @@ public class PanelViewPatient extends JPanel {
         cnpPanel.add(tfCnp);
 
         JPanel lastnamePanel = new JPanel(new FlowLayout());
-        lastnamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        lastnamePanel.setBorder(new EmptyBorder(20, 10, 10, 10));
         lastnamePanel.add(new JLabel("Nume:"));
         lastnamePanel.add(tfLastname);
 
         JPanel firstnamePanel = new JPanel(new FlowLayout());
-        firstnamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        firstnamePanel.setBorder(new EmptyBorder(20, 10, 10, 10));
         firstnamePanel.add(new JLabel("Prenume:"));
         firstnamePanel.add(tfFirstname);
 
@@ -65,11 +69,17 @@ public class PanelViewPatient extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnShowHistory);
         buttonsPanel.add(btnShowAnalyses);
+        buttonsPanel.add(btnCancel);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         add(patientData, BorderLayout.NORTH);
         add(buttonsPanel, BorderLayout.SOUTH);
 
         setVisible(false);
+    }
+
+    public JPanel getPreviousPanel() {
+        return previousPanel;
     }
 
     public void addShowHistoryButtonListener(ActionListener actionListener) {
@@ -79,6 +89,10 @@ public class PanelViewPatient extends JPanel {
 
     public void addShowAnalysesButtonListener(ActionListener actionListener) {
         btnShowAnalyses.addActionListener(actionListener);
+    }
+
+    public void addCancelButtonListener(ActionListener actionListener) {
+        btnCancel.addActionListener(actionListener);
     }
 
     public Patient getPatient() {

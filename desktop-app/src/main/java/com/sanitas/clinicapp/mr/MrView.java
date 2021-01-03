@@ -5,6 +5,7 @@ import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -16,7 +17,8 @@ public class MrView extends JFrame {
 
     private JButton btnShowPatients = new StyledJButton("Afisare Pacienti").getButton();
     private JButton btnSearchPatient = new StyledJButton("Cautare Pacient").getButton();
-    private JButton btnAddPatient = new StyledJButton("Adaugare Pacient").getButton();
+    private JButton btnAppointments = new StyledJButton("Programari").getButton();
+    private JButton btnMedicalServices = new StyledJButton("Servicii Medicale").getButton();
 
     private JButton btnBack = new StyledJButton("Inapoi").getButton();
 
@@ -27,17 +29,48 @@ public class MrView extends JFrame {
 
         btnShowPatients.setBackground(Colors.MAIN_COLOR.getColor());
         btnSearchPatient.setBackground(Colors.MAIN_COLOR.getColor());
-        btnAddPatient.setBackground(Colors.MAIN_COLOR.getColor());
+        btnAppointments.setBackground(Colors.MAIN_COLOR.getColor());
+        btnMedicalServices.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
+        JPanel btnShowPatientsPanel = new JPanel(new GridLayout(1, 1));
+        btnShowPatientsPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+        btnShowPatientsPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnShowPatientsPanel.add(btnShowPatients);
+
+        JPanel btnSearchPatientPanel = new JPanel(new GridLayout(1, 1));
+        btnSearchPatientPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+        btnSearchPatientPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnSearchPatientPanel.add(btnSearchPatient);
+
+        JPanel btnAppointmentsPanel = new JPanel(new GridLayout(1, 1));
+        btnAppointmentsPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+        btnAppointmentsPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnAppointmentsPanel.add(btnAppointments);
+
+        JPanel btnMedicalServicesPanel = new JPanel(new GridLayout(1, 1));
+        btnMedicalServicesPanel.setBackground(Colors.MENU_COLOR.getColor());
+        btnMedicalServicesPanel.add(btnMedicalServices);
+
         JPanel menuContent = new JPanel(new GridLayout(4, 1));
-        menuContent.add(btnShowPatients);
-        menuContent.add(btnSearchPatient);
-        menuContent.add(btnAddPatient);
+        menuContent.add(btnShowPatientsPanel);
+        menuContent.add(btnSearchPatientPanel);
+        menuContent.add(btnAppointmentsPanel);
+        menuContent.add(btnMedicalServicesPanel);
+        menuContent.setBackground(Colors.MENU_COLOR.getColor());
+        menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
+
+        JPanel btnBackPanel = new JPanel(new GridLayout(1, 1));
+        btnBackPanel.add(btnBack);
+        btnBackPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
+        btnBackPanel.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel leftContent = new JPanel(new BorderLayout());
         leftContent.add(menuContent, BorderLayout.NORTH);
-        leftContent.add(btnBack, BorderLayout.SOUTH);
+        leftContent.add(btnBackPanel, BorderLayout.SOUTH);
+        leftContent.setBorder(BorderFactory
+                .createMatteBorder(0, 0, 0, 1, Colors.MENU_BORDER_COLOR.getColor()));
+        leftContent.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel content = new JPanel(new BorderLayout());
         content.add(leftContent, BorderLayout.WEST);
@@ -72,18 +105,6 @@ public class MrView extends JFrame {
         return currentPanel;
     }
 
-    public JButton getBtnShowPatients() {
-        return btnShowPatients;
-    }
-
-    public JButton getBtnSearchPatient() {
-        return btnSearchPatient;
-    }
-
-    public JButton getBtnAddPatient() {
-        return btnAddPatient;
-    }
-
     public void sendError(String message) {
         JOptionPane.showMessageDialog(this, message, "Eroare!", JOptionPane.ERROR_MESSAGE);
     }
@@ -100,8 +121,12 @@ public class MrView extends JFrame {
         btnSearchPatient.addActionListener(actionListener);
     }
 
-    public void addBtnAddPatientListener(ActionListener actionListener) {
-        btnAddPatient.addActionListener(actionListener);
+    public void addBtnAppointmentsListener(ActionListener actionListener) {
+        btnAppointments.addActionListener(actionListener);
+    }
+
+    public void addBtnMedicalServicesListener(ActionListener actionListener) {
+        btnMedicalServices.addActionListener(actionListener);
     }
 
     public void addBackButtonListener(ActionListener actionListener) {

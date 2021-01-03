@@ -1,6 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
-import com.sanitas.clinicapp.mr.Patient;
+import com.sanitas.clinicapp.struct.Patient;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
@@ -28,12 +28,12 @@ public class PanelEditPatient extends JPanel {
         tfIban.setText(patient.getIban());
 
         JPanel cnpPanel = new JPanel(new FlowLayout());
-        cnpPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        cnpPanel.setBorder(new EmptyBorder(20, 10, 10, 10));
         cnpPanel.add(new JLabel("CNP:"));
         cnpPanel.add(tfCnp);
 
         JPanel lastnamePanel = new JPanel(new FlowLayout());
-        lastnamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        lastnamePanel.setBorder(new EmptyBorder(20, 10, 10, 10));
         lastnamePanel.add(new JLabel("Nume:"));
         lastnamePanel.add(tfLastname);
 
@@ -56,9 +56,10 @@ public class PanelEditPatient extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnSave);
         buttonsPanel.add(btnCancel);
+        buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         add(patientData, BorderLayout.NORTH);
-        add(buttonsPanel, BorderLayout.CENTER);
+        add(buttonsPanel, BorderLayout.SOUTH);
 
         setVisible(false);
     }

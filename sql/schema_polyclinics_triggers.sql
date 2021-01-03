@@ -32,7 +32,7 @@ DROP TRIGGER IF EXISTS ON_EMPLOYEE_INSERT;
 DELIMITER //
 CREATE TRIGGER ON_EMPLOYEE_INSERT AFTER INSERT ON `employees` FOR EACH ROW
 BEGIN
-	SET @count = 0;
+	SET @count = 0, @idRole = 1;
     SET @lastName = SUBSTRING_INDEX(SUBSTRING_INDEX(LOWER(NEW.`lastName`), ' ', 1), '-', 1);
     SET @firstName = LOWER(SUBSTRING(NEW.`firstName`, 1, 1));
 	SET @username = CONCAT(@firstName, '.', @lastName);
@@ -40,8 +40,21 @@ BEGIN
 		SET @count = @count + 1;
 		SET @username = CONCAT(@firstName, '.', @lastName, @count);
 	END WHILE;
-	INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`) VALUES (NEW.`cnp`, @username, CONCAT(NEW.`cnp`, @firstName));
     
+    
+    IF (NEW.`position` LIKE 'Receptioner') THEN
+		SET @idRole = 2;
+    ELSEIF (NEW.`position` LIKE 'HR') THEN
+		SET @idRole = 3;
+    ELSEIF (NEW.`position` LIKE 'Asistent Medical') THEN
+		SET @idRole = 4;
+    ELSEIF (NEW.`position` LIKE 'Medic') THEN
+		SET @idRole = 5;
+    ELSEIF (NEW.`position` LIKE 'Contabil') THEN
+		SET @idRole = 6;
+	END IF;
+    
+	INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`, `idRole`) VALUES (NEW.`cnp`, @username, CONCAT(NEW.`cnp`, @firstName),  @idRole);
 END;
 // DELIMITER ;
 
@@ -49,15 +62,15 @@ DROP TRIGGER IF EXISTS ON_EMPLOYEE_DELETE;
 DELIMITER //
 CREATE TRIGGER ON_EMPLOYEE_DELETE BEFORE DELETE ON `employees` FOR EACH ROW
 BEGIN
-	DELETE FROM `accounts` WHERE `cnpEmployee`=OLD.`cnp`;
-	DELETE FROM `appointments` WHERE `cnpDoctor`=OLD.`cnp`;
-	DELETE FROM `holidays` WHERE `cnpEmployee`=OLD.`cnp`;
-	DELETE FROM `employee_schedule` WHERE `cnpEmployee`=OLD.`cnp`;
-	DELETE FROM `nurse` WHERE `cnpEmployee`=OLD.`cnp`;
-	DELETE FROM `medical_services` WHERE `cnpDoctor`=OLD.`cnp`;
-	DELETE FROM `doctor_accreditations` WHERE `cnpDoctor`=OLD.`cnp`;
-	DELETE FROM `doctor_specialities` WHERE `cnpDoctor`=OLD.`cnp`;
-	DELETE FROM `doctors` WHERE `cnpEmployee`=OLD.`cnp`;
+	DELETE FROM `accounts` WHERE `cnpEmployee` = OLD.`cnp`;
+	DELETE FROM `appointments` WHERE `cnpDoctor` = OLD.`cnp`;
+	DELETE FROM `holidays` WHERE `cnpEmployee` = OLD.`cnp`;
+	DELETE FROM `employee_schedule` WHERE `cnpEmployee` = OLD.`cnp`;
+	DELETE FROM `nurse` WHERE `cnpEmployee` = OLD.`cnp`;
+	DELETE FROM `medical_services` WHERE `cnpDoctor` = OLD.`cnp`;
+	DELETE FROM `doctor_accreditations` WHERE `cnpDoctor` = OLD.`cnp`;
+	DELETE FROM `doctor_specialities` WHERE `cnpDoctor` = OLD.`cnp`;
+	DELETE FROM `doctors` WHERE `cnpEmployee` = OLD.`cnp`;
 END;
 // DELIMITER ;
 
@@ -65,9 +78,17 @@ DROP TRIGGER IF EXISTS ON_PATIENT_DELETE;
 DELIMITER //
 CREATE TRIGGER ON_PATIENT_DELETE BEFORE DELETE ON `patients` FOR EACH ROW
 BEGIN
-	DELETE FROM `appointments` WHERE `cnpPatient`=OLD.`cnp`;
-	DELETE FROM `patient_history` WHERE `cnpPatient`=OLD.`cnp`;
-	DELETE FROM `patient_analyses` WHERE `cnpPatient`=OLD.`cnp`;
+	DELETE FROM `appointments` WHERE `cnpPatient` = OLD.`cnp`;
+	DELETE FROM `reports` WHERE `cnpPatient` = OLD.`cnp`;
+	DELETE FROM `patient_analyses` WHERE `cnpPatient` = OLD.`cnp`;
+END;
+// DELIMITER ;
+
+DROP TRIGGER IF EXISTS ON_REPORT_DELETE;
+DELIMITER //
+CREATE TRIGGER ON_REPORT_DELETE BEFORE DELETE ON `reports` FOR EACH ROW
+BEGIN
+	DELETE FROM `report_investigations` WHERE `idReport` = OLD.`id`;
 END;
 // DELIMITER ;
 
@@ -75,7 +96,7 @@ DROP TRIGGER IF EXISTS ON_APPOINTMENT_DELETE;
 DELIMITER //
 CREATE TRIGGER ON_APPOINTMENT_DELETE BEFORE DELETE ON `appointments` FOR EACH ROW
 BEGIN
-	DELETE FROM `appointment_services` WHERE `idAppointment`=OLD.`id`;
+	DELETE FROM `appointment_services` WHERE `idAppointment` = OLD.`id`;
 END;
 // DELIMITER ;
 
@@ -83,6 +104,6 @@ DROP TRIGGER IF EXISTS ON_MEDICAL_SERVICE_DELETE;
 DELIMITER //
 CREATE TRIGGER ON_MEDICAL_SERVICE_DELETE BEFORE DELETE ON `medical_services` FOR EACH ROW
 BEGIN
-	DELETE FROM `appointment_services` WHERE `idMedicalService`=OLD.`id`;
+	DELETE FROM `appointment_services` WHERE `idMedicalService` = OLD.`id`;
 END;
 // DELIMITER ;
