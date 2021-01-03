@@ -1037,7 +1037,7 @@ public class MrModel {
             receipt = new Receipt(id, callableStatement.getString(2),
                                     callableStatement.getString(3),
                                     callableStatement.getString(4),
-                                    callableStatement.getDate(5),
+                                    callableStatement.getTimestamp(5),
                                     callableStatement.getString(6),
                                     callableStatement.getFloat(7));
         } catch (SQLException throwables) {
