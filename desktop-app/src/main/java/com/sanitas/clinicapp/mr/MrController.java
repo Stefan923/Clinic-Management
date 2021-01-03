@@ -680,4 +680,19 @@ public class MrController {
 
     }
 
+    class ShowReceiptButtonListener implements ActionListener {
+
+        private final PanelShowReceipt panel;
+
+        ShowReceiptButtonListener(PanelShowReceipt panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
+    }
+
 }
