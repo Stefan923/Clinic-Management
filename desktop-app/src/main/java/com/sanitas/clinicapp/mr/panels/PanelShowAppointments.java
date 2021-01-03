@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -119,6 +120,14 @@ public class PanelShowAppointments extends JPanel {
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         return buttonsPanel;
+    }
+
+    public Date getDateMin() {
+        return utilDateModelMin.getValue();
+    }
+
+    public Date getDateMax() {
+        return utilDateModelMax.getValue();
     }
 
     public JTable getAppointmentsTable() {

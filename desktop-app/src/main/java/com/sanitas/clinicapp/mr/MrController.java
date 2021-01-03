@@ -46,9 +46,11 @@ public class MrController {
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
 
         PanelShowAppointments panelShowAppointments = new PanelShowAppointments();
+        panelShowAppointments.addSearchButtonListener(new AppointmentSearchButtonListener(panelShowAppointments));
         panelShowAppointments.addAddButtonListener(new AppointmentAddButtonListener(panelShowAppointments));
+        panelShowAppointments.addDeleteButtonListener(new AppointmentDeleteButtonListener(panelShowAppointments));
         panelShowAppointments.addViewButtonListener(new AppointmentViewButtonListener(panelShowAppointments));
-        panelShowAppointments.updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments() : model.getAppointments(cnp));
+        panelShowAppointments.updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments(null, null) : model.getAppointments(cnp, null, null));
 
         gPanelSMS = new PanelShowMedicalServices();
         gPanelSMS.updateTable(model.getMedicalServices(cnp));
@@ -136,7 +138,6 @@ public class MrController {
             int[] indexes = patientsTable.getSelectedRows();
             if (indexes.length == 0) {
                 view.sendError("Trebuie sa selectezi cel putin un pacient.");
-
                 return;
             }
 
@@ -727,6 +728,54 @@ public class MrController {
 
     }
 
+    class AppointmentDeleteButtonListener implements ActionListener {
+
+        private final PanelShowAppointments panel;
+
+        public AppointmentDeleteButtonListener(PanelShowAppointments panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTable appointmentsTable = panel.getAppointmentsTable();
+            List<Appointment> appointments = panel.getAppointments();
+
+            int[] indexes = appointmentsTable.getSelectedRows();
+            if (indexes.length == 0) {
+                view.sendError("Trebuie sa selectezi cel putin o programare.");
+                return;
+            }
+
+            for (int index : indexes) {
+                model.deleteAppointment(appointments.get(index).getId());
+            }
+
+            panel.updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments(null, null) : model.getAppointments(account.getCnp(), null, null));
+            view.sendSuccessMessage("Programarile selectate au fost sterse.");
+        }
+
+    }
+
+    class AppointmentSearchButtonListener implements ActionListener {
+
+        private final PanelShowAppointments panel;
+
+        public AppointmentSearchButtonListener(PanelShowAppointments panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (account.hasPermission("mr.appointments.view.all")) {
+                panel.updateTable(model.getAppointments(panel.getDateMin(), panel.getDateMax()));
+            } else {
+                panel.updateTable(model.getAppointments(account.getCnp(), panel.getDateMin(), panel.getDateMax()));
+            }
+        }
+
+    }
+
     class AppointmentAddServiceButtonListener implements ActionListener {
 
         private final PanelAddAppointment panel;
@@ -908,7 +957,7 @@ public class MrController {
             int idAppointment = model.addAppointment(new Appointment(cnpPatient, cnpDoctor, idCabinet, panel.getIdSpeciality(), startDate));
 
             if (idAppointment != 0 && model.addAppointmentServices(idAppointment, panel.getMedicalServices())) {
-                ((PanelShowAppointments) panel.getPreviousPanel()).updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments() : model.getAppointments(cnp));
+                ((PanelShowAppointments) panel.getPreviousPanel()).updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments(null, null) : model.getAppointments(account.getCnp(), null, null));
 
                 view.sendSuccessMessage("Programarea a fost adaugata.");
                 return;

@@ -676,11 +676,29 @@ public class MrModel {
         return false;
     }
 
-    public List<Appointment> getAppointments() {
+    public List<Appointment> getAppointments(Date startDate, Date endDate) {
         List<Appointment> appointments = new ArrayList<>();
+        int index = 1;
+
+        StringBuilder query = new StringBuilder("SELECT `id`, `patientName`, `doctorName`, `cabinetName`, `specialityName`, `duration`, `date` FROM `view_appointments`");
+        if (startDate != null) {
+            query.append(" WHERE AND `date` >= ?");
+            ++index;
+        }
+        if (endDate != null) {
+            query.append(index == 1 ? " WHERE " : "").append(" AND `date` <= ?");
+        }
+        query.append(";");
+        index = 1;
 
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `patientName`, `doctorName`, `cabinetName`, `duration`, `specialityName`, `date` FROM `view_appointments`;");
+            PreparedStatement preparedStatement = database.preparedStatement(query.toString());
+            if (startDate != null) {
+                preparedStatement.setTimestamp(index++, new Timestamp(startDate.getTime()));
+            }
+            if (endDate != null) {
+                preparedStatement.setTimestamp(index, new Timestamp(endDate.getTime()));
+            }
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -702,12 +720,28 @@ public class MrModel {
         return appointments;
     }
 
-    public List<Appointment> getAppointments(String cnpDoctor) {
+    public List<Appointment> getAppointments(String cnpDoctor, Date startDate, Date endDate) {
         List<Appointment> appointments = new ArrayList<>();
+        int index = 2;
+
+        StringBuilder query = new StringBuilder("SELECT `id`, `patientName`, `doctorName`, `cabinetName`, `specialityName`, `duration`, `date` FROM `view_appointments` WHERE `cnpDoctor` = ?");
+        if (startDate != null) {
+            query.append(" AND `date` >= ?");
+        }
+        if (endDate != null) {
+            query.append(" AND `date` <= ?");
+        }
+        query.append(";");
 
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `patientName`, `doctorName`, `cabinetName`, `specialityName`, `duration`, `date` FROM `view_appointments` WHERE `cnpDoctor` = ?;");
+            PreparedStatement preparedStatement = database.preparedStatement(query.toString());
             preparedStatement.setString(1, cnpDoctor);
+            if (startDate != null) {
+                preparedStatement.setTimestamp(index++, new Timestamp(startDate.getTime()));
+            }
+            if (endDate != null) {
+                preparedStatement.setTimestamp(index, new Timestamp(endDate.getTime()));
+            }
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
