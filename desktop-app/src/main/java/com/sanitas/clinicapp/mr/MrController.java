@@ -45,7 +45,7 @@ public class MrController {
         PanelSearchPatient panelSearchPatient = new PanelSearchPatient();
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
 
-        PanelShowAppointments panelShowAppointments = new PanelShowAppointments();
+        PanelShowAppointments panelShowAppointments = new PanelShowAppointments(account);
         panelShowAppointments.addSearchButtonListener(new AppointmentSearchButtonListener(panelShowAppointments));
         panelShowAppointments.addAddButtonListener(new AppointmentAddButtonListener(panelShowAppointments));
         panelShowAppointments.addDeleteButtonListener(new AppointmentDeleteButtonListener(panelShowAppointments));
@@ -119,7 +119,7 @@ public class MrController {
                 Patient patient = model.getPatient((String) patientsTable.getValueAt(row, 2));
 
                 view.getPanelShowPatients().setVisible(false);
-                PanelViewPatient panelVP = new PanelViewPatient(view.getPanelShowPatients(), patient);
+                PanelViewPatient panelVP = new PanelViewPatient(view.getPanelShowPatients(), patient, account);
                 panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
                 panelVP.addShowAnalysesButtonListener(new PatientAnalysesButtonListener(panelVP));
                 panelVP.addCancelButtonListener(new CancelButtonListener());
@@ -502,7 +502,7 @@ public class MrController {
                 return;
             }
 
-            PanelViewPatient panelVP = new PanelViewPatient(panel, patient);
+            PanelViewPatient panelVP = new PanelViewPatient(panel, patient, account);
             panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
             panelVP.addShowAnalysesButtonListener(new PatientAnalysesButtonListener(panelVP));
             panelVP.addCancelButtonListener(new CancelButtonListener());

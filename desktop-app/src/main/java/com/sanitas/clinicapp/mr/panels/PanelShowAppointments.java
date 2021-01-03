@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.struct.Appointment;
 import com.sanitas.clinicapp.ui.DateLabelFormatter;
 import com.sanitas.clinicapp.ui.StyledJButton;
@@ -34,16 +35,16 @@ public class PanelShowAppointments extends JPanel {
 
     private List<Appointment> appointments;
 
-    public PanelShowAppointments() {
+    public PanelShowAppointments(ClinicApplication.Account account) {
         super(new BorderLayout());
 
-        loadContent();
+        loadContent(account);
     }
 
-    private void loadContent() {
+    private void loadContent(ClinicApplication.Account account) {
         add(getSearchPanel(), BorderLayout.NORTH);
         add(getDataPanel(), BorderLayout.CENTER);
-        add(getButtonsPanel(), BorderLayout.SOUTH);
+        add(getButtonsPanel(account), BorderLayout.SOUTH);
     }
 
     private JPanel getSearchPanel() {
@@ -113,12 +114,18 @@ public class PanelShowAppointments extends JPanel {
         appointmentsTable.setFillsViewportHeight(true);
     }
 
-    private JPanel getButtonsPanel() {
+    private JPanel getButtonsPanel(ClinicApplication.Account account) {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.add(btnAdd);
+        if (account.hasPermission("mr.appointments.write")) {
+            buttonsPanel.add(btnAdd);
+        }
         buttonsPanel.add(btnView);
-        buttonsPanel.add(btnShowReceipt);
-        buttonsPanel.add(btnDelete);
+        if (account.hasPermission("mr.receipt.read")) {
+            buttonsPanel.add(btnShowReceipt);
+        }
+        if (account.hasPermission("mr.appointments.write")) {
+            buttonsPanel.add(btnDelete);
+        }
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         return buttonsPanel;

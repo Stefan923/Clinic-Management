@@ -1,7 +1,7 @@
 package com.sanitas.clinicapp.mr;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
-import com.sanitas.clinicapp.mr.panels.PanelShowReceipt;
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
@@ -23,8 +23,8 @@ public class MrView extends JFrame {
 
     private JButton btnBack = new StyledJButton("Inapoi").getButton();
 
-    public MrView(MrModel model) {
-        panelShowPatients = new PanelShowPatients(model);
+    public MrView(MrModel model, ClinicApplication.Account account) {
+        panelShowPatients = new PanelShowPatients(model, account);
         currentPanel = panelShowPatients;
         panelShowPatients.setVisible(true);
 
@@ -57,7 +57,9 @@ public class MrView extends JFrame {
         menuContent.add(btnShowPatientsPanel);
         menuContent.add(btnSearchPatientPanel);
         menuContent.add(btnAppointmentsPanel);
-        menuContent.add(btnMedicalServicesPanel);
+        if (account.hasPermission("mr.medical_services.read")) {
+            menuContent.add(btnMedicalServicesPanel);
+        }
         menuContent.setBackground(Colors.MENU_COLOR.getColor());
         menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
 
