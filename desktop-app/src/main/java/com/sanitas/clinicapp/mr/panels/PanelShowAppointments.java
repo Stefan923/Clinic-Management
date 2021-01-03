@@ -24,6 +24,7 @@ public class PanelShowAppointments extends JPanel {
     private final JButton btnSearch = new StyledJButton("Cauta").getButton();
     private final JButton btnAdd = new StyledJButton("Adauga o programare").getButton();
     private final JButton btnView = new StyledJButton("Afiseaza").getButton();
+    private final JButton btnShowReceipt = new StyledJButton("Bon Fiscal").getButton();
     private final JButton btnDelete = new StyledJButton("Sterge").getButton();
 
     private final UtilDateModel utilDateModelMin = new UtilDateModel();
@@ -116,6 +117,7 @@ public class PanelShowAppointments extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(btnAdd);
         buttonsPanel.add(btnView);
+        buttonsPanel.add(btnShowReceipt);
         buttonsPanel.add(btnDelete);
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
@@ -148,6 +150,10 @@ public class PanelShowAppointments extends JPanel {
 
     public void addViewButtonListener(ActionListener actionListener) {
         btnView.addActionListener(actionListener);
+    }
+
+    public void addShowReceiptButtonListener(ActionListener actionListener) {
+        btnShowReceipt.addActionListener(actionListener);
     }
 
     public void addDeleteButtonListener(ActionListener actionListener) {

@@ -1020,5 +1020,32 @@ public class MrModel {
         return false;
     }
 
+    public Receipt getReceipt(int id) {
+        Receipt receipt = null;
+
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL GET_RECEIPT(?, ?, ?, ?, ?, ?, ?);");
+            callableStatement.setInt(1, id);
+            callableStatement.registerOutParameter(2, Types.VARCHAR);
+            callableStatement.registerOutParameter(3, Types.VARCHAR);
+            callableStatement.registerOutParameter(4, Types.VARCHAR);
+            callableStatement.registerOutParameter(5, Types.TIMESTAMP);
+            callableStatement.registerOutParameter(6, Types.VARCHAR);
+            callableStatement.registerOutParameter(7, Types.DECIMAL);
+            callableStatement.execute();
+
+            receipt = new Receipt(id, callableStatement.getString(2),
+                                    callableStatement.getString(3),
+                                    callableStatement.getString(4),
+                                    callableStatement.getDate(5),
+                                    callableStatement.getString(6),
+                                    callableStatement.getFloat(7));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return receipt;
+    }
+
 }
 
