@@ -1,7 +1,6 @@
 package com.sanitas.clinicapp.hr.panels;
 
 import com.sanitas.clinicapp.hr.Employee;
-import com.sanitas.clinicapp.mr.Patient;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;

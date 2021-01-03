@@ -2,8 +2,6 @@ package com.sanitas.clinicapp.hr.panels;
 
 import com.sanitas.clinicapp.hr.Employee;
 import com.sanitas.clinicapp.hr.HrModel;
-import com.sanitas.clinicapp.mr.MrModel;
-import com.sanitas.clinicapp.mr.Patient;
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 

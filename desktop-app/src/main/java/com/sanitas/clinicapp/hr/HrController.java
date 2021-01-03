@@ -3,12 +3,6 @@ package com.sanitas.clinicapp.hr;
 import com.sanitas.clinicapp.hr.panels.PanelAddEmployee;
 import com.sanitas.clinicapp.hr.panels.PanelEditEmployee;
 import com.sanitas.clinicapp.hr.panels.PanelShowEmployee;
-import com.sanitas.clinicapp.hr.panels.PanelViewEmployee;
-import com.sanitas.clinicapp.mr.MrController;
-import com.sanitas.clinicapp.mr.Patient;
-import com.sanitas.clinicapp.mr.panels.PanelAddPatient;
-import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
-import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

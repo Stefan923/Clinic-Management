@@ -1,16 +1,10 @@
 package com.sanitas.clinicapp.fr;
 import com.sanitas.clinicapp.fr.panels.*;
-import com.sanitas.clinicapp.mr.MrController;
-import com.sanitas.clinicapp.mr.Patient;
-import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
-import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
-import com.sanitas.clinicapp.ui.Colors;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.Map;
 
 public class FrController {
 
