@@ -12,14 +12,14 @@ import java.awt.event.ActionListener;
 public class FrView extends JFrame {
     private JPanel currentPanel;
 
-    private JButton btnMedicalUnitProfit = new StyledJButton("Afisare Profit Policlinică").getButton();
-    private JButton btnProfitByDoctor = new StyledJButton("Afișare Profit Doctor").getButton();
-    private JButton btnProfitBySpeciality = new StyledJButton("Afisare Profit Per Specialitate").getButton();
-    private JButton btnTotalProfit = new StyledJButton("Afisare Profit Total").getButton();
-    private JButton btnEmployeeSalary = new StyledJButton("Afisare Salariu Angajat").getButton();
-    private JButton btnDoctorSalary = new StyledJButton("Afisare Salariu Doctor").getButton();
-    private JButton btnDoctorProfitTotal = new StyledJButton("Afisare Profit Total Per Doctor").getButton();
-    private JButton btnShowTransactions = new StyledJButton("Afisare Tranzactii").getButton();
+    private JButton btnMedicalUnitProfit = new StyledJButton("Profit Policlinică").getButton();
+    private JButton btnProfitByDoctor = new StyledJButton("Profit Doctor").getButton();
+    private JButton btnProfitBySpeciality = new StyledJButton("Profit Per Specialitate").getButton();
+    private JButton btnTotalProfit = new StyledJButton("Profit Total").getButton();
+    private JButton btnEmployeeSalary = new StyledJButton("Salariu Angajat").getButton();
+    private JButton btnDoctorSalary = new StyledJButton("Salariu Doctor").getButton();
+    private JButton btnDoctorProfitTotal = new StyledJButton("Profit Total Per Doctor").getButton();
+    private JButton btnShowTransactions = new StyledJButton("Tranzactii").getButton();
 
     private JButton btnBack = new StyledJButton("Inapoi").getButton();
 
@@ -92,6 +92,8 @@ public class FrView extends JFrame {
         menuContent.add(btnDoctorSalaryPanel);
         menuContent.add(btnDoctorProfitTotalPanel);
         menuContent.add(btnShowTransactionsPanel);
+        menuContent.setBackground(Colors.MENU_COLOR.getColor());
+        menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
 
         JPanel leftContent = new JPanel(new BorderLayout());
         leftContent.add(menuContent, BorderLayout.NORTH);
