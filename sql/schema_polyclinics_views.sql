@@ -129,8 +129,14 @@ CREATE VIEW `view_appointment_services` AS
         INNER JOIN `appointment_services` APS ON APS.`idAppointment` = A.`id`
         INNER JOIN `medical_services` MS ON MS.`id` = APS.`idMedicalService`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
+CREATE VIEW `polyclinics`.`view_medical_units` AS
+	SELECT * FROM `medical_units`;
+
 DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
 
 SELECT * FROM `view_services_by_cabinet`;
+
+SELECT * FROM `view_medical_units`;
