@@ -971,5 +971,20 @@ public class MrModel {
         return result[0];
     }
 
+    public boolean deleteAppointment(int idAppointment) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL DELETE_APPOINTMENT(?, ?);");
+            callableStatement.setInt(1, idAppointment);
+            callableStatement.registerOutParameter(2, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(2);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return false;
+    }
+
 }
 
