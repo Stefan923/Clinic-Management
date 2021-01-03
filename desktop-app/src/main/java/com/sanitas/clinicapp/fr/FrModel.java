@@ -2,11 +2,10 @@ package com.sanitas.clinicapp.fr;
 
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
+import com.sanitas.clinicapp.struct.Transaction;
 
-import javax.xml.transform.Result;
 import java.sql.*;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 public class FrModel {
     private final Database database;
