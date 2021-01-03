@@ -6,12 +6,12 @@ public class Employee {
     private String position;
     private String cnp;
 
-    Employee(String lastname, String firstname, String position, String cnp)
+    Employee(String cnp, String lastname, String firstname, String position)
     {
+        this.cnp=cnp;
         this.lastname=lastname;
         this.firstname=firstname;
         this.position=position;
-        this.cnp=cnp;
     }
     public void setFirstname(String firstname) {
         this.firstname = firstname;
@@ -23,6 +23,22 @@ public class Employee {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public String getCnp() {
+        return cnp;
     }
 
     @Override

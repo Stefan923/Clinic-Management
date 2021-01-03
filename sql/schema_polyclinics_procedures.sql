@@ -98,6 +98,19 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS INSERT_DOCTOR;
+DELIMITER //
+CREATE PROCEDURE INSERT_DOCTOR(IN `_cnpEmployee` VARCHAR(13), IN `_sealcode` VARCHAR(25), IN `_commission` decimal(3,2), IN `_scientificTitle` VARCHAR(100), IN `_didacticTitle` VARCHAR(10),OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) FROM `doctors` WHERE `cnpEmployee`=`_cnpEmployee`) = 0) THEN
+		INSERT INTO `doctors` (`cnpEmployee`,`sealcode`,`commission`, `scientificTitle`, `didacticTitle`) VALUES (`_cnpEmployee`,`_sealcode`,`_commission`, `_scientificTitle`, `_didacticTitle`);
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
 DROP PROCEDURE IF EXISTS DELETE_EMPLOYEE;
 DELIMITER //
 CREATE PROCEDURE DELETE_EMPLOYEE(IN `_cnp` VARCHAR(13), OUT `validation` INT)
@@ -111,12 +124,13 @@ BEGIN
 END;
 // DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS UPDATE_EMPLOYEE;
 DELIMITER //
-CREATE PROCEDURE UPDATE_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `columnName` VARCHAR(45), IN `value` VARCHAR(100), OUT `validation` INT)
+CREATE PROCEDURE UPDATE_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `_lastName` VARCHAR(25), IN `_firstName` VARCHAR(50), IN `_position` VARCHAR(45), OUT `validation` INT)
 BEGIN
 	IF ((SELECT COUNT(*) FROM `employees` WHERE `cnp`=`_cnp`) = 1) THEN
-		SET @sqlAction = CONCAT('UPDATE employees SET ', `columnName`, '=', `value`, ' WHERE cnp=', `_cnp`, ';');
+		SET @sqlAction = CONCAT("UPDATE employees SET lastName = '", `_lastName`, "', firstName = '", `_firstName`, "', position = '", `_position`, "' WHERE cnp='", `_cnp`, "';");
 		PREPARE statement FROM @sqlAction;
 		EXECUTE statement;
 		SET `validation` = 1;
