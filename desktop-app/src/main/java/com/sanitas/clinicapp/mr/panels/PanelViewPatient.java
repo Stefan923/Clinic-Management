@@ -76,6 +76,7 @@ public class PanelViewPatient extends JPanel {
         btnShowHistory.addActionListener(actionListener);
     }
 
+
     public void addShowAnalysesButtonListener(ActionListener actionListener) {
         btnShowAnalyses.addActionListener(actionListener);
     }

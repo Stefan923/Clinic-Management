@@ -41,6 +41,7 @@ BEGIN
 		SET @username = CONCAT(@firstName, '.', @lastName, @count);
 	END WHILE;
 	INSERT INTO `accounts` (`cnpEmployee`, `username`, `password`) VALUES (NEW.`cnp`, @username, CONCAT(NEW.`cnp`, @firstName));
+    
 END;
 // DELIMITER ;
 
