@@ -9,12 +9,16 @@ import org.jdatepicker.impl.UtilDateModel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Properties;
 
 public class PanelEmployeeSalary extends JPanel {
     private JTextField tfCNP = new JTextField(20);
     private JTextField tfSalary = new JTextField(10);
-    private JButton btnShowSalary = new StyledJButton("Afisare salariu").getButton();
+    private JButton btnShowSalary = new StyledJButton("Afisare").getButton();
+
+    private UtilDateModel utilDateModelMin = new UtilDateModel();
+    private UtilDateModel utilDateModelMax = new UtilDateModel();
 
     public PanelEmployeeSalary(){
         setLayout(new BorderLayout());
@@ -34,11 +38,9 @@ public class PanelEmployeeSalary extends JPanel {
         properties.put("text.month","Month");
         properties.put("text.year","Year");
 
-        UtilDateModel utilDateModelMin = new UtilDateModel();
         JDatePanelImpl jDatePanelMin = new JDatePanelImpl(utilDateModelMin, properties);
         JDatePickerImpl jDatePickerMin = new JDatePickerImpl(jDatePanelMin, new DateLabelFormatter());
 
-        UtilDateModel utilDateModelMax = new UtilDateModel();
         JDatePanelImpl jDatePanelMax = new JDatePanelImpl(utilDateModelMax, properties);
         JDatePickerImpl jDatePickerMax = new JDatePickerImpl(jDatePanelMax, new DateLabelFormatter());
 
@@ -47,7 +49,6 @@ public class PanelEmployeeSalary extends JPanel {
         searchPanel.add(jDatePickerMin);
         searchPanel.add(new JLabel("Sfarsit:"));
         searchPanel.add(jDatePickerMax);
-        searchPanel.add(btnShowSalary);
 
         JPanel employeeSalaryPanel = new JPanel(new FlowLayout());
         employeeSalaryPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
@@ -58,14 +59,31 @@ public class PanelEmployeeSalary extends JPanel {
         detailsPanel.add(searchPanel);
         detailsPanel.add(employeeSalaryPanel);
 
+        JPanel btnPanel = new JPanel(new FlowLayout());
+        btnPanel.add(btnShowSalary);
+        btnPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+
         add(detailsPanel, BorderLayout.NORTH);
+        add(btnPanel, BorderLayout.SOUTH);
     }
 
     public JTextField getTfCNP() {
         return tfCNP;
     }
 
-    public void updateCNP(String cnp) {
-        tfCNP.setText(cnp);
+    public JTextField getTfSalary() {
+        return tfSalary;
+    }
+
+    public UtilDateModel getUtilDateModelMin() {
+        return utilDateModelMin;
+    }
+
+    public UtilDateModel getUtilDateModelMax() {
+        return utilDateModelMax;
+    }
+
+    public void addShowSalaryButtonListener(ActionListener actionListener) {
+        btnShowSalary.addActionListener(actionListener);
     }
 }

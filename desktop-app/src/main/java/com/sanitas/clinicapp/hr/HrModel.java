@@ -1,7 +1,9 @@
 package com.sanitas.clinicapp.hr;
 
+import com.mysql.cj.xdevapi.PreparableStatement;
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
+
 
 import java.sql.*;
 import java.util.ArrayList;

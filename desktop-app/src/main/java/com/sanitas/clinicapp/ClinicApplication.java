@@ -12,7 +12,7 @@ public class ClinicApplication {
     private static Account user;
 
     public static void main(String[] args) {
-        database = new Database("localhost", 3306, "polyclinics", "root", "DButcnMySQL");
+        database = new Database("localhost", 3306, "polyclinics", "root", "D(o)rmp!!");
 
         new LoginMVC();
     }

@@ -153,10 +153,10 @@ END;
 
 DROP PROCEDURE IF EXISTS GET_MEDICAL_UNIT_PROFIT;
 DELIMITER //
-CREATE PROCEDURE GET_MEDICAL_UNIT_PROFIT(IN `_id` INT, IN `startDate` DATE, IN `endDate` DATE, OUT `profit` DECIMAL(10,2))
+CREATE PROCEDURE GET_MEDICAL_UNIT_PROFIT(IN `_iban` VARCHAR(50), IN `startDate` DATE, IN `endDate` DATE, OUT `profit` DECIMAL(10,2))
 BEGIN
 	SET @income = 0, @outcome = 0;
-    SET @iban = (SELECT `iban` FROM `medical_units` WHERE `id` = `_id` LIMIT 1);
+    SET @iban = (SELECT `iban` FROM `medical_units` WHERE `iban` = `_iban` LIMIT 1);
     
     IF (@iban IS NOT NULL) THEN
 		SELECT IFNULL(SUM(`amount`), 0) INTO @income FROM `transactions` WHERE `receiver` = @iban AND DATE(`date`) >= `startDate` AND DATE(`date`) <= `endDate` AND `type` = 'income';
@@ -306,15 +306,19 @@ END;
 
 DROP PROCEDURE IF EXISTS GET_RECEIPT;
 DELIMITER //
-CREATE PROCEDURE GET_RECEIPT(IN `_id` INT, OUT `_name` VARCHAR(50), OUT `_address` VARCHAR(100), OUT `_date` TIMESTAMP, OUT `_services` VARCHAR(255), OUT `_price` DECIMAL(10,2))
+CREATE PROCEDURE GET_RECEIPT(IN `_id` INT, OUT `_name` VARCHAR(50), OUT `_patientName` VARCHAR(50), OUT `_address` VARCHAR(100), OUT `_date` TIMESTAMP, OUT `_services` VARCHAR(255), OUT `_price` DECIMAL(10,2))
 BEGIN
 	SELECT M.`name`, M.`address`, A.`date` INTO `_name`, `_address`, `_date`
 		FROM `medical_units` M, `appointments` A, `cabinets` C
 		WHERE A.`idCabinet` = C.`id` AND M.`id` = C.`idMedicalUnit` LIMIT 1;
 	
-    SELECT GROUP_CONCAT(CONCAT(MS.`name`, MS.`price`)), SUM(MS.`price`) INTO `_services`, `_price`
+    SELECT GROUP_CONCAT(CONCAT(MS.`name`, ' ', MS.`price`)), SUM(MS.`price`) INTO `_services`, `_price`
 		FROM `appointments` A, `appointment_services` S, `medical_services` MS
         WHERE A.`id` = `_id` AND S.`idAppointment` = A.`id` AND S.`idMedicalService` = MS.`id`;
+        
+	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
+		FROM `appointments` A, `patients` P
+        WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`; 
 END;
 // DELIMITER ;
 
@@ -492,7 +496,7 @@ DROP PROCEDURE IF EXISTS TEST;
 DELIMITER //
 CREATE PROCEDURE TEST()
 BEGIN
-	SET @output = -1, @output_name = '', @output_address = '', @output_date = '', @output_services = '', @output_price = 0;
+	SET @output = -1, @output_name = '', @output_address = '', @output_date = '', @output_services = '', @output_price = 0, @output_name2 = '';
 	-- CALL CHECK_CREDITENTIALS('admin1', 'adminpass', @output);
 	-- CALL INSERT_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '08:00:00', '12:00:00', @output);
 	-- CALL INSERT_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '07:59:00', '09:00:00', @output);
@@ -503,8 +507,8 @@ BEGIN
     -- CALL INSERT_EMPLOYEE('2700735934101', 'Spatariu', 'Diana', 'Cluj-Napoca, str. Nicolae Iorga nr. 6', '0783527882', 'spatariu.diana@gmail.com', 'RO64RZBR3277465196914272', '30', '2017-02-20', 'Receptioner', '3470', '120', @output);
     -- CALL DELETE_EMPLOYEE('2700735934101', @output);
     -- CALL UPDATE_EMPLOYEE('2700735934101', 'contractNum', '31', @output);
-    CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
-    -- CALL GET_MEDICAL_UNIT_PROFIT('2', '2019-01-01', '2019-12-31', @output);
+    -- CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
+    -- CALL GET_MEDICAL_UNIT_PROFIT('RO29RZBR5523951481289988', '2019-01-01', '2019-12-31', @output);
     -- CALL GET_PROFIT_BY_SPECIALITY('1', '2020-01-01', '2020-12-15', @output);
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL GET_DOCTOR_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
@@ -512,8 +516,8 @@ BEGIN
     -- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL INSERT_PATIENT('1871054098525', 'Ianc', 'Daniel', 'RO12RZBR6975321332427243', @output);
     -- CALL DELETE_PATIENT('1871054098525', @output);
-    -- CALL GET_RECEIPT('2', @output_name, @output_address, @output_date, @output_services, @output_price);
-    -- SELECT @output_name, @output_address, @output_date, @output_services, @output_price;
+    CALL GET_RECEIPT('2', @output_name, @output_name2,  @output_address, @output_date, @output_services, @output_price);
+    SELECT @output_name, @output_name2, @output_address, @output_date, @output_services, @output_price;
     
 	-- CALL INSERT_PATIENT_HISTORY('1520619148967', '1', 'are toate bolile', NULL, @output);
     -- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
