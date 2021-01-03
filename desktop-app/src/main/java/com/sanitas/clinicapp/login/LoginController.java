@@ -23,8 +23,8 @@ public class LoginController {
             JPasswordField password = view.getPfPassword();
 
             if (model.checkCreditentials(username.getText(), String.valueOf(password.getPassword()))) {
-                model.openHomePage();
                 model.loadUserData(username.getText());
+                model.openHomePage();
 
                 view.setVisible(false);
             } else {
