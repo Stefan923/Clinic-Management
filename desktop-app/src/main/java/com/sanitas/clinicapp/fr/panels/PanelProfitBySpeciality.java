@@ -9,36 +9,42 @@ import org.jdatepicker.impl.UtilDateModel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 public class PanelProfitBySpeciality extends JPanel {
-    private JTextField tfCNP = new JTextField(20);
-    private JTextField tfSalary = new JTextField(10);
-    private JButton btnShowProfit = new StyledJButton("Afisare profit per specialitate").getButton();
+    private JTextField tfProfit = new JTextField(10);
+    private JButton btnShowProfit = new StyledJButton("Afisare").getButton();
+    private JComboBox<String> cbSpeciality = new JComboBox<>();
+
+    private UtilDateModel utilDateModelMin = new UtilDateModel();
+    private UtilDateModel utilDateModelMax = new UtilDateModel();
+
+    private Map<Integer, String> specialities;
 
     public PanelProfitBySpeciality(){
         setLayout(new BorderLayout());
 
-        tfSalary.setEditable(false);
+        tfProfit.setEditable(false);
 
         JPanel detailsPanel = new JPanel(new GridLayout(5, 1));
         detailsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JPanel doctorsCNP = new JPanel(new FlowLayout());
         doctorsCNP.setBorder(new EmptyBorder(0, 0, 10, 0));
-        doctorsCNP.add(new JLabel("CNP Medic:"));
-        doctorsCNP.add(tfCNP);
+        doctorsCNP.add(new JLabel("Specialitate:"));
+        doctorsCNP.add(cbSpeciality);
 
         Properties properties = new Properties();
         properties.put("text.today","Today");
         properties.put("text.month","Month");
         properties.put("text.year","Year");
 
-        UtilDateModel utilDateModelMin = new UtilDateModel();
         JDatePanelImpl jDatePanelMin = new JDatePanelImpl(utilDateModelMin, properties);
         JDatePickerImpl jDatePickerMin = new JDatePickerImpl(jDatePanelMin, new DateLabelFormatter());
 
-        UtilDateModel utilDateModelMax = new UtilDateModel();
         JDatePanelImpl jDatePanelMax = new JDatePanelImpl(utilDateModelMax, properties);
         JDatePickerImpl jDatePickerMax = new JDatePickerImpl(jDatePanelMax, new DateLabelFormatter());
 
@@ -47,25 +53,53 @@ public class PanelProfitBySpeciality extends JPanel {
         searchPanel.add(jDatePickerMin);
         searchPanel.add(new JLabel("Sfarsit:"));
         searchPanel.add(jDatePickerMax);
-        searchPanel.add(btnShowProfit);
 
         JPanel profitBySpecialityPanel = new JPanel(new FlowLayout());
         profitBySpecialityPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
         profitBySpecialityPanel.add(new JLabel("Profit per specialitate:"));
-        profitBySpecialityPanel.add(tfSalary);
+        profitBySpecialityPanel.add(tfProfit);
 
         detailsPanel.add(doctorsCNP);
         detailsPanel.add(searchPanel);
         detailsPanel.add(profitBySpecialityPanel);
 
+        JPanel btnPanel = new JPanel(new FlowLayout());
+        btnPanel.add(btnShowProfit);
+        btnPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+
         add(detailsPanel, BorderLayout.NORTH);
+        add(btnPanel, BorderLayout.SOUTH);
     }
 
-    public JTextField getTfCNP() {
-        return tfCNP;
+    public UtilDateModel getUtilDateModelMin() {
+        return utilDateModelMin;
     }
 
-    public void updateCNP(String cnp) {
-        tfCNP.setText(cnp);
+    public UtilDateModel getUtilDateModelMax() {
+        return utilDateModelMax;
+    }
+
+    public JTextField getTfProfit() {
+        return tfProfit;
+    }
+
+    public void updateCbSpeciality(Map<Integer, String> specialities) {
+        this.specialities = specialities;
+
+        cbSpeciality.removeAllItems();
+        specialities.values().forEach(speciality -> cbSpeciality.addItem(speciality));
+    }
+
+    public int getIdSpeciality() {
+        Optional<Map.Entry<Integer, String>> result = specialities
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbSpeciality.getSelectedItem()))
+                .findFirst();
+        return result.map(Map.Entry::getKey).orElse(1);
+    }
+
+    public void addProfitButtonListener(ActionListener actionListener) {
+        btnShowProfit.addActionListener(actionListener);
     }
 }

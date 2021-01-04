@@ -103,6 +103,10 @@ public class HomePageView extends JFrame {
         return null;
     }
 
+    public void sendError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Eroare!", JOptionPane.ERROR_MESSAGE);
+    }
+
     public void addBtnHRListener(ActionListener actionListener) {
         btnHR.addActionListener(actionListener);
     }

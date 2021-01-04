@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.struct.Appointment;
 import com.sanitas.clinicapp.ui.DateLabelFormatter;
 import com.sanitas.clinicapp.ui.StyledJButton;
@@ -24,6 +25,7 @@ public class PanelShowAppointments extends JPanel {
     private final JButton btnSearch = new StyledJButton("Cauta").getButton();
     private final JButton btnAdd = new StyledJButton("Adauga o programare").getButton();
     private final JButton btnView = new StyledJButton("Afiseaza").getButton();
+    private final JButton btnShowReceipt = new StyledJButton("Bon Fiscal").getButton();
     private final JButton btnDelete = new StyledJButton("Sterge").getButton();
 
     private final UtilDateModel utilDateModelMin = new UtilDateModel();
@@ -33,16 +35,16 @@ public class PanelShowAppointments extends JPanel {
 
     private List<Appointment> appointments;
 
-    public PanelShowAppointments() {
+    public PanelShowAppointments(ClinicApplication.Account account) {
         super(new BorderLayout());
 
-        loadContent();
+        loadContent(account);
     }
 
-    private void loadContent() {
+    private void loadContent(ClinicApplication.Account account) {
         add(getSearchPanel(), BorderLayout.NORTH);
         add(getDataPanel(), BorderLayout.CENTER);
-        add(getButtonsPanel(), BorderLayout.SOUTH);
+        add(getButtonsPanel(account), BorderLayout.SOUTH);
     }
 
     private JPanel getSearchPanel() {
@@ -112,11 +114,18 @@ public class PanelShowAppointments extends JPanel {
         appointmentsTable.setFillsViewportHeight(true);
     }
 
-    private JPanel getButtonsPanel() {
+    private JPanel getButtonsPanel(ClinicApplication.Account account) {
         JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.add(btnAdd);
+        if (account.hasPermission("mr.appointments.write")) {
+            buttonsPanel.add(btnAdd);
+        }
         buttonsPanel.add(btnView);
-        buttonsPanel.add(btnDelete);
+        if (account.hasPermission("mr.receipt.read")) {
+            buttonsPanel.add(btnShowReceipt);
+        }
+        if (account.hasPermission("mr.appointments.write")) {
+            buttonsPanel.add(btnDelete);
+        }
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         return buttonsPanel;
@@ -148,6 +157,10 @@ public class PanelShowAppointments extends JPanel {
 
     public void addViewButtonListener(ActionListener actionListener) {
         btnView.addActionListener(actionListener);
+    }
+
+    public void addShowReceiptButtonListener(ActionListener actionListener) {
+        btnShowReceipt.addActionListener(actionListener);
     }
 
     public void addDeleteButtonListener(ActionListener actionListener) {

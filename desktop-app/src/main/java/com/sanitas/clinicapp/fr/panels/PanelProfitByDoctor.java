@@ -9,12 +9,16 @@ import org.jdatepicker.impl.UtilDateModel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Properties;
 
 public class PanelProfitByDoctor extends JPanel {
     private JTextField tfCNP = new JTextField(20);
     private JTextField tfProfit = new JTextField(10);
-    private JButton btnShowProfit = new StyledJButton("Afisare profit").getButton();
+    private JButton btnShowProfit = new StyledJButton("Afisare").getButton();
+
+    private UtilDateModel utilDateModelMin = new UtilDateModel();
+    private UtilDateModel utilDateModelMax = new UtilDateModel();
 
     public PanelProfitByDoctor() {
         setLayout(new BorderLayout());
@@ -34,11 +38,9 @@ public class PanelProfitByDoctor extends JPanel {
         properties.put("text.month", "Month");
         properties.put("text.year", "Year");
 
-        UtilDateModel utilDateModelMin = new UtilDateModel();
         JDatePanelImpl jDatePanelMin = new JDatePanelImpl(utilDateModelMin, properties);
         JDatePickerImpl jDatePickerMin = new JDatePickerImpl(jDatePanelMin, new DateLabelFormatter());
 
-        UtilDateModel utilDateModelMax = new UtilDateModel();
         JDatePanelImpl jDatePanelMax = new JDatePanelImpl(utilDateModelMax, properties);
         JDatePickerImpl jDatePickerMax = new JDatePickerImpl(jDatePanelMax, new DateLabelFormatter());
 
@@ -47,7 +49,6 @@ public class PanelProfitByDoctor extends JPanel {
         searchPanel.add(jDatePickerMin);
         searchPanel.add(new JLabel("Sfarsit:"));
         searchPanel.add(jDatePickerMax);
-        searchPanel.add(btnShowProfit);
 
         JPanel profitByDoctorPanel = new JPanel(new FlowLayout());
         profitByDoctorPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
@@ -58,15 +59,32 @@ public class PanelProfitByDoctor extends JPanel {
         detailsPanel.add(searchPanel);
         detailsPanel.add(profitByDoctorPanel);
 
+        JPanel btnPanel = new JPanel(new FlowLayout());
+        btnPanel.add(btnShowProfit);
+        btnPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+
         add(detailsPanel, BorderLayout.NORTH);
+        add(btnPanel, BorderLayout.SOUTH);
     }
 
     public JTextField getTfCNP() {
         return tfCNP;
     }
 
-    public void updateCNP(String cnp) {
-        tfCNP.setText(cnp);
+    public UtilDateModel getUtilDateModelMin() {
+        return utilDateModelMin;
+    }
+
+    public UtilDateModel getUtilDateModelMax() {
+        return utilDateModelMax;
+    }
+
+    public JTextField getTfProfit() {
+        return tfProfit;
+    }
+
+    public void addProfitButtonListener(ActionListener actionListener) {
+        btnShowProfit.addActionListener(actionListener);
     }
 
 }

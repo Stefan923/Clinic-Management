@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.struct.Patient;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
@@ -18,7 +19,7 @@ public class PanelViewPatient extends JPanel {
 
     private final JPanel previousPanel;
 
-    public PanelViewPatient(JPanel previousPanel, Patient patient) {
+    public PanelViewPatient(JPanel previousPanel, Patient patient, ClinicApplication.Account account) {
         this.previousPanel = previousPanel;
         this.patient = patient;
 
@@ -67,8 +68,12 @@ public class PanelViewPatient extends JPanel {
         patientData.add(ibanPanel);
 
         JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.add(btnShowHistory);
-        buttonsPanel.add(btnShowAnalyses);
+        if (account.hasPermission("mr.medical_raport.read")) {
+            buttonsPanel.add(btnShowHistory);
+        }
+        if (account.hasPermission("mr.analyses.read")) {
+            buttonsPanel.add(btnShowAnalyses);
+        }
         buttonsPanel.add(btnCancel);
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 

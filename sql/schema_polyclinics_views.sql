@@ -5,19 +5,19 @@ CREATE VIEW `polyclinics`.`view_employees` AS
 DROP VIEW IF EXISTS `polyclinics`.`view_accounts`;
 CREATE VIEW `polyclinics`.`view_accounts` AS
 	SELECT `username`, `cnpEmployee` as `cnp` FROM `accounts`;
-    
+
 DROP VIEW IF EXISTS `polyclinics`.`view_employee_schedule`;
 CREATE VIEW `polyclinics`.`view_employee_schedule` AS
 	SELECT `idMedicalUnit`, `cnpEmployee`, `dayOfWeek`, `startHour`, `endHour` FROM `employee_schedule`;
-    
+
 DROP VIEW IF EXISTS `polyclinics`.`view_holidays`;
 CREATE VIEW `polyclinics`.`view_holidays` AS
 	SELECT `cnpEmployee`, `startDate`, `endDate` FROM `holidays`;
-    
+
 DROP VIEW IF EXISTS `polyclinics`.`view_nurses`;
 CREATE VIEW `polyclinics`.`view_nurses` AS
 	SELECT * FROM `nurse`;
-    
+
 
 DROP VIEW IF EXISTS `polyclinics`.`view_services`;
 CREATE VIEW `polyclinics`.`view_services` AS
@@ -122,6 +122,11 @@ CREATE VIEW `view_appointments` AS
         LEFT OUTER JOIN `medical_services` MS ON MS.`id` = APS.`idMedicalService`
         GROUP BY A.`id`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_transactions`;
+CREATE VIEW `polyclinics`.`view_transactions` AS
+	SELECT * FROM `transactions`;
+
+SELECT * FROM `view_transactions`;
 DROP VIEW IF EXISTS `polyclinics`.`view_appointment_services`;
 CREATE VIEW `view_appointment_services` AS
     SELECT APS.`idAppointment`, APS.`idMedicalService`, MS.`name`, MS.`duration`, MS.`price`
@@ -129,8 +134,16 @@ CREATE VIEW `view_appointment_services` AS
         INNER JOIN `appointment_services` APS ON APS.`idAppointment` = A.`id`
         INNER JOIN `medical_services` MS ON MS.`id` = APS.`idMedicalService`;
 
+DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
+CREATE VIEW `polyclinics`.`view_medical_units` AS
+	SELECT * FROM `medical_units`;
+
 DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
     
 SELECT * FROM `polyclinics`.`view_nuses`;
+
+SELECT * FROM `view_services_by_cabinet`;
+
+SELECT * FROM `view_medical_units`;

@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.mr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.mr.MrModel;
 import com.sanitas.clinicapp.struct.Patient;
 import com.sanitas.clinicapp.ui.StyledJButton;
@@ -24,7 +25,7 @@ public class PanelShowPatients extends JPanel {
 
     private JTable patientTable;
 
-    public PanelShowPatients(MrModel model) {
+    public PanelShowPatients(MrModel model, ClinicApplication.Account account) {
         super(new BorderLayout());
 
         patientTable = initializeTable(model);
@@ -45,10 +46,14 @@ public class PanelShowPatients extends JPanel {
         searchPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.add(btnAddPatient);
+        if (account.hasPermission("mr.patients.write")) {
+            buttonsPanel.add(btnAddPatient);
+        }
         buttonsPanel.add(btnViewPatient);
-        buttonsPanel.add(btnModify);
-        buttonsPanel.add(btnDelete);
+        if (account.hasPermission("mr.patients.write")) {
+            buttonsPanel.add(btnModify);
+            buttonsPanel.add(btnDelete);
+        }
         buttonsPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         add(searchPanel, BorderLayout.NORTH);

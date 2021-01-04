@@ -45,12 +45,13 @@ public class MrController {
         PanelSearchPatient panelSearchPatient = new PanelSearchPatient();
         panelSearchPatient.addSearchButtonListener(new SearchByCnpButtonListener(panelSearchPatient));
 
-        PanelShowAppointments panelShowAppointments = new PanelShowAppointments();
+        PanelShowAppointments panelShowAppointments = new PanelShowAppointments(account);
         panelShowAppointments.addSearchButtonListener(new AppointmentSearchButtonListener(panelShowAppointments));
         panelShowAppointments.addAddButtonListener(new AppointmentAddButtonListener(panelShowAppointments));
         panelShowAppointments.addDeleteButtonListener(new AppointmentDeleteButtonListener(panelShowAppointments));
+        panelShowAppointments.addShowReceiptButtonListener(new ShowReceiptButtonListener(panelShowAppointments));
         panelShowAppointments.addViewButtonListener(new AppointmentViewButtonListener(panelShowAppointments));
-        panelShowAppointments.updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments(null, null) : model.getAppointments(cnp, null, null));
+        panelShowAppointments.updateTable(account.hasPermission("mr.appointments.read.all") ? model.getAppointments(null, null) : model.getAppointments(cnp, null, null));
 
         gPanelSMS = new PanelShowMedicalServices();
         gPanelSMS.updateTable(model.getMedicalServices(cnp));
@@ -118,7 +119,7 @@ public class MrController {
                 Patient patient = model.getPatient((String) patientsTable.getValueAt(row, 2));
 
                 view.getPanelShowPatients().setVisible(false);
-                PanelViewPatient panelVP = new PanelViewPatient(view.getPanelShowPatients(), patient);
+                PanelViewPatient panelVP = new PanelViewPatient(view.getPanelShowPatients(), patient, account);
                 panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
                 panelVP.addShowAnalysesButtonListener(new PatientAnalysesButtonListener(panelVP));
                 panelVP.addCancelButtonListener(new CancelButtonListener());
@@ -477,6 +478,8 @@ public class MrController {
                 view.setRightPanel(((PanelAddAppointment) panel).getPreviousPanel());
             } else if (panel instanceof PanelViewAppointment) {
                 view.setRightPanel(((PanelViewAppointment) panel).getPreviousPanel());
+            } else if (panel instanceof PanelShowReceipt) {
+                view.setRightPanel(((PanelShowReceipt) panel).getPreviousPanel());
             }
         }
 
@@ -499,7 +502,7 @@ public class MrController {
                 return;
             }
 
-            PanelViewPatient panelVP = new PanelViewPatient(panel, patient);
+            PanelViewPatient panelVP = new PanelViewPatient(panel, patient, account);
             panelVP.addShowHistoryButtonListener(new PatientHistoryButtonListener(panelVP));
             panelVP.addShowAnalysesButtonListener(new PatientAnalysesButtonListener(panelVP));
             panelVP.addCancelButtonListener(new CancelButtonListener());
@@ -751,7 +754,7 @@ public class MrController {
                 model.deleteAppointment(appointments.get(index).getId());
             }
 
-            panel.updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments(null, null) : model.getAppointments(account.getCnp(), null, null));
+            panel.updateTable(account.hasPermission("mr.appointments.read.all") ? model.getAppointments(null, null) : model.getAppointments(account.getCnp(), null, null));
             view.sendSuccessMessage("Programarile selectate au fost sterse.");
         }
 
@@ -767,7 +770,7 @@ public class MrController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (account.hasPermission("mr.appointments.view.all")) {
+            if (account.hasPermission("mr.appointments.read.all")) {
                 panel.updateTable(model.getAppointments(panel.getDateMin(), panel.getDateMax()));
             } else {
                 panel.updateTable(model.getAppointments(account.getCnp(), panel.getDateMin(), panel.getDateMax()));
@@ -957,7 +960,7 @@ public class MrController {
             int idAppointment = model.addAppointment(new Appointment(cnpPatient, cnpDoctor, idCabinet, panel.getIdSpeciality(), startDate));
 
             if (idAppointment != 0 && model.addAppointmentServices(idAppointment, panel.getMedicalServices())) {
-                ((PanelShowAppointments) panel.getPreviousPanel()).updateTable(account.hasPermission("mr.appointments.view.all") ? model.getAppointments(null, null) : model.getAppointments(account.getCnp(), null, null));
+                ((PanelShowAppointments) panel.getPreviousPanel()).updateTable(account.hasPermission("mr.appointments.read.all") ? model.getAppointments(null, null) : model.getAppointments(account.getCnp(), null, null));
 
                 view.sendSuccessMessage("Programarea a fost adaugata.");
                 return;
@@ -994,6 +997,33 @@ public class MrController {
         public void actionPerformed(ActionEvent e) {
             view.dispose();
             previousView.setVisible(true);
+        }
+
+    }
+
+    class ShowReceiptButtonListener implements ActionListener {
+
+        private final PanelShowAppointments panel;
+
+        ShowReceiptButtonListener(PanelShowAppointments panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTable appointmentsTable = panel.getAppointmentsTable();
+
+            if (appointmentsTable.getSelectedRowCount() != 1){
+                view.sendError("Trebuie să selectati exact o programare!");
+                return;
+            }
+            int id = panel.getAppointments().get(appointmentsTable.getSelectedRow()).getId();
+
+            Receipt receipt = model.getReceipt(id);
+            PanelShowReceipt panelSR = new PanelShowReceipt(panel, receipt);
+            panelSR.addCancelButtonListener(new CancelButtonListener());
+            view.setRightPanel(panelSR);
+
         }
 
     }
