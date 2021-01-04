@@ -13,6 +13,11 @@ CREATE VIEW `polyclinics`.`view_employee_schedule` AS
 DROP VIEW IF EXISTS `polyclinics`.`view_holidays`;
 CREATE VIEW `polyclinics`.`view_holidays` AS
 	SELECT `cnpEmployee`, `startDate`, `endDate` FROM `holidays`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_nurses`;
+CREATE VIEW `polyclinics`.`view_nurses` AS
+	SELECT * FROM `nurse`;
+    
 
 DROP VIEW IF EXISTS `polyclinics`.`view_services`;
 CREATE VIEW `polyclinics`.`view_services` AS
@@ -128,4 +133,4 @@ DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
     
-SELECT * FROM `view_services_by_cabinet`;
+SELECT * FROM `polyclinics`.`view_nuses`;

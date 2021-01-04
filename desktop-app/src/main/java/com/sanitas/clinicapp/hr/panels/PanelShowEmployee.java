@@ -3,7 +3,7 @@ package com.sanitas.clinicapp.hr.panels;
 import com.sanitas.clinicapp.hr.Employee;
 import com.sanitas.clinicapp.hr.HrModel;
 import com.sanitas.clinicapp.mr.MrModel;
-import com.sanitas.clinicapp.mr.Patient;
+
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
@@ -20,8 +20,10 @@ public class PanelShowEmployee extends JPanel{
 
 
     private JButton btnSearch = new StyledJButton("Cauta").getButton();
-    private JButton btnModify = new StyledJButton("Editeaza").getButton();
+    private JButton btnModify = new StyledJButton("Vizualizeaza").getButton();
+    private JButton btnOrar= new StyledJButton("Orar").getButton();
     private JButton btnDelete = new StyledJButton("Sterge").getButton();
+    private JButton btnHoliday = new StyledJButton("Zile libere").getButton();
 
     private JTable employeeTable;
 
@@ -47,7 +49,10 @@ public class PanelShowEmployee extends JPanel{
         searchPanel.add(TxtPosition);
         searchPanel.add(btnSearch);
 
+
         JPanel editPanel = new JPanel(new FlowLayout());
+        editPanel.add(btnOrar);
+        editPanel.add(btnHoliday);
         editPanel.add(btnModify);
         editPanel.add(btnDelete);
 
@@ -132,6 +137,14 @@ public class PanelShowEmployee extends JPanel{
 
     public void addDeleteButtonListener(ActionListener actionListener) {
         btnDelete.addActionListener(actionListener);
+    }
+
+    public void addScheduleButtonListener(ActionListener actionListener) {
+        btnOrar.addActionListener(actionListener);
+    }
+
+    public void addHolidayButtonListener(ActionListener actionListener) {
+        btnHoliday.addActionListener(actionListener);
     }
 
 }

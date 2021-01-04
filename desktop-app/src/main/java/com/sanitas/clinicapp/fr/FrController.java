@@ -1,7 +1,7 @@
 package com.sanitas.clinicapp.fr;
 import com.sanitas.clinicapp.fr.panels.*;
 import com.sanitas.clinicapp.mr.MrController;
-import com.sanitas.clinicapp.mr.Patient;
+
 import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
 import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
 import com.sanitas.clinicapp.ui.Colors;

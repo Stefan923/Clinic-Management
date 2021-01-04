@@ -3,7 +3,10 @@ package com.sanitas.clinicapp.hr;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
-import com.sanitas.clinicapp.mr.Patient;
+import com.sanitas.clinicapp.hr.panels.Holiday;
+import com.sanitas.clinicapp.hr.panels.Nurse;
+import com.sanitas.clinicapp.struct.Doctor;
+
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,16 +24,17 @@ public class HrModel {
         Employee employee = null;
 
         try {
-            PreparedStatement preparedStatement = database.preparedStatement("SELECT lastName,firstName,position FROM `employees` WHERE `cnp` = ?;");
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_employees` WHERE `cnp`=? ;");
             preparedStatement.setString(1, cnp);
             preparedStatement.execute();
 
             ResultSet resultSet = preparedStatement.getResultSet();
             if (resultSet.next()) {
                 employee = new Employee(cnp,
-                        resultSet.getString(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3));
+                         resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getInt(8), resultSet.getDate(9),
+                        resultSet.getString(10), resultSet.getDouble(11), resultSet.getInt(12));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -38,6 +42,128 @@ public class HrModel {
 
         return employee;
     }
+
+    public Nurse getNurse(Employee employee) {
+        Nurse nurse = null;
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_nurses` WHERE `cnpEmployee`=? ;");
+            preparedStatement.setString(1, employee.getCnp());
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            if (resultSet.next()) {
+                nurse = new Nurse(employee,
+                        resultSet.getString(2), resultSet.getString(3));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return nurse;
+    }
+    public Doctor getDoctor(Employee employee) {
+        Doctor doctor = null;
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_doctors` WHERE `cnpEmployee` = ?;");
+            preparedStatement.setString(1, employee.getCnp());
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            if (resultSet.next()) {
+                doctor = new Doctor(employee,
+                        resultSet.getString(2),
+                        resultSet.getFloat(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return doctor;
+    }
+
+    public boolean insertDoctor(String cnp, String sealCode, float commission, String scientificTitle, String didacticTitle) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_DOCTOR(?,?,?,?,?,?);");
+            callableStatement.setString(1, cnp);
+            callableStatement.setString(2, sealCode);
+            callableStatement.setFloat(3, commission);
+            callableStatement.setString(4, scientificTitle);
+            callableStatement.setString(5, didacticTitle);
+            callableStatement.registerOutParameter(6, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(6);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+
+    public List<Schedule> viewSchedule(String cnp) {
+        List<Schedule> schedule = new ArrayList<Schedule>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_employee_schedule` WHERE `cnpEmployee`=? ;");
+            preparedStatement.setString(1, cnp);
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                schedule.add( new Schedule(cnp,
+                        resultSet.getInt(1), resultSet.getString(3),
+                        resultSet.getTime(4), resultSet.getTime(5)));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return schedule;
+    }
+
+    public List<Holiday> viewHoliday(String cnp) {
+        List<Holiday> holidays = new ArrayList<Holiday>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_holidays` WHERE `cnpEmployee`=? ;");
+            preparedStatement.setString(1, cnp);
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                holidays.add( new Holiday(cnp,
+                        resultSet.getDate(2), resultSet.getDate(3)));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return holidays;
+    }
+
+    public boolean insertHoliday(String cnp,Date start,Date end,int force) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_HOLIDAY(?, ?,?,?,?);");
+            callableStatement.setString(1, cnp);
+            callableStatement.setDate(2, start);
+            callableStatement.setDate(3, end);
+            callableStatement.setInt(4, force);
+            callableStatement.registerOutParameter(5, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(5);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
     public boolean deleteEmployee(String cnp) {
         try {
             CallableStatement callableStatement = database.callableStatement("CALL DELETE_EMPLOYEE(?, ?);");
@@ -46,6 +172,67 @@ public class HrModel {
             callableStatement.execute();
 
             return callableStatement.getBoolean(2);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteEmployeeSchedule(String cnpEmployee,int idMedicalUnit, String dayOfWeek, Time startHour,Time endHour,int force) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL DELETE_EMPLOYEE_SCHEDULE(?, ?, ?, ?, ?, ?, ?);");
+            callableStatement.setString(1, cnpEmployee);
+            callableStatement.setInt(2, idMedicalUnit);
+            callableStatement.setString(3, dayOfWeek);
+            callableStatement.setTime(4, startHour);
+            callableStatement.setTime(5, endHour);
+            callableStatement.setInt(6, force);
+            callableStatement.registerOutParameter(7, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(7);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean insertEmployeeSchedule(String cnpEmployee,int idMedicalUnit, String dayOfWeek, Time startHour,Time endHour) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_EMPLOYEE_SCHEDULE(?, ?, ?, ?, ?, ?);");
+            callableStatement.setString(1, cnpEmployee);
+            callableStatement.setInt(2, idMedicalUnit);
+            callableStatement.setString(3, dayOfWeek);
+            callableStatement.setTime(4, startHour);
+            callableStatement.setTime(5, endHour);
+            callableStatement.registerOutParameter(6, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(6);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateEmployeeSchedule(String cnpEmployee,int idMedicalUnit, String dayOfWeek, Time startHour,Time endHour,Time newstartHour,Time newendHour,int force) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL UPDATE_EMPLOYEE_SCHEDULE(?, ?, ?, ?, ?, ?, ?,?,?);");
+            callableStatement.setString(1, cnpEmployee);
+            callableStatement.setInt(2, idMedicalUnit);
+            callableStatement.setString(3, dayOfWeek);
+            callableStatement.setTime(4, startHour);
+            callableStatement.setTime(5, endHour);
+            callableStatement.setTime(6, newstartHour);
+            callableStatement.setTime(7, newendHour);
+            callableStatement.setInt(8, force);
+            callableStatement.registerOutParameter(9, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(9);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -76,7 +263,7 @@ public class HrModel {
         int and = 0;
         List<Employee> employeeList = new ArrayList<Employee>();
         try {
-            StringBuilder stringBuilder = new StringBuilder("SELECT cnp, lastName, firstName, position FROM employees ");
+            StringBuilder stringBuilder = new StringBuilder("SELECT * FROM view_employees ");
             if ((!lastname.equals("") || !firstname.equals("") || !position.equals("")) && first) {
                 stringBuilder.append(" WHERE ");
                 first = false;
@@ -112,8 +299,11 @@ public class HrModel {
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
             while (resultSet.next()) {
-                employeeList.add(new Employee(resultSet.getString(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getString(4)));
+                employeeList.add(new Employee(
+                        resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getInt(8), resultSet.getDate(9),
+                        resultSet.getString(10), resultSet.getDouble(11), resultSet.getInt(12)));
             }
 
 
