@@ -49,7 +49,9 @@ DROP PROCEDURE IF EXISTS UPDATE_EMPLOYEE_SCHEDULE;
 DELIMITER //
 CREATE PROCEDURE UPDATE_EMPLOYEE_SCHEDULE(IN `_cnpEmployee` VARCHAR(13), IN `_idMedicalUnit` INT, IN `_dayOfWeek` VARCHAR(10), IN `_startHour` TIME, IN `_endHour` TIME, IN `new_startHour` TIME, IN `new_endHour` TIME, IN `force` INT, OUT `validation` INT)
 BEGIN
-	IF ((SELECT COUNT(*) FROM `employee_schedule` WHERE `cnpEmployee`=`_cnpEmployee` AND `idMedicalUnit`=`_idMedicalUnit` AND `dayOfWeek` LIKE `_dayOfWeek` AND `startHour`=`_startHour` AND `endHour`=`_endHour`) = 1) THEN
+IF (`new_startHour` < `new_endHour`
+		AND (SELECT COUNT(*) FROM `medical_unit_schedule` MS WHERE MS.`idMedicalUnit`=`_idMedicalUnit` AND MS.`dayOfWeek`=`_dayOfWeek` AND MS.`startHour`<=`new_startHour` AND MS.`endHour`>=`new_endHour`) > 0
+		AND (SELECT COUNT(*) FROM `employee_schedule` ES WHERE ES.`cnpEmployee`=`_cnpEmployee` AND ES.`dayOfWeek`=`_dayOfWeek` AND ES.`startHour`<>`_startHour` AND ES.`endHour`<>`_endHour` AND ((ES.`startHour`>=`new_startHour` AND ES.`startHour`<`new_endHour` ) OR (ES.`endHour`>`new_startHour` AND ES.`endHour`<=`new_endHour`) OR (ES.`startHour`<`new_startHour` AND ES.`endHour`>`new_endHour`))) = 0) THEN
 		IF ((SELECT `position` FROM `employees` WHERE `cnp`=`_cnpEmployee`) NOT LIKE 'Medic'
 			OR `force`='1'
 			OR (SELECT COUNT(*) FROM `appointments` WHERE `cnpDoctor`=`_cnpEmployee` AND DAYNAME(`date`) LIKE `_dayOfWeek` AND TIME(`date`)>=`_startHour` AND TIME(`date`)<=`_endHour`) = 0) THEN
@@ -59,8 +61,8 @@ BEGIN
 		ELSE
 			SET `validation` = 0; -- sunt programari care trebuiesc sterse
 		END IF;
-	ELSE
-		SET `validation` = 2; -- nu exista intrare in orar pentru datele furnizate
+        ELSE
+			SET `validation` = 0;
     END IF;
 END;
 // DELIMITER ;
@@ -80,7 +82,7 @@ BEGIN
 			SET `validation` = 0; -- sunt programari care trebuiesc sterse
 		END IF;
 	ELSE
-		SET `validation` = 2; -- nu exista intrare in orar pentru datele furnizate
+		SET `validation` = 0; -- nu exista intrare in orar pentru datele furnizate
 	END IF;
 END;
 // DELIMITER ;
@@ -102,12 +104,17 @@ DROP PROCEDURE IF EXISTS INSERT_DOCTOR;
 DELIMITER //
 CREATE PROCEDURE INSERT_DOCTOR(IN `_cnpEmployee` VARCHAR(13), IN `_sealcode` VARCHAR(25), IN `_commission` decimal(3,2), IN `_scientificTitle` VARCHAR(100), IN `_didacticTitle` VARCHAR(10),OUT `validation` INT)
 BEGIN
-	IF ((SELECT COUNT(*) FROM `doctors` WHERE `cnpEmployee`=`_cnpEmployee`) = 0) THEN
-		INSERT INTO `doctors` (`cnpEmployee`,`sealcode`,`commission`, `scientificTitle`, `didacticTitle`) VALUES (`_cnpEmployee`,`_sealcode`,`_commission`, `_scientificTitle`, `_didacticTitle`);
-		SET `validation` = 1;
-	ELSE
 		SET `validation` = 0;
-	END IF;
+		if (select count(*) from `doctors` where `cnpEmployee` =`_cnpEmployee`)>0 then
+			update `doctors` set `didacticTitle`=`_didacticTitle` , `scientificTitle`=`_scientificTitle`, `commission`=`_commission`, `sealcode`=`_sealcode` where `cnpEmployee`=`_cnpEmployee`;
+            SET `validation` = 1;
+		else
+			if( select count(*) from `employees` where `cnp`=`_cnpEmployee`)>0 then
+			insert into `doctors` (`cnpEmployee`, `sealcode`, `commission`,`scientificTitle`,`didacticTitle`) value (`_cnpEmployee`, `_sealcode`, `_commission`,`_scientificTitle`,`_didacticTitle`);
+            SET `validation` = 1;
+            end if;
+		end if;
+
 END;
 // DELIMITER ;
 
@@ -315,11 +322,12 @@ BEGIN
     SELECT GROUP_CONCAT(CONCAT(MS.`name`, ' ', MS.`price`)), SUM(MS.`price`) INTO `_services`, `_price`
 		FROM `appointments` A, `appointment_services` S, `medical_services` MS
         WHERE A.`id` = `_id` AND S.`idAppointment` = A.`id` AND S.`idMedicalService` = MS.`id`;
-        
+
 	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
 		FROM `appointments` A, `patients` P
-        WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`; 
-	
+        WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
+        WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
+
     UPDATE `appointments` SET `hasReceipt` = 1 WHERE `idAppointment` = `_id`;
 END;
 // DELIMITER ;
@@ -503,14 +511,16 @@ BEGIN
 	-- CALL INSERT_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '08:00:00', '12:00:00', @output);
 	-- CALL INSERT_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '07:59:00', '09:00:00', @output);
 	-- CALL INSERT_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '11:00:00', '11:00:01', @output);
-	-- CALL DELETE_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '12:00:00', '18:00:00', 1, @output);
-    -- CALL UPDATE_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '13:00:00', '16:00:00', '14:55:00', '16:00:00', 1, @output);
+	 -- CALL DELETE_EMPLOYEE_SCHEDULE('2700927417309', '3', 'Monday', '13:00:00', '16:00:00', 1, @output);
+     -- CALL UPDATE_EMPLOYEE_SCHEDULE('2700927417309', '2', 'Monday', '13:00:00', '15:00:00', '14:55:00', '16:00:00', 1, @output);
     -- CALL INSERT_HOLIDAY('2700927417309', '2020-12-13', '2020-12-15', 1, @output);
     -- CALL INSERT_EMPLOYEE('2700735934101', 'Spatariu', 'Diana', 'Cluj-Napoca, str. Nicolae Iorga nr. 6', '0783527882', 'spatariu.diana@gmail.com', 'RO64RZBR3277465196914272', '30', '2017-02-20', 'Receptioner', '3470', '120', @output);
     -- CALL DELETE_EMPLOYEE('2700735934101', @output);
     -- CALL UPDATE_EMPLOYEE('2700735934101', 'contractNum', '31', @output);
     -- CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
     -- CALL GET_MEDICAL_UNIT_PROFIT('RO29RZBR5523951481289988', '2019-01-01', '2019-12-31', @output);
+    -- CALL GET_TOTAL_PROFIT('2019-01-01', '2019-12-31', @output);
+    -- CALL GET_MEDICAL_UNIT_PROFIT('2', '2019-01-01', '2019-12-31', @output);
     -- CALL GET_PROFIT_BY_SPECIALITY('1', '2020-01-01', '2020-12-15', @output);
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL GET_DOCTOR_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
@@ -526,6 +536,7 @@ BEGIN
     -- CALL INSERT_ANALYSE('2910815468725', '3', '70', @output);
     -- CALL INSERT_MEDICAL_SERVICE('2700927417309', 'Consultatie cardiologie', '1', NULL, NULL, '300', '30', @output);
     -- CALL DELETE_MEDICAL_SERVICE('7', @output);
+    call INSERT_DOCTOR('2811204117404','50012',0.30,null,'lector',@output);
     SELECT @output;
 END;
 // DELIMITER ;
