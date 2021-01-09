@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.hr;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.panels.*;
 import com.sanitas.clinicapp.mr.MrController;
 
@@ -15,16 +16,18 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HrController {
 
     private HrModel model;
     private HrView view;
+    private ClinicApplication.Account account;
 
-    public HrController(HrModel model, HrView view,JFrame previousView) {
+    public HrController(HrModel model, HrView view, JFrame previousView, ClinicApplication.Account account) {
         this.model=model;
         this.view=view;
-
+        this.account=account;
         loadListenersHr(previousView);
     }
 
@@ -108,7 +111,7 @@ public class HrController {
                 Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
                 view.getViewv().setVisible(false);
                 List<Schedule> schedules=model.viewSchedule(employee.getCnp());
-                PanelViewSchedule panel = new PanelViewSchedule(model,schedules);
+                PanelViewSchedule panel = new PanelViewSchedule(model,schedules,account);
                 panel.addDeleteButtonListener(new DeleteScheduleListener(employee.getCnp()));
                 panel.addInsertButtonListener(new InsertScheduleListener(employee.getCnp(),schedules));
                 panel.addUpdateButtonListener(new UpdateScheduleListener(employee.getCnp()));
@@ -162,7 +165,7 @@ public class HrController {
                     int row=scheduleTable.getSelectedRow();
                     Schedule schedule= panelViewSchedule.getSchedules().get(row);
                     panelViewSchedule.setVisible(false);
-                    PanelEditSchedule panelEditSchedule=new PanelEditSchedule(panelViewSchedule,schedule);
+                    PanelEditSchedule panelEditSchedule=new PanelEditSchedule(panelViewSchedule,schedule,account);
                     panelEditSchedule.addSaveScheduleListener(new SaveScheduleListener(schedule,schedule.getCnpEmployee()));
                     panelEditSchedule.addCancelScheduleListener(new CancelScheduleListener());
                     view.setRightPanel(panelEditSchedule);
@@ -297,7 +300,7 @@ public class HrController {
                 Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
                 view.getViewv().setVisible(false);
                 List<Holiday> holidays=model.viewHoliday(employee.getCnp());
-                PanelViewHoliday panel = new PanelViewHoliday(model,holidays);
+                PanelViewHoliday panel = new PanelViewHoliday(model,holidays,account);
                 panel.addInsertButtonListener(new InsertHolidayListener(employee.getCnp(),holidays));
                 panel.addBackButtonListener(new BackScheduleListener());
                 view.setRightPanel(panel);
@@ -347,7 +350,7 @@ public class HrController {
                 PanelViewHoliday panelViewInsert = (PanelViewHoliday) view.getCurrentPanel();
                 JTable holidayTable = panelViewInsert.getJTable();
                 panelViewInsert.setVisible(false);
-                PanelInsertHoliday panelInsertHoliday=new PanelInsertHoliday(panelViewInsert);
+                PanelInsertHoliday panelInsertHoliday=new PanelInsertHoliday(panelViewInsert,account);
                 panelInsertHoliday.addSaveHolidayListener(new SaveHolidayListener(null,holidays.get(0).getCnpEmployee()));
                 panelInsertHoliday.addCancelHolidayListener(new CancelScheduleListener());
                 view.setRightPanel(panelInsertHoliday);
@@ -370,10 +373,21 @@ public class HrController {
                 Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
                 if(employee.getPosition().equals("Asistent Medical"))
                     employee=model.getNurse(employee);
-                if(employee.getPosition().equals("Medic"))
-                    employee=model.getDoctor(employee);
+                if(employee.getPosition().equals("Medic")) {
+                    employee = model.getDoctor(employee);
+                }
                 view.getViewv().setVisible(false);
-                PanelEditEmployee panel = new PanelEditEmployee(employee);
+                PanelEditEmployee panel = new PanelEditEmployee(employee,account);
+                if(employee.getPosition().equals("Medic")) {
+                    panel.updateTable(model.getSpecialities(employee.getCnp()));
+                    panel.updateTable2(model.getAccreditations(employee.getCnp()));
+                    panel.updateCbSpeciality(model.getSpecialities());
+                    panel.updateCbAcc(model.getAccreditations());
+                }
+                panel.addAccComboBoxListener(new AccListener(employee.getCnp()));
+                panel.addSpecialityComboBoxListener(new SpecialityListener(employee.getCnp()));
+                panel.deleteAccListener(new DeleteAccListener(employee.getCnp()));
+                panel.deleteSpecListener(new DeleteSpecialityListener(employee.getCnp()));
                 panel.addSaveButtonListener(new SaveButtonListenerHr(employee));
                 panel.addCancelButtonListener(new CancelButtonListenerHr());
                 view.setRightPanel(panel);
@@ -381,6 +395,92 @@ public class HrController {
             employeeTable.clearSelection();
         }
 
+    }
+
+    class DeleteAccListener implements ActionListener{
+
+        String cnp;
+
+        DeleteAccListener (String cnp){this.cnp=cnp;}
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelEditEmployee panel= (PanelEditEmployee) view.getCurrentPanel();
+            Map.Entry<Integer, String> s = panel.getIdAccreditation();
+            if(!panel.getAccDoc().containsKey(s.getKey())) {
+                view.sendError("Acreditarea nu exista.");
+                return;
+            }
+            Map<Integer,String> spe = panel.getAccDoc();
+            spe.remove(s.getKey(),s.getValue());
+            panel.updateTable2(spe);
+            model.deleteAccreditation(cnp,s.getKey());
+            view.sendSuccessMessage("Acreditarea a fost stearsa.");
+
+        }
+    }
+
+    class DeleteSpecialityListener implements ActionListener{
+
+        String cnp;
+
+        DeleteSpecialityListener (String cnp){this.cnp=cnp;}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelEditEmployee panel= (PanelEditEmployee) view.getCurrentPanel();
+            Map.Entry<Integer, String> s = panel.getIdSpeciality();
+            if(!(panel.getSpecialitiesDoc().stream().anyMatch(speciality -> speciality.getId() == s.getKey()))) {
+                view.sendError("Specializarea nu exista.");
+                return;
+            }
+            List<Speciality> spe = panel.getSpecialitiesDoc();
+            spe.removeIf(speciality -> speciality.getId()==s.getKey());
+            panel.updateTable(spe);
+            model.deleteSpeciality(cnp,s.getKey());
+            view.sendSuccessMessage("Specializarea a fost stearsa.");
+        }
+    }
+
+    class SpecialityListener implements ActionListener{
+
+        String cnp;
+
+        SpecialityListener (String cnp){this.cnp=cnp;}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelEditEmployee panel= (PanelEditEmployee) view.getCurrentPanel();
+            Map.Entry<Integer, String> s = panel.getIdSpeciality();
+            if(panel.getSpecialitiesDoc().stream().anyMatch(speciality -> speciality.getId() == s.getKey())) {
+                view.sendError("Specialitatea exista deja.");
+                return;
+            }
+            List<Speciality> spe = panel.getSpecialitiesDoc();
+            spe.add(new Speciality(s.getKey(),s.getValue(), (String) panel.getCbRank().getSelectedItem()));
+            panel.updateTable(spe);
+            model.insertSpeciality(cnp,s.getKey(), (String) panel.getCbRank().getSelectedItem());
+            view.sendSuccessMessage("Specializarea a fost adaugata.");
+        }
+    }
+
+    class AccListener implements ActionListener{
+
+        String cnp;
+
+        AccListener (String cnp){this.cnp=cnp;}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PanelEditEmployee panel= (PanelEditEmployee) view.getCurrentPanel();
+            Map.Entry<Integer, String> s = panel.getIdAccreditation();
+            if(panel.getAccDoc().containsKey(s.getKey())) {
+                view.sendError("Acreditarea exista deja.");
+                return;
+            }
+            Map<Integer,String> spe = panel.getAccDoc();
+            spe.put(s.getKey(),s.getValue());
+            panel.updateTable2(spe);
+            model.insertAccreditation(cnp,s.getKey());
+            view.sendSuccessMessage("Acreditarea a fost adaugata.");
+        }
     }
 
     class SaveButtonListenerHr implements ActionListener {

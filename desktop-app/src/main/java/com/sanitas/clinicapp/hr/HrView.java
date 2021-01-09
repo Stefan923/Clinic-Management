@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.hr;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.panels.PanelShowEmployee;
 import com.sanitas.clinicapp.hr.panels.PanelViewEmployee;
 import com.sanitas.clinicapp.ui.Colors;
@@ -19,10 +20,11 @@ public class HrView extends JFrame {
     private HrModel model;
     private JPanel currentPanel;
     private PanelShowEmployee viewv ;
+    private ClinicApplication.Account account;
 
-    public HrView(HrModel model) {
+    public HrView(HrModel model, ClinicApplication.Account account) {
 
-        viewv=new PanelShowEmployee(model);
+        viewv=new PanelShowEmployee(model,ClinicApplication.getUser());
         currentPanel=viewv;
         viewv.setVisible(true);
 
@@ -31,7 +33,8 @@ public class HrView extends JFrame {
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
         JPanel menuContent = new JPanel(new GridLayout(2, 1));
-        menuContent.add(btnShowEmployees);
+        if(account.hasPermission("hr.read.all"))
+            menuContent.add(btnShowEmployees);
         menuContent.add(btnSearchEmployee);
 
         JPanel leftContent = new JPanel(new BorderLayout());
@@ -44,7 +47,7 @@ public class HrView extends JFrame {
         content.add(viewv, BorderLayout.CENTER);
 
 
-        this.setPreferredSize(new Dimension(820, 420));
+        this.setPreferredSize(new Dimension(920, 420));
         this.setContentPane(content);
         this.pack();
 
