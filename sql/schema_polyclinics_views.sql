@@ -148,3 +148,4 @@ SELECT * FROM `polyclinics`.`view_nuses`;
 SELECT * FROM `view_services_by_cabinet`;
 
 SELECT * FROM `polyclinics`.`view_specialities_by_doctor`;
+SELECT * FROM `view_medical_units`;
