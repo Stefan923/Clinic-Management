@@ -6,6 +6,10 @@ INSERT INTO `medical_units` (`name`, `address`, `iban`) VALUES
 	('Sanitas Iasi', 'str. Mihai Eminescu, nr. 1', 'RO16RZBR4452416377244199'),
 	('Sanitas Craiova', 'str. Calea Bucuresti, nr. 1', 'RO77RZBR9622577696235615'),
 	('Sanitas Costanta', 'str. Vaselor, nr. 24', 'RO20PORL6329853195357123');
+    
+    
+    
+    
 
 INSERT INTO `medical_unit_schedule` (`idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
 	('1', 'Monday', '08:00:00', '20:00:00'),
@@ -241,8 +245,7 @@ DELETE FROM `role_permissions`;
 INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('2', 'profile.read'),
 	('2', 'hr.read'),
-	('2', 'fr.read.employee'),
-    ('2', 'fr.read'),
+	('2', 'fr.read'),
 	('2', 'mr.read'),
 	('2', 'mr.appointments.read'),
 	('2', 'mr.appointments.read.all'),
@@ -252,20 +255,17 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('2', 'mr.receipt.write'),
 	('3', 'profile.read'),
 	('3', 'hr.read'),
-    ('3', 'fr.read'),
-	('3', 'fr.read.employee'),
-	('3', 'hr.read.other'),
-	('3', 'hr.write.other'),
+	('3', 'fr.read'),
+	('3', 'hr.read.all'),
+	('3', 'hr.write.all'),
 	('4', 'profile.read'),
 	('4', 'hr.read'),
-    ('4', 'fr.read'),
-	('4', 'fr.read.employee'),
+	('4', 'fr.read'),
 	('4', 'mr.read'),
 	('4', 'mr.analyses.read'),
 	('5', 'profile.read'),
 	('5', 'fr.read'),
 	('5', 'mr.read'),
-    ('5', 'fr.read.doctor'),
 	('5', 'mr.appointments.read'),
 	('5', 'mr.medical_services.write'),
 	('5', 'mr.medical_services.read'),
@@ -276,7 +276,6 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('6', 'profile.read'),
 	('6', 'hr.read'),
 	('6', 'fr.read'),
-    ('6', 'fr.read.all'),
 	('6', 'fr.write'),
 	('6', 'fr.read.other'),
 	('6', 'fr.write.other'),
