@@ -3,15 +3,15 @@ package com.sanitas.clinicapp.login;
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
 import com.sanitas.clinicapp.homepage.HomePageMVC;
-import com.sanitas.clinicapp.hr.Employee;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoginModel {
 
-    private Database database;
+    private final Database database;
 
     public LoginModel() {
         database = ClinicApplication.getDatabase();
@@ -70,8 +70,8 @@ public class LoginModel {
         }
     }
 
-    public void openHomePage() {
-        new HomePageMVC();
+    public void openHomePage(JFrame previousView) {
+        new HomePageMVC(previousView);
     }
 
 }
