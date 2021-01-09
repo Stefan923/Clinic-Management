@@ -1,4 +1,5 @@
 package com.sanitas.clinicapp.fr;
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.fr.panels.*;
 import com.sanitas.clinicapp.mr.MrController;
 import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
@@ -16,16 +17,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.sql.Date;
 import java.util.Map;
+import java.util.Optional;
 
 public class FrController {
 
-    FrModel model;
-    FrView view;
+    private final FrModel model;
+    private final FrView view;
+
+    private final ClinicApplication.Account account;
 
     public FrController(FrModel model, FrView view, JFrame previousView) {
         this.model = model;
         this.view = view;
 
+        account = ClinicApplication.getUser();
         loadListeners(previousView);
     }
 
@@ -43,8 +48,31 @@ public class FrController {
         PanelEmployeeSalary panelEmployeeSalary = new PanelEmployeeSalary();
         panelEmployeeSalary.addShowSalaryButtonListener(new EmployeeSalaryButtonListener());
 
+        if(account.hasPermission("fr.read.employee") && !account.hasPermission("fr.read.all")){
+            JTextField tfCnp = panelEmployeeSalary.getTfCNP();
+            tfCnp.setText(account.getCnp());
+            tfCnp.setEditable(false);
+        }
+        else if (account.hasPermission("fr.read.all")){
+            //
+
+        }
+
         PanelDoctorSalary panelDoctorSalary = new PanelDoctorSalary();
         panelDoctorSalary.addShowSalaryButtonListener(new DoctorSalaryButtonListener());
+        if(account.hasPermission("fr.read.doctor") && !account.hasPermission("fr.read.all")){
+            HashMap<String, String> doctorDetails = new HashMap<>();
+            Optional<Map.Entry<String, String>> ent = model.getDoctorsName()
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(account.getCnp()))
+                    .findFirst();
+            doctorDetails.put(ent.get().getKey(), ent.get().getValue());
+            panelDoctorSalary.updateDoctorsName(doctorDetails);
+        }
+        else if (account.hasPermission("fr.read.all")){
+            panelDoctorSalary.updateDoctorsName(model.getDoctorsName());
+        }
 
         PanelProfitByDoctor panelProfitByDoctor = new PanelProfitByDoctor();
         panelProfitByDoctor.addProfitButtonListener(new ProfitByDoctorButtonListener());
@@ -137,7 +165,7 @@ public class FrController {
             if (panel instanceof PanelDoctorSalary) {
                 PanelDoctorSalary panelDS = (PanelDoctorSalary) panel;
 
-                double salary = model.getDoctorSalary(panelDS.getTfCNP().getText(),
+                double salary = model.getDoctorSalary(panelDS.getDoctorsCNP(),
                         panelDS.getUtilDateModelMin().getValue(),
                         panelDS.getUtilDateModelMax().getValue());
 
