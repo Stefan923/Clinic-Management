@@ -2,17 +2,18 @@ package com.sanitas.clinicapp.homepage;
 
 import com.sanitas.clinicapp.ClinicApplication;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HomePageController {
 
-    private HomePageModel model;
-    private HomePageView view;
+    private final HomePageModel model;
+    private final HomePageView view;
 
-    private ClinicApplication.Account account;
+    private final ClinicApplication.Account account;
 
-    public HomePageController(HomePageModel model, HomePageView view) {
+    public HomePageController(HomePageModel model, HomePageView view, JFrame previousView) {
         this.model = model;
         this.view = view;
 
@@ -22,12 +23,13 @@ public class HomePageController {
         view.addBtnFRListener(new ButtonListener(2, "fr.read"));
         view.addBtnMRListener(new ButtonListener(3, "mr.read"));
         view.addBtnProfileListener(new ButtonListener(4, "profile.read"));
+        view.addBtnDisconnectListener(new ButtonDeleteListener(previousView));
     }
 
     class ButtonListener implements ActionListener {
 
         private int number = 1; // default = 1
-        private String permission;
+        private final String permission;
 
         public ButtonListener(int number, String permission) {
             this.number = number;
@@ -44,6 +46,22 @@ public class HomePageController {
             model.openMVC(number, view);
         }
 
+    }
+
+    class ButtonDeleteListener implements ActionListener {
+
+        private final JFrame previousView;
+
+        public ButtonDeleteListener(JFrame previousView) {
+            this.previousView = previousView;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            previousView.setVisible(true);
+            view.setVisible(false);
+            view.dispose();
+        }
     }
 
 }

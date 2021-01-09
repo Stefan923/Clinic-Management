@@ -12,10 +12,10 @@ import java.io.IOException;
 
 public class LoginView extends JFrame {
 
-    private JTextField tfUsername = new JTextField(15);
-    private JPasswordField pfPassword = new JPasswordField(15);
+    private final JTextField tfUsername = new JTextField(15);
+    private final JPasswordField pfPassword = new JPasswordField(15);
 
-    private JButton btnLogin = new StyledJButton("Log In").getButton();
+    private final JButton btnLogin = new StyledJButton("Log In").getButton();
 
     public LoginView() {
         JPanel userPanel = new JPanel(new FlowLayout());
@@ -62,6 +62,11 @@ public class LoginView extends JFrame {
         }
 
         return null;
+    }
+
+    public void clear() {
+        tfUsername.setText("");
+        pfPassword.setText("");
     }
 
     public void addBtnLoginListener(ActionListener actionListener) {
