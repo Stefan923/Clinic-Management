@@ -252,7 +252,7 @@ BEGIN
 	SELECT IFNULL(SUM(M.`duration` * A.`count`) / 60, 0) INTO @workedHrs
 		FROM (SELECT `idMedicalService`, COUNT(*) AS `count` 
 			FROM `appointment_services` A, `appointments` AP
-            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
+            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND AP.`hasReceipt` = 1 AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
 		WHERE M.`id` = A.`idMedicalService`;
 	
     CALL GET_DOCTOR_PROFIT_TOTAL(`_cnp`, `startDate`, `endDate`, @commission);
@@ -330,6 +330,8 @@ BEGIN
 	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
 		FROM `appointments` A, `patients` P
         WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
+
+    UPDATE `appointments` SET `hasReceipt` = 1 WHERE `id` = `_id`;
 END;
 // DELIMITER ;
 

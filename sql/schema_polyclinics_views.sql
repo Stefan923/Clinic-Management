@@ -62,6 +62,11 @@ DROP VIEW IF EXISTS `polyclinics`.`view_equipments`;
 CREATE VIEW `polyclinics`.`view_equipments` AS
 	SELECT `id`, `name`
     FROM `equipments`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
+CREATE VIEW `polyclinics`.`view_medical_units` AS
+	SELECT * 
+    FROM `medical_units`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_patients`;
 CREATE VIEW `polyclinics`.`view_patients` AS
@@ -142,7 +147,13 @@ DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
     
-SELECT * FROM `polyclinics`.`view_nuses`;
+DROP VIEW IF EXISTS `polyclinics`.`view_doctor_cnp_name`;
+CREATE VIEW `polyclinics`.`view_doctor_cnp_name` AS
+	SELECT `cnp`, CONCAT(`lastName`, " ", `firstName`) 
+    FROM `employees`, `doctors`
+    WHERE `employees`.`cnp` = `doctors`.`cnpEmployee`;
+    
+SELECT * FROM `polyclinics`.`view_doctor_cnp_name`;
 
 SELECT * FROM `view_services_by_cabinet`;
 
