@@ -1,49 +1,37 @@
 package com.sanitas.clinicapp.hr;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Employee {
-    private String cnp;
     private String firstname;
     private String lastname;
-    private String address;
-    private String phoneNum;
+    private String position;
+    private String cnp;
+    private String adress;
+    private String phone;
     private String email;
     private String iban;
-    private int contractNum;
-    private Date employmentDate;
-    private String position;
+    private int contract;
+    private Date date;
     private double salary;
-    private int workedHrs;
+    private int hours;
 
-    public Employee(String cnp, String lastname, String firstname, String address, String phoneNum, String email, String iban, int contractNum, Date employmentDate, String position, double salary, int workedHrs)
+    public Employee(String cnp, String lastname, String firstname, String adress, String phone, String email,
+             String iban, int contract, Date date, String position, double salary, int hours)
     {
         this.cnp=cnp;
         this.lastname=lastname;
         this.firstname=firstname;
-        this.address=address;
-        this.phoneNum=phoneNum;
+        this.position=position;
+        this.adress=adress;
+        this.phone=phone;
         this.email=email;
         this.iban=iban;
-        this.contractNum=contractNum;
-        this.employmentDate=employmentDate;
-        this.position=position;
+        this.contract=contract;
+        this.date=date;
         this.salary=salary;
-        this.workedHrs=workedHrs;
+        this.hours=hours;
     }
-
-    public Employee(String cnp, String lastname, String firstname,String position) {
-        this.cnp=cnp;
-        this.lastname=lastname;
-        this.firstname=firstname;
-        this.position=position;
-    }
-
-    public Employee() {
-
-    }
-
-
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
@@ -54,6 +42,54 @@ public class Employee {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public String getCnp() {
+        return cnp;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public int getContract() {
+        return contract;
+    }
+
+    public int getHours() {
+        return hours;
+    }
+
+    public String getAdress() {
+        return adress;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     @Override

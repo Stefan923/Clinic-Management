@@ -3,15 +3,15 @@ package com.sanitas.clinicapp.login;
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
 import com.sanitas.clinicapp.homepage.HomePageMVC;
-import com.sanitas.clinicapp.hr.Employee;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoginModel {
 
-    private Database database;
+    private final Database database;
 
     public LoginModel() {
         database = ClinicApplication.getDatabase();
@@ -37,6 +37,7 @@ public class LoginModel {
 
     public void loadUserData(String username) {
         String cnp = "";
+        int idMedicalUnit = 0;
         List<String> permissions = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = database.preparedStatement("SELECT `cnp` FROM `view_accounts` WHERE `username` LIKE ?;");
@@ -51,18 +52,26 @@ public class LoginModel {
             preparedStatement1.setString(1, cnp);
             ResultSet resultSet1 = preparedStatement1.executeQuery();
 
-            while (resultSet.next()) {
-                permissions.add(resultSet.getString(1));
+            while (resultSet1.next()) {
+                permissions.add(resultSet1.getString(1));
             }
 
-            ClinicApplication.setUser(null, cnp, permissions);
+            PreparedStatement preparedStatement2 = database.preparedStatement("SELECT `idMedicalUnit` FROM `view_employee_schedule` WHERE `cnpEmployee` = ? LIMIT 1;");
+            preparedStatement2.setString(1, cnp);
+            ResultSet resultSet2 = preparedStatement2.executeQuery();
+
+            if (resultSet2.next()) {
+                idMedicalUnit = resultSet2.getInt(1);
+            }
+
+            ClinicApplication.setUser(null, cnp, idMedicalUnit, permissions);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void openHomePage() {
-        new HomePageMVC();
+    public void openHomePage(JFrame previousView) {
+        new HomePageMVC(previousView);
     }
 
 }

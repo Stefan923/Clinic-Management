@@ -1,4 +1,4 @@
-package com.sanitas.clinicapp.mr;
+package com.sanitas.clinicapp.struct;
 
 public class MedicalService {
 
@@ -41,6 +41,29 @@ public class MedicalService {
         this.idEquipment = idEquipment;
         this.price = price;
         this.duration = duration;
+    }
+
+    public MedicalService(int id, String name, int duration, double price) {
+        this.id = id;
+        this.name = name;
+        this.duration = duration;
+        this.price = price;
+    }
+
+    public String getFormattedDuration() {
+        int minutes = duration;
+        int hours = minutes / 60;
+        minutes %= 60;
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(hours > 0 ? (hours < 10 ? "0" + hours : String.valueOf(hours)) : "00")
+                .append(":");
+        stringBuilder
+                .append(minutes > 0 ? (minutes < 10 ? "0" + minutes : String.valueOf(minutes)) : "00")
+                .append(":00");
+
+        return stringBuilder.toString();
     }
 
     public int getId() {

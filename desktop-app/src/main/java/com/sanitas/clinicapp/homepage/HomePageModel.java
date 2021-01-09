@@ -10,7 +10,7 @@ public class HomePageModel {
     public void openMVC(int number, HomePageView view) {
         switch (number) {
             case 1:
-                new HrMVC();
+                new HrMVC(view);
                 break;
             case 2:
                 new FrMVC(view);

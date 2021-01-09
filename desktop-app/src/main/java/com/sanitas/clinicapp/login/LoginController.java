@@ -6,8 +6,8 @@ import java.awt.event.ActionListener;
 
 public class LoginController {
 
-    private LoginModel model;
-    private LoginView view;
+    private final LoginModel model;
+    private final LoginView view;
 
     public LoginController(LoginModel model, LoginView view) {
         this.model = model;
@@ -23,16 +23,15 @@ public class LoginController {
             JPasswordField password = view.getPfPassword();
 
             if (model.checkCreditentials(username.getText(), String.valueOf(password.getPassword()))) {
-                model.openHomePage();
                 model.loadUserData(username.getText());
+                model.openHomePage(view);
 
                 view.setVisible(false);
             } else {
-                username.setText("");
-                password.setText("");
-
                 view.sendError("Numele sau parola sunt gresite!");
             }
+
+            view.clear();
         }
     }
 

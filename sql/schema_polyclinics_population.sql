@@ -1,305 +1,309 @@
 USE `polyclinics`;
 
-INSERT INTO `medical_units`(`name`, `address`, `iban`)
-VALUES
-('Sanitas Cluj-Napoca', 'str. Observatorului, nr. 314', 'RO22PORL9568116158281625'),
-('Sanitas Arad', 'str. Aurel Vlaicu, nr. 91', 'RO29RZBR5523951481289988'),
-('Sanitas Iasi', 'str. Mihai Eminescu, nr. 1', 'RO16RZBR4452416377244199'),
-('Sanitas Craiova', 'str. Calea Bucuresti, nr. 1', 'RO77RZBR9622577696235615'),
-('Sanitas Costanta', 'str. Vaselor, nr. 24', 'RO20PORL6329853195357123');
+INSERT INTO `medical_units` (`name`, `address`, `iban`) VALUES
+	('Sanitas Cluj-Napoca', 'str. Observatorului, nr. 314', 'RO22PORL9568116158281625'),
+	('Sanitas Arad', 'str. Aurel Vlaicu, nr. 91', 'RO29RZBR5523951481289988'),
+	('Sanitas Iasi', 'str. Mihai Eminescu, nr. 1', 'RO16RZBR4452416377244199'),
+	('Sanitas Craiova', 'str. Calea Bucuresti, nr. 1', 'RO77RZBR9622577696235615'),
+	('Sanitas Costanta', 'str. Vaselor, nr. 24', 'RO20PORL6329853195357123');
 
-INSERT INTO `medical_unit_schedule`(`idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) 
-VALUES
-('1', 'Monday', '08:00:00', '20:00:00'),
-('1', 'Tuesday', '08:00:00', '20:00:00'),
-('1', 'Wednesday', '08:00:00', '20:00:00'),
-('1', 'Thursday', '08:00:00', '20:00:00'),
-('1', 'Friday', '08:00:00', '18:00:00'),
-('1', 'Saturday', '08:00:00', '16:00:00'),
+INSERT INTO `medical_unit_schedule` (`idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
+	('1', 'Monday', '08:00:00', '20:00:00'),
+	('1', 'Tuesday', '08:00:00', '20:00:00'),
+	('1', 'Wednesday', '08:00:00', '20:00:00'),
+	('1', 'Thursday', '08:00:00', '20:00:00'),
+	('1', 'Friday', '08:00:00', '18:00:00'),
+	('1', 'Saturday', '08:00:00', '16:00:00'),
 
-('2', 'Monday', '08:30:00', '20:00:00'),
-('2', 'Tuesday', '08:30:00', '20:00:00'),
-('2', 'Wednesday', '08:30:00', '20:00:00'),
-('2', 'Thursday', '08:30:00', '20:00:00'),
-('2', 'Friday', '08:30:00', '18:00:00'),
-('2', 'Saturday', '08:30:00', '16:00:00'),
-('2', 'Sunday', '08:30:00', '12:00:00'),
+	('2', 'Monday', '08:30:00', '20:00:00'),
+	('2', 'Tuesday', '08:30:00', '20:00:00'),
+	('2', 'Wednesday', '08:30:00', '20:00:00'),
+	('2', 'Thursday', '08:30:00', '20:00:00'),
+	('2', 'Friday', '08:30:00', '18:00:00'),
+	('2', 'Saturday', '08:30:00', '16:00:00'),
+	('2', 'Sunday', '08:30:00', '12:00:00'),
 
-('3', 'Monday', '07:30:00', '19:00:00'),
-('3', 'Tuesday', '07:30:00', '19:00:00'),
-('3', 'Wednesday', '07:30:00', '19:00:00'),
-('3', 'Thursday', '07:30:00', '19:00:00'),
-('3', 'Friday', '07:30:00', '17:00:00'),
-('3', 'Saturday', '07:30:00', '12:00:00'),
+	('3', 'Monday', '07:30:00', '19:00:00'),
+	('3', 'Tuesday', '07:30:00', '19:00:00'),
+	('3', 'Wednesday', '07:30:00', '19:00:00'),
+	('3', 'Thursday', '07:30:00', '19:00:00'),
+	('3', 'Friday', '07:30:00', '17:00:00'),
+	('3', 'Saturday', '07:30:00', '12:00:00'),
 
-('4', 'Monday', '07:30:00', '20:00:00'),
-('4', 'Tuesday', '07:30:00', '20:00:00'),
-('4', 'Wednesday', '07:30:00', '20:00:00'),
-('4', 'Thursday', '07:30:00', '20:00:00'),
-('4', 'Friday', '07:30:00', '18:00:00'),
-('4', 'Saturday', '07:30:00', '15:00:00'),
+	('4', 'Monday', '07:30:00', '20:00:00'),
+	('4', 'Tuesday', '07:30:00', '20:00:00'),
+	('4', 'Wednesday', '07:30:00', '20:00:00'),
+	('4', 'Thursday', '07:30:00', '20:00:00'),
+	('4', 'Friday', '07:30:00', '18:00:00'),
+	('4', 'Saturday', '07:30:00', '15:00:00'),
 
-('5', 'Monday', '07:45:00', '20:00:00'),
-('5', 'Tuesday', '07:45:00', '20:00:00'),
-('5', 'Wednesday', '07:45:00', '20:00:00'),
-('5', 'Thursday', '07:45:00', '20:00:00'),
-('5', 'Friday', '07:45:00', '18:00:00'),
-('5', 'Saturday', '07:45:00', '15:00:00'),
-('5', 'Sunday', '08:00:00', '12:00:00');
+	('5', 'Monday', '07:45:00', '20:00:00'),
+	('5', 'Tuesday', '07:45:00', '20:00:00'),
+	('5', 'Wednesday', '07:45:00', '20:00:00'),
+	('5', 'Thursday', '07:45:00', '20:00:00'),
+	('5', 'Friday', '07:45:00', '18:00:00'),
+	('5', 'Saturday', '07:45:00', '15:00:00'),
+	('5', 'Sunday', '08:00:00', '12:00:00');
 
-INSERT INTO `cabinets`(idMedicalUnit, name) 
-VALUES
-('1', 'Cardiologie'),
-('1', 'Dermatologie'),
-('1', 'Chirurgie plastica'),
-('1', 'Endocrinologie'),
-('1', 'Stomatologie'),
-('1', 'ORL'),
-('1', 'Ortopedie'),
-('1', 'Endoscopie'),
-('1', 'Radiologie'),
-('1', 'RMN'),
-('1', 'Sala de operatie 1'),
-('1', 'Sala de operatie 2'),
+INSERT INTO `cabinets` (`idMedicalUnit`, `name`) VALUES
+	('1', 'Cardiologie'),
+	('1', 'Dermatologie'),
+	('1', 'Chirurgie plastica'),
+	('1', 'Endocrinologie'),
+	('1', 'Stomatologie'),
+	('1', 'ORL'),
+	('1', 'Ortopedie'),
+	('1', 'Endoscopie'),
+	('1', 'Radiologie'),
+	('1', 'RMN'),
+	('1', 'Sala de operatie 1'),
+	('1', 'Sala de operatie 2'),
 
-('2', 'Cardiologie'),
-('2', 'Dermatologie'),
-('2', 'Stomatologie'),
-('2', 'Endocrinologie'),
-('2', 'Radiologie'),
-('2', 'Endoscopie'),
+	('2', 'Cardiologie'),
+	('2', 'Dermatologie'),
+	('2', 'Stomatologie'),
+	('2', 'Endocrinologie'),
+	('2', 'Radiologie'),
+	('2', 'Endoscopie'),
 
-('3', 'Cardiologie'),
-('3', 'Dermatologie'),
-('3', 'Chirurgie plastica'),
-('3', 'Endocrinologie'),
-('3', 'Stomatologie'),
-('3', 'ORL'),
-('3', 'Ortopedie'),
-('3', 'Endoscopie'),
-('2', 'Radiologie'),
-('3', 'RMN'),
-('3', 'Sala de operatie'),
+	('3', 'Cardiologie'),
+	('3', 'Dermatologie'),
+	('3', 'Chirurgie plastica'),
+	('3', 'Endocrinologie'),
+	('3', 'Stomatologie'),
+	('3', 'ORL'),
+	('3', 'Ortopedie'),
+	('3', 'Endoscopie'),
+	('2', 'Radiologie'),
+	('3', 'RMN'),
+	('3', 'Sala de operatie'),
 
-('4', 'Cardiologie'),
-('4', 'Dermatologie'),
-('4', 'Endocrinologie'),
-('4', 'Stomatologie'),
-('4', 'ORL'),
-('4', 'Ortopedie'),
-('4', 'Endoscopie'),
-('4', 'Radiologie'),
+	('4', 'Cardiologie'),
+	('4', 'Dermatologie'),
+	('4', 'Endocrinologie'),
+	('4', 'Stomatologie'),
+	('4', 'ORL'),
+	('4', 'Ortopedie'),
+	('4', 'Endoscopie'),
+	('4', 'Radiologie'),
 
-('5', 'Cardiologie'),
-('5', 'Dermatologie'),
-('5', 'Endocrinologie'),
-('5', 'Stomatologie'),
-('5', 'ORL'),
-('5', 'Ortopedie'),
-('5', 'Endoscopie'),
-('5', 'Radiologie'),
-('5', 'Sala de operatie');
+	('5', 'Cardiologie'),
+	('5', 'Dermatologie'),
+	('5', 'Endocrinologie'),
+	('5', 'Stomatologie'),
+	('5', 'ORL'),
+	('5', 'Ortopedie'),
+	('5', 'Endoscopie'),
+	('5', 'Radiologie'),
+	('5', 'Sala de operatie');
 
-INSERT INTO `equipments`(name) 
-VALUES
-('Computer tomograf'),
-('RMN'),
-('EKG'),
-('Ecocardiograf'),
-('Aparat Holter'),
-('Dermatoscop Digital'),
-('Lampa UV'),
-('Ecograf endocrinologie'),
-('Scaun stomatologic'),
-('Unitate de diagnosticare ORL'),
-('Camera endoscopica ORL'),
-('Ecograf'), 
-('Sistem chirurgical'),
-('Laparoscop'),
-('Instalatie radiologica');
+INSERT INTO `equipments` (`name`) VALUES
+	('Computer tomograf'),
+	('RMN'),
+	('EKG'),
+	('Ecocardiograf'),
+	('Aparat Holter'),
+	('Dermatoscop Digital'),
+	('Lampa UV'),
+	('Ecograf endocrinologie'),
+	('Scaun stomatologic'),
+	('Unitate de diagnosticare ORL'),
+	('Camera endoscopica ORL'),
+	('Ecograf'), 
+	('Sistem chirurgical'),
+	('Laparoscop'),
+	('Instalatie radiologica');
 
 -- DELETE FROM `equipments`;
 
-INSERT INTO `cabinet_equipments`(idCabinet, idEquipment) 
-VALUES
-('1', '3'),
-('1', '4'),
-('1', '5'),
-('2', '6'),
-('2', '7'),
-('3', '13'),
-('4', '8'),
-('5', '9'),
-('6', '10'),
-('6', '11'),
-('8', '12'),
-('9', '15'),
-('10', '1'),
-('10', '2'),
-('11', '13'),
-('11', '14'),
-('12', '13'),
-('12', '14'),
+INSERT INTO `cabinet_equipments` (`idCabinet`, `idEquipment`) VALUES
+	('1', '3'),
+	('1', '4'),
+	('1', '5'),
+	('2', '6'),
+	('2', '7'),
+	('3', '13'),
+	('4', '8'),
+	('5', '9'),
+	('6', '10'),
+	('6', '11'),
+	('8', '12'),
+	('9', '15'),
+	('10', '1'),
+	('10', '2'),
+	('11', '13'),
+	('11', '14'),
+	('12', '13'),
+	('12', '14'),
 
-('13', '3'),
-('13', '4'),
-('13', '5'),
-('14', '6'),
-('14', '7'),
-('15', '9'),
-('16', '8'),
-('17', '15'),
-('18', '12'),
+	('13', '3'),
+	('13', '4'),
+	('13', '5'),
+	('14', '6'),
+	('14', '7'),
+	('15', '9'),
+	('16', '8'),
+	('17', '15'),
+	('18', '12'),
 
-('19', '3'),
-('19', '4'),
-('19', '5'),
-('20', '6'),
-('20', '7'),
-('21', '13'),
-('22', '8'),
-('23', '9'),
-('24', '10'),
-('24', '11'),
-('26', '12'),
-('27', '15'),
-('28', '1'),
-('28', '2'),
-('29', '13'),
-('29', '14'),
+	('19', '3'),
+	('19', '4'),
+	('19', '5'),
+	('20', '6'),
+	('20', '7'),
+	('21', '13'),
+	('22', '8'),
+	('23', '9'),
+	('24', '10'),
+	('24', '11'),
+	('26', '12'),
+	('27', '15'),
+	('28', '1'),
+	('28', '2'),
+	('29', '13'),
+	('29', '14'),
 
-('30', '3'),
-('30', '4'),
-('30', '5'),
-('31', '6'),
-('31', '7'),
-('32', '8'),
-('33', '9'),
-('34', '10'),
-('34', '11'),
-('36', '12'),
-('37', '15'),
+	('30', '3'),
+	('30', '4'),
+	('30', '5'),
+	('31', '6'),
+	('31', '7'),
+	('32', '8'),
+	('33', '9'),
+	('34', '10'),
+	('34', '11'),
+	('36', '12'),
+	('37', '15'),
 
-('38', '3'),
-('38', '4'),
-('38', '5'),
-('39', '6'),
-('39', '7'),
-('40', '8'),
-('41', '9'),
-('42', '10'),
-('42', '11'),
-('44', '12'),
-('45', '15'),
-('46', '13'),
-('46', '14');
+	('38', '3'),
+	('38', '4'),
+	('38', '5'),
+	('39', '6'),
+	('39', '7'),
+	('40', '8'),
+	('41', '9'),
+	('42', '10'),
+	('42', '11'),
+	('44', '12'),
+	('45', '15'),
+	('46', '13'),
+	('46', '14');
 
-INSERT INTO `accreditations`(name) 
-VALUES
-('Ecografie'),
-('Chirurgie'),
-('Radiologie'),
-('Explorare computer tomograf'),
-('Imagistica prin rezonanta magnetica'),
-('Aritmiologie'),  -- cardiologie
-('Transplant'),
-('Rinoplastie'),  -- chirurgie plastica
-('Liposuptie'),
-('Ortodontie'),  -- stoma
-('Endodontie'),
-('Odontoterapie'),
-('Infiltratii'),  -- derma
-('Radiocauterizare'),
-('Amigdalectomia'), -- ORL
-('Laringoscopie'),
-('Polipectomie'),
-('Artrodeza'), -- ortopedie
-('Artroscopie'),
-('Ligamentoplastie'),
-('Evisceratie'), -- ofta
-('Enucleere'),
-('Implanturi');
+INSERT INTO `accreditations` (`name`) VALUES
+	('Ecografie'),
+	('Chirurgie'),
+	('Radiologie'),
+	('Explorare computer tomograf'),
+	('Imagistica prin rezonanta magnetica'),
+	('Aritmiologie'),  -- cardiologie
+	('Transplant'),
+	('Rinoplastie'),  -- chirurgie plastica
+	('Liposuptie'),
+	('Ortodontie'),  -- stoma
+	('Endodontie'),
+	('Odontoterapie'),
+	('Infiltratii'),  -- derma
+	('Radiocauterizare'),
+	('Amigdalectomia'), -- ORL
+	('Laringoscopie'),
+	('Polipectomie'),
+	('Artrodeza'), -- ortopedie
+	('Artroscopie'),
+	('Ligamentoplastie'),
+	('Evisceratie'), -- ofta
+	('Enucleere'),
+	('Implanturi');
 
+INSERT INTO `specialities` (`name`) VALUES
+	('Cardiologie'),
+	('Dermatologie si venerologie'),
+	('Chirurgie'),
+	('Chirurgie plastica'),
+	('Radiologie si imagistica'),
+	('Stomatologie'),
+	('ORL'),
+	('Ortopedie'),
+	('Pediatrie'),
+	('Oftalmologie'),
+	('Endocrinologie');
 
-INSERT INTO `specialities`(name) 
-VALUES
-('Cardiologie'),
-('Dermatologie si venerologie'),
-('Chirurgie'),
-('Chirurgie plastica'),
-('Radiologie si imagistica'),
-('Stomatologie'),
-('ORL'),
-('Ortopedie'),
-('Pediatrie'),
-('Oftalmologie'),
-('Endocrinologie');
+INSERT INTO `roles` (`name`) VALUES
+	('default'),
+	('receptioner'),
+	('resurse_umane'),
+	('asistent_medical'),
+	('medic'),
+	('contabil'),
+	('administrator'),
+	('super_administrator');
 
-INSERT INTO `roles`(name) 
-VALUES
-('default'),
-('receptioner'),
-('resurse_umane'),
-('asistent_medical'),
-('medic'),
-('contabil'),
-('administrator'),
-('super_administrator');
+DELETE FROM `role_permissions`;
+INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
+	('2', 'profile.read'),
+	('2', 'hr.read'),
+	('2', 'fr.read.employee'),
+    ('2', 'fr.read'),
+	('2', 'mr.read'),
+	('2', 'mr.appointments.read'),
+	('2', 'mr.appointments.read.all'),
+	('2', 'mr.appointments.write'),
+	('2', 'mr.patients.write'),
+    ('2', 'mr.receipt.read'),
+	('2', 'mr.receipt.write'),
+	('3', 'profile.read'),
+	('3', 'hr.read'),
+    ('3', 'fr.read'),
+	('3', 'fr.read.employee'),
+	('3', 'hr.read.other'),
+	('3', 'hr.write.other'),
+	('4', 'profile.read'),
+	('4', 'hr.read'),
+    ('4', 'fr.read'),
+	('4', 'fr.read.employee'),
+	('4', 'mr.read'),
+	('4', 'mr.analyses.read'),
+	('5', 'profile.read'),
+	('5', 'fr.read'),
+	('5', 'mr.read'),
+    ('5', 'fr.read.doctor'),
+	('5', 'mr.appointments.read'),
+	('5', 'mr.medical_services.write'),
+	('5', 'mr.medical_services.read'),
+	('5', 'mr.analyses.write'),
+	('5', 'mr.analyses.read'),
+	('5', 'mr.medical_raport.write'),
+	('5', 'mr.medical_raport.read'),
+	('6', 'profile.read'),
+	('6', 'hr.read'),
+	('6', 'fr.read'),
+    ('6', 'fr.read.all'),
+	('6', 'fr.write'),
+	('6', 'fr.read.other'),
+	('6', 'fr.write.other'),
+	('7', '*'),
+	('8', '*'),
+	('8', '+');
 
-INSERT INTO `role_permissions`(idRole, permission) 
-VALUES
-('2', 'hr.read'),
-('2', 'fc.read'),
-('2', 'oa.appointment.read'),
-('2', 'oa.appointment.write'),
-('2', 'oa.patients_register.read'),
-('2', 'oa.patients_register.write'),
-('2', 'oa.receipt.write'),
-('3', 'hr.read'),
-('3', 'hr.read.other'),
-('3', 'hr.write.other'),
-('3', 'fc.read'),
-('4', 'hr.read'),
-('4', 'fc.read'),
-('4', 'oa.medical_checkup.write'),
-('4', 'oa.medical_checkup.read'),
-('5', 'hr.read'),
-('5', 'fc.read'),
-('5', 'oa.history.write'),
-('5', 'oa.history.read'),
-('5', 'oa.medical_raport.write'),
-('5', 'oa.medical_raport.read'),
-('6', 'hr.read'),
-('6', 'fc.read'),
-('6', 'fc.write'),
-('6', 'fc.read.other'),
-('6', 'fc.write.other'),
-('7', '*'),
-('8', '*'),
-('8', '+');
+INSERT INTO `patients`(`cnp`, `lastName`, `firstName`, `iban`) VALUES
+	('2910815468725', 'Alexa', 'Magda', 'RO10PORL8445344576188294'),
+	('2750329315938', 'Ambrus', 'Erika', 'RO35RZBR3698834477613845'),
+	('1801119378613', 'Aproslavesei', 'Ion Dumitru', 'RO76PORL9896956714137455'),
+	('1201204085247', 'Iliescu', 'Ion', 'RO93PORL8478334416771422'),
+	('2380127165640', 'Georgescu', 'Carmen', 'RO44RZBR2949687113834933'),
+	('2460512257129', 'Marin', 'Florina', 'RO14RZBR4387649111429396'),
+	('1471020095263', 'Gras', 'Dumitru', 'RO21PORL3293351589179521'),
+	('1520619148967', 'Tomoiaga', 'Vali', 'RO57PORL7165544998976662'),
+	('2920430215231', 'Manea', 'Ana Georgiana', 'RO06PORL8544898836212462'),
+	('1960408068054', 'Vijelie', 'Ioan Andrei', 'RO06RZBR2869765134298533'),
+	('1971005087985', 'Haralamb-Vantu', 'Codrin Mihai', 'RO50PORL4744963715379738'),
+	('2961028088875', 'Schnitzel', 'Ana Maria', 'RO02RZBR7187757494527896'),
+	('5000604169904', 'Popescu', 'Daniel', 'RO34RZBR6673452921254556'),
+	('6000930329136', 'Stoica', 'Dana Andreea', 'RO24RZBR8381357471134179'),
+	('6000822065974', 'Halas', 'Elisabeta', 'RO26PORL2983474129649563'),
+	('2991208015482', 'Boldea', 'Crina', 'RO28RZBR3927163889689968'),
+	('2971003128722', 'Fekete', 'Orsoyla', 'RO76PORL5228664564991568');
 
-INSERT INTO `patients`(`cnp`, `lastName`, `firstName`, `iban`) 
-VALUES
-('2910815468725', 'Alexa', 'Magda', 'RO10PORL8445344576188294'),
-('2750329315938', 'Ambrus', 'Erika', 'RO35RZBR3698834477613845'),
-('1801119378613', 'Aproslavesei', 'Ion Dumitru', 'RO76PORL9896956714137455'),
-('1201204085247', 'Iliescu', 'Ion', 'RO93PORL8478334416771422'),
-('2380127165640', 'Georgescu', 'Carmen', 'RO44RZBR2949687113834933'),
-('2460512257129', 'Marin', 'Florina', 'RO14RZBR4387649111429396'),
-('1471020095263', 'Gras', 'Dumitru', 'RO21PORL3293351589179521'),
-('1520619148967', 'Tomoiaga', 'Vali', 'RO57PORL7165544998976662'),
-('2920430215231', 'Manea', 'Ana Georgiana', 'RO06PORL8544898836212462'),
-('1960408068054', 'Vijelie', 'Ioan Andrei', 'RO06RZBR2869765134298533'),
-('1971005087985', 'Haralamb-Vantu', 'Codrin Mihai', 'RO50PORL4744963715379738'),
-('2961028088875', 'Schnitzel', 'Ana Maria', 'RO02RZBR7187757494527896'),
-('5000604169904', 'Popescu', 'Daniel', 'RO34RZBR6673452921254556'),
-('6000930329136', 'Stoica', 'Dana Andreea', 'RO24RZBR8381357471134179'),
-('6000822065974', 'Halas', 'Elisabeta', 'RO26PORL2983474129649563'),
-('2991208015482', 'Boldea', 'Crina', 'RO28RZBR3927163889689968'),
-('2971003128722', 'Fekete', 'Orsoyla', 'RO76PORL5228664564991568');
-
-INSERT INTO `employees` (`cnp`,`lastName`,`firstName`,`address`,`phoneNum`,`email`,`iban`,`contractNum`,`employmentDate`,`position`,`salary`,`workedHrs`)
-VALUES
+INSERT INTO `employees` (`cnp`,`lastName`,`firstName`,`address`,`phoneNum`,`email`,`iban`,`contractNum`,`employmentDate`,`position`,`salary`,`workedHrs`) VALUES
 	('2901204019549','Ionescu','Oana','Cluj-Napoca, str. Lacul Rosu nr. 13','0745634674','ionescu_oana@gmail.com','RO84PORL3823333897221298','1','2018-06-10','Medic',15000,120),
 	('2701204068831','Georgescu','Ileana','Cluj-Napoca, str. Lacul Rosu nr. 13','0745634472','georgescu.ileana@yahoo.com','RO02PORL1553658265733295','2','2000-07-20','Medic',20000,130),
 	('1701204067125','Varga','Robert','Cluj-Napoca, str. Avram Iancu','0723623723','robert.varga@gmail.com','RO14PORL3819764854464569','3','2007-01-23','Asistent Medical',5000,120),
@@ -334,7 +338,7 @@ VALUES
 	('1960820039445','Cristescu','George','Constanta, str. Avram Iancu','0729406749','crist_george10@yahoo.com','RO68RZBR4199291787829444','26','1995-06-01','Receptioner',3100,120),
 	('2961201037997','Matei','Ana Irina','Constanta, str. 1 Mai','0767493068','matei_anairina@gmail.com','RO44RZBR8623977857491312','27','2020-11-30','Contabil',3570,120),
 	('1830121466921','Stancu','Ioan Mihail','Constanta, str. Craiovei nr. 3','0748692056','ioan.mihail.st@gmail.com','RO75PORL6346981883481832','28','1985-08-18','HR',3150,120),
-	('2700927417309','Madalina','Adam','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120);
+	('2700927417309','Adam','Madalina','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120);
 
 INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `scientificTitle`, `didacticTitle`) VALUES
 	('2901204019549','12345','0.3',NULL,'profesor'),
@@ -395,28 +399,25 @@ INSERT INTO `analyse` (name,minimum,maximum) VALUES
 	("Lipide",500,800),
 	("VLDL",2,38),
 	("Imunoglobulina A",90,450);
-    
-INSERT INTO `patient_analyses` (`cnpPatient`, `idAnalyse`,`value`) values
-	('2910815468725',1,8.5),
-	('2910815468725',2,200),
-	('2910815468725',3,150),
-	('1520619148967',5,400),
-	('1520619148967',8,9),
-	('1520619148967',10,4.1),
-	('1520619148967',4,150),
-	('6000822065974',11,4.4),
-	('6000822065974',12,200),
-	('2961028088875',13,39),
-	('2460512257129',14,341);
+
+INSERT INTO `patient_analyses` (`cnpPatient`, `idAnalyse`,`value`,`isPositive`,`date`) values
+	('2910815468725',1,8.5,0,'2019-07-12 11:30:00'),
+	('2910815468725',2,200,0,'2019-10-20 13:37:20'),
+	('2910815468725',3,150,1,'2019-10-22 14:35:00'),
+	('1520619148967',5,400,1,'2019-11-04 12:04:05'),
+	('1520619148967',8,9,0,'2019-12-20 14:45:00'),
+	('1520619148967',10,4.1,0,'2019-12-23 13:30:20'),
+	('1520619148967',4,150,0,'2020-01-07 14:00:05'),
+	('6000822065974',11,4.4,0,'2020-03-21 14:11:57'),
+	('6000822065974',12,200,1,'2020-05-14 09:35:20'),
+	('2961028088875',13,39,1,'2020-07-30 15:30:00'),
+	('2460512257129',14,341,0,'2020-10-20 16:21:44');
 
 INSERT INTO `nurse` (`cnpEmployee`,`type`,`rank`) VALUES
 	('1701204067125','generalist','principal'),
 	('1701201757453','laborant','secundar'),
 	('1971204466262','radiologie','principal'),
 	('1961204466262','generalist','principal');
-
-DELETE FROM `appointments`;
-DELETE FROM `employee_schedule`;
 
 INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
 	(2700927417309,1,'Monday','08:00','12:00'),
@@ -463,7 +464,8 @@ INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `s
     (2931204115436,2, 'Tuesday', '12:30', '18:00');
 
 INSERT INTO `holidays` (`cnpEmployee`, `startDate`, `endDate`) VALUES
-	('2700927417309', '2020-12-02', '2020-12-03');
+	('2700927417309', '2020-12-02', '2020-12-03'),
+	('2700927417309', '2021-01-10', '2021-01-15');
 
 INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,`idAccreditation`,`price`,`duration`) VALUES
 	('2901204019549',1,3,'Consultatie Cardiologie',1,100,30),
@@ -530,3 +532,7 @@ INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALU
 	('income', '2019-04-26 17:04:12', '570', 'RO44RZBR2949687113834933', 'RO22PORL9568116158281625'),
 	('income', '2019-07-14 12:04:12', '1300', 'RO02RZBR7187757494527896', 'RO29RZBR5523951481289988'),
 	('outcome', '2019-02-01 08:00:00', '3400', 'RO22PORL9568116158281625', 'RO68PORL8164427875373638');
+
+UPDATE `accounts` SET `password` = '123' WHERE `username` = 'm.adam';
+UPDATE `accounts` SET `password` = '123' WHERE `username` = 'g.cristescu';
+UPDATE `accounts` SET `password` = '123' WHERE `username` = 'r.varga';

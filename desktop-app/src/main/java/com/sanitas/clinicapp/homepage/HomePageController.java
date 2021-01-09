@@ -1,36 +1,67 @@
 package com.sanitas.clinicapp.homepage;
 
+import com.sanitas.clinicapp.ClinicApplication;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HomePageController {
 
-    private HomePageModel model;
-    private HomePageView view;
+    private final HomePageModel model;
+    private final HomePageView view;
 
-    public HomePageController(HomePageModel model, HomePageView view) {
+    private final ClinicApplication.Account account;
+
+    public HomePageController(HomePageModel model, HomePageView view, JFrame previousView) {
         this.model = model;
         this.view = view;
 
-        view.addBtnHRListener(new ButtonListener(1));
-        view.addBtnFRListener(new ButtonListener(2));
-        view.addBtnMRListener(new ButtonListener(3));
-        view.addBtnProfileListener(new ButtonListener(4));
+        account = ClinicApplication.getUser();
+
+        view.addBtnHRListener(new ButtonListener(1, "hr.read"));
+        view.addBtnFRListener(new ButtonListener(2, "fr.read"));
+        view.addBtnMRListener(new ButtonListener(3, "mr.read"));
+        view.addBtnProfileListener(new ButtonListener(4, "profile.read"));
+        view.addBtnDisconnectListener(new ButtonDeleteListener(previousView));
     }
 
     class ButtonListener implements ActionListener {
 
-        int number = 1; // default = 1
+        private int number = 1; // default = 1
+        private final String permission;
 
-        public ButtonListener(int number) {
+        public ButtonListener(int number, String permission) {
             this.number = number;
+            this.permission = permission;
         }
 
         public void actionPerformed(ActionEvent e) {
+            if (!account.hasPermission(permission)) {
+                view.sendError("Nu ai permisiunea de a vedea aceasta categorie!");
+                return;
+            }
+
             view.setVisible(false);
             model.openMVC(number, view);
         }
 
+    }
+
+    class ButtonDeleteListener implements ActionListener {
+
+        private final JFrame previousView;
+
+        public ButtonDeleteListener(JFrame previousView) {
+            this.previousView = previousView;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            previousView.setVisible(true);
+            view.setVisible(false);
+            view.dispose();
+        }
     }
 
 }
