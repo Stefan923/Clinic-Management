@@ -265,12 +265,10 @@ VALUES
 ('4', 'oa.medical_checkup.read'),
 ('5', 'hr.read'),
 ('5', 'fc.read'),
-('5', 'mr.medical_services.write'),
-('5', 'mr.medical_services.read'),
-('5', 'mr.history.write'),
-('5', 'mr.history.read'),
-('5', 'mr.medical_raport.write'),
-('5', 'mr.medical_raport.read'),
+('5', 'oa.history.write'),
+('5', 'oa.history.read'),
+('5', 'oa.medical_raport.write'),
+('5', 'oa.medical_raport.read'),
 ('6', 'hr.read'),
 ('6', 'fc.read'),
 ('6', 'fc.write'),
@@ -416,6 +414,9 @@ INSERT INTO `nurse` (`cnpEmployee`,`type`,`rank`) VALUES
 	('1701201757453','laborant','secundar'),
 	('1971204466262','radiologie','principal'),
 	('1961204466262','generalist','principal');
+
+DELETE FROM `appointments`;
+DELETE FROM `employee_schedule`;
 
 INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
 	(2700927417309,1,'Monday','08:00','12:00'),
