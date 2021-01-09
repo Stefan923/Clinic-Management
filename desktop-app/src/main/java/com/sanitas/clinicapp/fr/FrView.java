@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.fr;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.mr.MrModel;
 import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
 import com.sanitas.clinicapp.ui.Colors;
@@ -23,9 +24,9 @@ public class FrView extends JFrame {
 
     private JButton btnBack = new StyledJButton("Inapoi").getButton();
 
-    public FrView(FrModel model) {
+    public FrView(FrModel model, ClinicApplication.Account account) {
 
-        currentPanel= new JPanel();
+        currentPanel = new JPanel();
         currentPanel.setVisible(true);
 
         btnMedicalUnitProfit.setBackground(Colors.MAIN_COLOR.getColor());
@@ -84,14 +85,28 @@ public class FrView extends JFrame {
         btnBackPanel.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel menuContent = new JPanel(new GridLayout(8, 1));
-        menuContent.add(btnMedicalUnitProfitPanel);
-        menuContent.add(btnProfitByDoctorPanel);
-        menuContent.add(btnProfitBySpecialityPanel);
-        menuContent.add(btnTotalProfitPanel);
-        menuContent.add(btnEmployeeSalaryPanel);
-        menuContent.add(btnDoctorSalaryPanel);
-        menuContent.add(btnDoctorProfitTotalPanel);
-        menuContent.add(btnShowTransactionsPanel);
+        if (account.hasPermission("fr.read.all")) {
+            menuContent.add(btnMedicalUnitProfitPanel);
+            menuContent.add(btnTotalProfitPanel);
+            menuContent.add(btnShowTransactionsPanel);
+            menuContent.add(btnProfitBySpecialityPanel);
+        }
+        if (account.hasPermission("fr.read.all") || account.hasPermission("fr.read.doctor")) {
+            menuContent.add(btnProfitByDoctorPanel);
+        }
+        /*if (account.hasPermission("fr.read.all") || account.hasPermission("fr.read.doctor")) {
+            menuContent.add(btnProfitBySpecialityPanel);
+        }*/
+        if (account.hasPermission("fr.read.all") || account.hasPermission("fr.read.doctor")) {
+            menuContent.add(btnDoctorSalaryPanel);
+        }
+       /* if (account.hasPermission("fr.read.all") || account.hasPermission("fr.read.doctor")) {
+            menuContent.add(btnDoctorProfitTotalPanel);
+        }*/
+        if (account.hasPermission("fr.read.all") || account.hasPermission("fr.read.employee")) {
+            menuContent.add(btnEmployeeSalaryPanel);
+        }
+
         menuContent.setBackground(Colors.MENU_COLOR.getColor());
         menuContent.setBorder(new EmptyBorder(10, 10, 0, 10));
 

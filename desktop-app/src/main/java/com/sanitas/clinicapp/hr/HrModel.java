@@ -10,7 +10,9 @@ import com.sanitas.clinicapp.struct.Doctor;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HrModel {
     private Database database;
@@ -62,6 +64,93 @@ public class HrModel {
 
         return nurse;
     }
+
+    public Map<Integer, String> getSpecialities() {
+        Map<Integer, String> specialities = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_specialities`;");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                specialities.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return specialities;
+    }
+
+    public Map<Integer, String> getAccreditations() {
+        Map<Integer, String> accreditations = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_accreditations_by_doctor`;");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                accreditations.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return accreditations;
+    }
+
+    public List<Speciality> getSpecialities(String cnp) {
+        List<Speciality> specialities = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name`,`rank` FROM `view_specialities_by_doctor` WHERE `cnp` = ?;");
+            preparedStatement.setString(1, cnp);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                specialities.add(new Speciality(resultSet.getInt(1),
+                        resultSet.getString(2),resultSet.getString(3)));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return specialities;
+    }
+
+    public Map<Integer, String> getAccreditations(String cnp) {
+        Map<Integer, String> accreditations = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_accreditations_by_doctor` WHERE `cnp` = ?;");
+            preparedStatement.setString(1, cnp);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                accreditations.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return accreditations;
+    }
+
     public Doctor getDoctor(Employee employee) {
         Doctor doctor = null;
 
@@ -97,6 +186,71 @@ public class HrModel {
             callableStatement.execute();
 
             return callableStatement.getBoolean(6);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean insertSpeciality(String cnp, int id, String rank) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_SPECIALITY(?,?,?,?);");
+            callableStatement.setString(1, cnp);
+            callableStatement.setInt(2, id);
+            callableStatement.setString(3, rank);
+            callableStatement.registerOutParameter(4, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(4);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteSpeciality(String cnp, int id) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL DELETE_SPECIALITY(?,?,?);");
+            callableStatement.setString(1, cnp);
+            callableStatement.setInt(2, id);
+            callableStatement.registerOutParameter(3, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(3);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean insertAccreditation(String cnp, int id) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL INSERT_ACCREDITATION(?,?,?);");
+            callableStatement.setString(1, cnp);
+            callableStatement.setInt(2, id);
+            callableStatement.registerOutParameter(3, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(3);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteAccreditation(String cnp, int id) {
+        try {
+            CallableStatement callableStatement = database.callableStatement("CALL DELETE_ACCREDITATION(?,?,?);");
+            callableStatement.setString(1, cnp);
+            callableStatement.setInt(2, id);
+            callableStatement.registerOutParameter(3, Types.BOOLEAN);
+            callableStatement.execute();
+
+            return callableStatement.getBoolean(3);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

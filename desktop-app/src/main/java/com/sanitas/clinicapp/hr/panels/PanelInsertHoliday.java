@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.hr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.Schedule;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
@@ -16,11 +17,12 @@ public class PanelInsertHoliday extends JPanel{
     private JButton btnCancel = new StyledJButton("Inapoi").getButton();
 
     private final PanelViewHoliday previousPanel;
+    private ClinicApplication.Account account;
 
-    public PanelInsertHoliday(PanelViewHoliday previousPanel)
+    public PanelInsertHoliday(PanelViewHoliday previousPanel, ClinicApplication.Account account)
     {
         this.previousPanel=previousPanel;
-
+        this.account=account;
         setLayout(new BorderLayout());
 
         JPanel startPanel = new JPanel(new FlowLayout());
@@ -38,7 +40,8 @@ public class PanelInsertHoliday extends JPanel{
         txt.add(endPanel);
 
         JPanel btn=new JPanel(new FlowLayout());
-        btn.add(btnSave);
+        if(account.hasPermission("hr.read.all"))
+            btn.add(btnSave);
         btn.add(btnCancel);
 
         add(txt,BorderLayout.CENTER);

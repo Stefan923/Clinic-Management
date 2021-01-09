@@ -100,6 +100,10 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS INSERT_SPECIALITY;
+DELIMITER //
+CREATE PROCEDURE INSERT_SPECIALITY(
+
 DROP PROCEDURE IF EXISTS INSERT_DOCTOR;
 DELIMITER //
 CREATE PROCEDURE INSERT_DOCTOR(IN `_cnpEmployee` VARCHAR(13), IN `_sealcode` VARCHAR(25), IN `_commission` decimal(3,2), IN `_scientificTitle` VARCHAR(100), IN `_didacticTitle` VARCHAR(10),OUT `validation` INT)
@@ -326,9 +330,8 @@ BEGIN
 	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
 		FROM `appointments` A, `patients` P
         WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
-        WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
 
-    UPDATE `appointments` SET `hasReceipt` = 1 WHERE `idAppointment` = `_id`;
+    UPDATE `appointments` SET `hasReceipt` = 1 WHERE `id` = `_id`;
 END;
 // DELIMITER ;
 

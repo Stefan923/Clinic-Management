@@ -209,4 +209,20 @@ public class FrModel {
         }
         return specialities;
     }
+
+    public HashMap<String, String> getDoctorsName() {
+        HashMap<String, String> doctorsName = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_doctor_cnp_name`;");
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                doctorsName.put(result.getString(1),
+                        result.getString(2));
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return doctorsName;
+    }
 }
