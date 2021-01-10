@@ -363,7 +363,7 @@ INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `s
     ('2901202334756','16757','0.5','doctorand','profesor'),
     ('2903657384589','35167','0.4','doctor stiinte medicale','profesor'),
     ('2901202334757','36738','0.4','doctorand','lector');
- 
+
 INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values
 	('2901204019549',1,'specialist'),
 	('2701204068831',2,'specialist'),
@@ -482,7 +482,7 @@ INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `s
     (1960820039445,1, 'Tuesday', '10:00', '19:00'),
     (1960820039445,1, 'Wednesday', '08:00', '12:00'),
 	(1960820039445,1, 'Thursday', '15:00', '20:00'),
-    
+
     (2701204066352,1, 'Monday', '10:00', '17:00'),
     (2701204066352,1, 'Tuesday', '10:00', '19:00'),
     (2701204066352,1, 'Wednesday', '08:00', '12:00'),
