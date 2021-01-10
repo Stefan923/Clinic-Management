@@ -18,6 +18,8 @@ BEGIN
 END;
 // DELIMITER ;
 
+
+
 DROP TRIGGER IF EXISTS ON_HOLIDAY_INSERT;
 DELIMITER //
 CREATE TRIGGER ON_HOLIDAY_INSERT AFTER INSERT ON `holidays` FOR EACH ROW
@@ -105,5 +107,18 @@ DELIMITER //
 CREATE TRIGGER ON_MEDICAL_SERVICE_DELETE BEFORE DELETE ON `medical_services` FOR EACH ROW
 BEGIN
 	DELETE FROM `appointment_services` WHERE `idMedicalService` = OLD.`id`;
+END;
+// DELIMITER ;
+
+DROP TRIGGER IF EXISTS ON_ADD_POSITION;
+DELIMITER //
+CREATE TRIGGER ON_ADD_POSITION AFTER INSERT ON `employees` FOR EACH ROW
+BEGIN
+	IF (((SELECT E.`position` FROM `employees` E WHERE E.`cnp`=NEW.`cnp`) LIKE 'Medic') AND (select COUNT(*) from doctors where cnpEmployee=NEW.`cnp`)=0) THEN
+		INSERT INTO `doctors` (`cnpEmployee`) VALUES (NEW.`cnp`);
+	END IF;
+    IF (((SELECT E.`position` FROM `employees` E WHERE E.`cnp`=NEW.`cnp`) LIKE 'Asistent Medical') AND (select COUNT(*) from nurse where cnpEmployee=NEW.`cnp`)=0) THEN
+		INSERT INTO `nurse` (`cnpEmployee`) VALUES (NEW.`cnp`);
+	END IF;
 END;
 // DELIMITER ;
