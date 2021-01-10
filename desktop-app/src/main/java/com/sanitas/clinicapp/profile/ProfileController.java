@@ -24,19 +24,6 @@ public class ProfileController {
         view.addBackListener(new ProfileController.BackButtonListenerProfile(previousView));
     }
 
-    class MenuButtonListenerProfile implements ActionListener {
-        private JPanel panel;
-
-        public MenuButtonListenerProfile(JButton button, JPanel panel) {
-            this.panel = panel;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            view.setRightPanel(panel);
-        }
-
-    }
 
     class BackButtonListenerProfile implements ActionListener {
 

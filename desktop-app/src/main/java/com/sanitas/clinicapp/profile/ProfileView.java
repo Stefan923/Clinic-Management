@@ -20,9 +20,9 @@ public class ProfileView extends JFrame {
 
     public ProfileView(ProfileModel model) {
 
-        viewv= new PanelEmployeeProfile(model.getEmployee(ClinicApplication.getUser().getCnp()));
+        viewv= new PanelEmployeeProfile(model.getEmployee(ClinicApplication.getUser().getCnp()),model);
         currentPanel=viewv;
-        viewv.setVisible(true);
+        setRightPanel(viewv);
 
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 

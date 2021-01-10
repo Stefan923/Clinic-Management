@@ -1,14 +1,17 @@
 package com.sanitas.clinicapp.profile.panels;
 
 import com.sanitas.clinicapp.hr.Employee;
+import com.sanitas.clinicapp.hr.Speciality;
 import com.sanitas.clinicapp.hr.panels.Nurse;
 import com.sanitas.clinicapp.profile.ProfileModel;
 import com.sanitas.clinicapp.struct.Doctor;
-import com.sanitas.clinicapp.ui.StyledJButton;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class PanelEmployeeProfile extends JPanel{
@@ -32,11 +35,20 @@ public class PanelEmployeeProfile extends JPanel{
     private JTextField tfscientificTitle=new JTextField(15);
     private JTextField tfdidacticTitle=new JTextField(15);
 
+    private JTable specializari = new JTable();
+    private JTable acreditari = new JTable();
 
-    public PanelEmployeeProfile(Employee employee) {
+    private List<Speciality> specialitiesDoc=new ArrayList<Speciality>();
+    private Map<Integer, String> accDoc;
+
+
+    public PanelEmployeeProfile(Employee employee,ProfileModel model) {
         setLayout(new BorderLayout());
 
         tfCnp.setEditable(false);
+        tfLastname.setEditable(false);
+        tfFirstname.setEditable(false);
+        tfPosition.setEditable(false);
         tfAdress.setEditable(false);
         tfContract.setEditable(false);
         tfDate.setEditable(false);
@@ -154,34 +166,123 @@ public class PanelEmployeeProfile extends JPanel{
         didacticPanel.add(new JLabel("Titlu didactic:"));
         didacticPanel.add(tfdidacticTitle);
 
-        JPanel doctor = new JPanel(new GridLayout(2,2));
+        updateTable(model.getSpecialities(tfCnp.getText()));
+        JScrollPane jScrollPane = new JScrollPane(specializari);
+        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.setPreferredSize(new Dimension(250, 100));
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        tablePanel.add(jScrollPane, BorderLayout.NORTH);
+
+        updateTable2(model.getAccreditations(tfCnp.getText()));
+        JScrollPane jScrollPane2 = new JScrollPane(acreditari);
+        jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane2.setPreferredSize(new Dimension(250, 100));
+        JPanel tablePanel2 = new JPanel(new BorderLayout());
+        tablePanel2.add(jScrollPane2, BorderLayout.NORTH);
+
+
+        JPanel employeeData = new JPanel(new GridLayout(6, 2));
+        employeeData.add(cnpPanel);
+        employeeData.add(lastnamePanel);
+        employeeData.add(firstnamePanel);
+        employeeData.add(positionPanel);
+        employeeData.add(adressPanel);
+        employeeData.add(salaryPanel);
+        employeeData.add(ibanPanel);
+        employeeData.add(hoursPanel);
+        employeeData.add(emailPanel);
+        employeeData.add(contractPanel);
+        employeeData.add(phonePanel);
+        employeeData.add(datePanel);
+
+        JPanel tables = new JPanel(new FlowLayout());
+        tables.add(tablePanel);
+        tables.add(tablePanel2);
+
+        JPanel doctor = new JPanel(new GridLayout(2, 2));
         doctor.add(sealPanel);
         doctor.add(commisionPanel);
         doctor.add(scientificPanel);
         doctor.add(didacticPanel);
 
+        JPanel doctors = new JPanel(new BorderLayout());
+        doctors.add(doctor, BorderLayout.CENTER);
+        doctors.add(tables, BorderLayout.SOUTH);
+
+        if (employee.getPosition().equals("Asistent Medical"))
+            employee = model.getNurse(employee);
+        if (employee.getPosition().equals("Medic")) {
+            employee = model.getDoctor(employee);
+        }
 
         JPanel reportDataPanel = new JPanel();
         reportDataPanel.setLayout(new BorderLayout());
-        if(tfPosition.getText().equals("Asistent Medical") && employee instanceof Nurse){
+        reportDataPanel.add(employeeData, BorderLayout.CENTER);
+        if (tfPosition.getText().equals("Asistent Medical") && employee instanceof Nurse) {
             tftype.setEditable(false);
             tfrank.setEditable(false);
-            tftype.setText(((Nurse)employee).getType());
-            tfrank.setText(((Nurse)employee).getRank());
-            reportDataPanel.add(nurse,BorderLayout.SOUTH);
+            tftype.setText(((Nurse) employee).getType());
+            tfrank.setText(((Nurse) employee).getRank());
+            reportDataPanel.add(nurse, BorderLayout.SOUTH);
         }
 
-        if(tfPosition.getText().equals("Medic") && employee instanceof Doctor){
+        if (tfPosition.getText().equals("Medic") && employee instanceof Doctor) {
+            tfsealCode.setEditable(false);
+            tfcommission.setEditable(false);
+            tfscientificTitle.setEditable(false);
+            tfdidacticTitle.setEditable(false);
             tfsealCode.setText(((Doctor) employee).getSealCode());
             tfcommission.setText(String.valueOf(((Doctor) employee).getCommission()));
             tfscientificTitle.setText(((Doctor) employee).getScientificTitle());
             tfdidacticTitle.setText(((Doctor) employee).getDidacticTitle());
-            reportDataPanel.add(doctor,BorderLayout.SOUTH);
+            reportDataPanel.add(doctors, BorderLayout.SOUTH);
         }
 
 
-        setVisible(false);
+        JScrollPane dataScrollPane = new JScrollPane(reportDataPanel);
+        dataScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        dataScrollPane.setPreferredSize(new Dimension(500, 325));
+        dataScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+
+        add(dataScrollPane,BorderLayout.CENTER);
     }
+    public void updateTable(List<Speciality> obj) {
+        this.specialitiesDoc = obj;
+        String[] columns = {"Specializari","Rank"};
+        Object[][] objData = new Object[obj.size()][columns.length];
+        int i = 0;
+        for (Speciality ob : obj) {
+            objData[i][0] = ob.getSpeciality();
+            objData[i][1] = ob.getRank();
+            i++;
+        }
+
+        specializari.setModel(new DefaultTableModel(objData, columns) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+    }
+
+    public void updateTable2(Map<Integer, String> obj) {
+        this.accDoc = obj;
+        String[] columns = {"Acreditari"};
+        Object[][] objData = new Object[obj.size()][columns.length];
+        int i = 0;
+        for (String ob : obj.values()) {
+            objData[i][0] = ob;
+            i++;
+        }
+
+        acreditari.setModel(new DefaultTableModel(objData, columns) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+    }
+
 
     public JTextField getTfCnp() {
         return tfCnp;

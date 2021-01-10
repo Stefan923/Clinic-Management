@@ -3,11 +3,16 @@ package com.sanitas.clinicapp.profile;
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.Database;
 import com.sanitas.clinicapp.hr.Employee;
+import com.sanitas.clinicapp.hr.Speciality;
 import com.sanitas.clinicapp.hr.panels.Nurse;
 import com.sanitas.clinicapp.struct.Doctor;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ProfileModel {
@@ -137,6 +142,50 @@ public class ProfileModel {
             throwables.printStackTrace();
         }
         return employee;
+    }
+
+    public List<Speciality> getSpecialities(String cnp) {
+        List<Speciality> specialities = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name`,`rank` FROM `view_specialities_by_doctor` WHERE `cnp` = ?;");
+            preparedStatement.setString(1, cnp);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                specialities.add(new Speciality(resultSet.getInt(1),
+                        resultSet.getString(2),resultSet.getString(3)));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return specialities;
+    }
+
+    public Map<Integer, String> getAccreditations(String cnp) {
+        Map<Integer, String> accreditations = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT `id`, `name` FROM `view_accreditations_by_doctor` WHERE `cnp` = ?;");
+            preparedStatement.setString(1, cnp);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                accreditations.put(resultSet.getInt(1),
+                        resultSet.getString(2));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return accreditations;
     }
 
     public void setData(boolean data) {
