@@ -48,7 +48,6 @@ CREATE VIEW `polyclinics`.`view_specialities_by_doctor` AS
     FROM `specialities` S, `doctor_specialities` DS, `doctors` D
 	WHERE DS.`cnpDoctor` = D.`cnpEmployee` AND S.`id` = DS.`idSpeciality`;
 
-
 DROP VIEW IF EXISTS `polyclinics`.`view_specialities`;
 CREATE VIEW `polyclinics`.`view_specialities` AS
 	SELECT * FROM `specialities`;

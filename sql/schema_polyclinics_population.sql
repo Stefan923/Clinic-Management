@@ -6,10 +6,6 @@ INSERT INTO `medical_units` (`name`, `address`, `iban`) VALUES
 	('Sanitas Iasi', 'str. Mihai Eminescu, nr. 1', 'RO16RZBR4452416377244199'),
 	('Sanitas Craiova', 'str. Calea Bucuresti, nr. 1', 'RO77RZBR9622577696235615'),
 	('Sanitas Costanta', 'str. Vaselor, nr. 24', 'RO20PORL6329853195357123');
-    
-    
-    
-    
 
 INSERT INTO `medical_unit_schedule` (`idMedicalUnit`, `dayOfWeek`, `startHour`, `endHour`) VALUES
 	('1', 'Monday', '08:00:00', '20:00:00'),
