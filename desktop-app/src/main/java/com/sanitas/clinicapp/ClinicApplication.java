@@ -66,6 +66,10 @@ public class ClinicApplication {
             return permissions.contains(string) || permissions.contains("*");
         }
 
+        public boolean isSuperAdmin() {
+            return permissions.contains("+");
+        }
+
     }
 
 }

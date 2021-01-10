@@ -100,6 +100,63 @@ BEGIN
 END;
 // DELIMITER ;
 
+DROP PROCEDURE IF EXISTS INSERT_SPECIALITY;
+DELIMITER //
+CREATE PROCEDURE INSERT_SPECIALITY(IN `_cnpDoctor` VARCHAR(13), IN `_idSpeciality` INT, IN `_rank` varchar(20),OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) from `doctors` where `cnpEmployee` =`_cnpDoctor`) > 0) THEN
+		INSERT INTO `doctor_specialities` (`cnpDoctor` ,  `idSpeciality`,`rank`) VALUES (`_cnpDoctor` ,  `_idSpeciality`,`_rank`);
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DELETE_SPECIALITY;
+DELIMITER //
+CREATE PROCEDURE DELETE_SPECIALITY(IN `_cnpDoctor` VARCHAR(13), IN `_idSpeciality` INT,OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) from `doctor_specialities` WHERE `cnpDoctor`=`_cnpDoctor` and `idSpeciality`=`_idSpeciality`) > 0) THEN
+		DELETE FROM `doctor_specialities` WHERE `cnpDoctor`=`_cnpDoctor` and `idSpeciality`=`_idSpeciality`;
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
+DROP PROCEDURE IF EXISTS INSERT_ACCREDITATION;
+DELIMITER //
+CREATE PROCEDURE INSERT_ACCREDITATION(IN `_cnpDoctor` VARCHAR(13), IN `_idAccreditation` INT,OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) from `doctors` where `cnpEmployee` =`_cnpDoctor`) > 0) THEN
+		INSERT INTO `doctor_accreditations` (`cnpDoctor` ,  `idAccreditation`) VALUES (`_cnpDoctor` ,  `_idAccreditation`);
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
+
+
+
+
+DROP PROCEDURE IF EXISTS DELETE_ACCREDITATION;
+DELIMITER //
+CREATE PROCEDURE DELETE_ACCREDITATION(IN `_cnpDoctor` VARCHAR(13), IN `_idAccreditation` INT,OUT `validation` INT)
+BEGIN
+	IF ((SELECT COUNT(*) from `doctor_accreditations` WHERE `cnpDoctor`=`_cnpDoctor` and `idAccreditation`=`_idAccreditation`) > 0) THEN
+		DELETE FROM `doctor_accreditations` WHERE `cnpDoctor`=`_cnpDoctor` and `idAccreditation`=`_idAccreditation`;
+		SET `validation` = 1;
+	ELSE
+		SET `validation` = 0;
+	END IF;
+END;
+// DELIMITER ;
+
+
 DROP PROCEDURE IF EXISTS INSERT_DOCTOR;
 DELIMITER //
 CREATE PROCEDURE INSERT_DOCTOR(IN `_cnpEmployee` VARCHAR(13), IN `_sealcode` VARCHAR(25), IN `_commission` decimal(3,2), IN `_scientificTitle` VARCHAR(100), IN `_didacticTitle` VARCHAR(10),OUT `validation` INT)
@@ -248,7 +305,7 @@ BEGIN
 	SELECT IFNULL(SUM(M.`duration` * A.`count`) / 60, 0) INTO @workedHrs
 		FROM (SELECT `idMedicalService`, COUNT(*) AS `count` 
 			FROM `appointment_services` A, `appointments` AP
-            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND AP.`hasReceipt` = 1 AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
+            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
 		WHERE M.`id` = A.`idMedicalService`;
 	
     CALL GET_DOCTOR_PROFIT_TOTAL(`_cnp`, `startDate`, `endDate`, @commission);
@@ -326,8 +383,6 @@ BEGIN
 	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
 		FROM `appointments` A, `patients` P
         WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
-
-    UPDATE `appointments` SET `hasReceipt` = 1 WHERE `id` = `_id`;
 END;
 // DELIMITER ;
 

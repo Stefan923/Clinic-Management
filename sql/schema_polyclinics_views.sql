@@ -44,7 +44,7 @@ CREATE VIEW `polyclinics`.`view_permissions` AS
 
 DROP VIEW IF EXISTS `polyclinics`.`view_specialities_by_doctor`;
 CREATE VIEW `polyclinics`.`view_specialities_by_doctor` AS
-	SELECT D.`cnpEmployee` as `cnp`, S.`id`, S.`name`
+	SELECT D.`cnpEmployee` as `cnp`, S.`id`, S.`name`, DS.`rank`
     FROM `specialities` S, `doctor_specialities` DS, `doctors` D
 	WHERE DS.`cnpDoctor` = D.`cnpEmployee` AND S.`id` = DS.`idSpeciality`;
 
@@ -62,11 +62,6 @@ DROP VIEW IF EXISTS `polyclinics`.`view_equipments`;
 CREATE VIEW `polyclinics`.`view_equipments` AS
 	SELECT `id`, `name`
     FROM `equipments`;
-    
-DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
-CREATE VIEW `polyclinics`.`view_medical_units` AS
-	SELECT * 
-    FROM `medical_units`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_patients`;
 CREATE VIEW `polyclinics`.`view_patients` AS
@@ -147,14 +142,14 @@ DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
     
-DROP VIEW IF EXISTS `polyclinics`.`view_doctor_cnp_name`;
-CREATE VIEW `polyclinics`.`view_doctor_cnp_name` AS
-	SELECT `cnp`, CONCAT(`lastName`, " ", `firstName`) 
-    FROM `employees`, `doctors`
-    WHERE `employees`.`cnp` = `doctors`.`cnpEmployee`;
+DROP VIEW IF EXISTS `polyclinics`.`view_role`;
+CREATE VIEW `polyclinics`.`view_role` AS 
+	SELECT A.cnpEmployee, A.idRole , R.name from accounts A inner join roles R on A.idRole=R.id;
     
-SELECT * FROM `polyclinics`.`view_doctor_cnp_name`;
+SELECT * FROM `polyclinics`.`view_nurses`;
 
 SELECT * FROM `view_services_by_cabinet`;
 
+SELECT * FROM `polyclinics`.`view_specialities_by_doctor`;
 SELECT * FROM `view_medical_units`;
+select * from `view_role`;

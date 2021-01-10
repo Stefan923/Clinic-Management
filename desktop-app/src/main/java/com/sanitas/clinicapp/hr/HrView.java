@@ -1,11 +1,13 @@
 package com.sanitas.clinicapp.hr;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.panels.PanelShowEmployee;
 import com.sanitas.clinicapp.hr.panels.PanelViewEmployee;
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -19,10 +21,11 @@ public class HrView extends JFrame {
     private HrModel model;
     private JPanel currentPanel;
     private PanelShowEmployee viewv ;
+    private ClinicApplication.Account account;
 
-    public HrView(HrModel model) {
+    public HrView(HrModel model, ClinicApplication.Account account) {
 
-        viewv=new PanelShowEmployee(model);
+        viewv=new PanelShowEmployee(model,ClinicApplication.getUser());
         currentPanel=viewv;
         viewv.setVisible(true);
 
@@ -30,21 +33,32 @@ public class HrView extends JFrame {
         btnSearchEmployee.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
+        JPanel showPanel=new JPanel(new FlowLayout());
+        if(account.hasPermission("hr.read.all"))
+            showPanel.add(btnShowEmployees);
+        showPanel.setBackground(Colors.MENU_COLOR.getColor());
+        showPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+
+        JPanel searchPanel=new JPanel(new FlowLayout());
+        searchPanel.add(btnSearchEmployee);
+        searchPanel.setBackground(Colors.MENU_COLOR.getColor());
+        searchPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+
         JPanel menuContent = new JPanel(new GridLayout(2, 1));
-        menuContent.add(btnShowEmployees);
-        menuContent.add(btnSearchEmployee);
+        menuContent.add(searchPanel);
+        menuContent.add(showPanel);
 
         JPanel leftContent = new JPanel(new BorderLayout());
         leftContent.add(menuContent, BorderLayout.NORTH);
         leftContent.add(btnBack, BorderLayout.SOUTH);
-        leftContent.setBackground(new Color(0XBDBEBF));
+        leftContent.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel content = new JPanel(new BorderLayout());
         content.add(leftContent, BorderLayout.WEST);
         content.add(viewv, BorderLayout.CENTER);
 
 
-        this.setPreferredSize(new Dimension(820, 420));
+        this.setPreferredSize(new Dimension(920, 420));
         this.setContentPane(content);
         this.pack();
 

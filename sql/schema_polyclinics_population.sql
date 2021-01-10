@@ -241,8 +241,7 @@ DELETE FROM `role_permissions`;
 INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('2', 'profile.read'),
 	('2', 'hr.read'),
-	('2', 'fr.read.employee'),
-    ('2', 'fr.read'),
+	('2', 'fr.read'),
 	('2', 'mr.read'),
 	('2', 'mr.appointments.read'),
 	('2', 'mr.appointments.read.all'),
@@ -252,20 +251,18 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('2', 'mr.receipt.write'),
 	('3', 'profile.read'),
 	('3', 'hr.read'),
-    ('3', 'fr.read'),
-	('3', 'fr.read.employee'),
-	('3', 'hr.read.other'),
-	('3', 'hr.write.other'),
+	('3', 'fr.read'),
+	('3', 'hr.read.all'),
+	('3', 'hr.write.all'),
 	('4', 'profile.read'),
 	('4', 'hr.read'),
-    ('4', 'fr.read'),
-	('4', 'fr.read.employee'),
+	('4', 'fr.read'),
 	('4', 'mr.read'),
 	('4', 'mr.analyses.read'),
 	('5', 'profile.read'),
+    ('5', 'hr.read'),
 	('5', 'fr.read'),
 	('5', 'mr.read'),
-    ('5', 'fr.read.doctor'),
 	('5', 'mr.appointments.read'),
 	('5', 'mr.medical_services.write'),
 	('5', 'mr.medical_services.read'),
@@ -276,7 +273,6 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('6', 'profile.read'),
 	('6', 'hr.read'),
 	('6', 'fr.read'),
-    ('6', 'fr.read.all'),
 	('6', 'fr.write'),
 	('6', 'fr.read.other'),
 	('6', 'fr.write.other'),
@@ -338,7 +334,10 @@ INSERT INTO `employees` (`cnp`,`lastName`,`firstName`,`address`,`phoneNum`,`emai
 	('1960820039445','Cristescu','George','Constanta, str. Avram Iancu','0729406749','crist_george10@yahoo.com','RO68RZBR4199291787829444','26','1995-06-01','Receptioner',3100,120),
 	('2961201037997','Matei','Ana Irina','Constanta, str. 1 Mai','0767493068','matei_anairina@gmail.com','RO44RZBR8623977857491312','27','2020-11-30','Contabil',3570,120),
 	('1830121466921','Stancu','Ioan Mihail','Constanta, str. Craiovei nr. 3','0748692056','ioan.mihail.st@gmail.com','RO75PORL6346981883481832','28','1985-08-18','HR',3150,120),
-	('2700927417309','Adam','Madalina','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120);
+	('2700927417309','Adam','Madalina','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120),
+	('2901202334756','Grasu','Maricica','Cluj-Napoca, str. Lacul Albastru nr. 11','0745634611','maricica_gra@gmail.com','RO84PORL3823333897864579','30','1980-06-11','Medic',30000,120),
+	('2903657384589','Nicoara','Marusea Ioana','Cluj-Napoca, str. Rosca Daniela nr. 8','0745859753','nicoara_marusea7@gmail.com','RO84PORL3811137593864780','31','1981-06-11','Medic',28000,120),
+	('2901202334756','Stoica','Iulia Catalina','Cluj-Napoca, str. Parisului nr. 8','0767247458','iuliast14@gmail.com','RO84PORL3001139573576381','32','1983-02-25','Medic',28050,120);
 
 INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `scientificTitle`, `didacticTitle`) VALUES
 	('2901204019549','12345','0.3',NULL,'profesor'),
@@ -536,3 +535,6 @@ INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALU
 UPDATE `accounts` SET `password` = '123' WHERE `username` = 'm.adam';
 UPDATE `accounts` SET `password` = '123' WHERE `username` = 'g.cristescu';
 UPDATE `accounts` SET `password` = '123' WHERE `username` = 'r.varga';
+UPDATE `accounts` SET `password` = '123', `idRole` = 7 WHERE `username` = 'i.stoica';
+UPDATE `accounts` SET `password` = '123', `idRole` = 7 WHERE `username` = 'i.nicoara';
+UPDATE `accounts` SET `password` = '123', `idRole` = 8 WHERE `username` = 'm.grasu';

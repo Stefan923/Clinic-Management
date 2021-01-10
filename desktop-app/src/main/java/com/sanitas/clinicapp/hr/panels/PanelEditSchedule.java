@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.hr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.Schedule;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
@@ -21,8 +22,9 @@ public class PanelEditSchedule extends JPanel{
 
     private final PanelViewSchedule previousPanel;
     private Schedule schedule;
+    private ClinicApplication.Account account;
 
-    public PanelEditSchedule(PanelViewSchedule previousPanel,Schedule schedule)
+    public PanelEditSchedule(PanelViewSchedule previousPanel, Schedule schedule, ClinicApplication.Account account)
     {
         this.previousPanel = previousPanel;
         this.schedule=schedule;

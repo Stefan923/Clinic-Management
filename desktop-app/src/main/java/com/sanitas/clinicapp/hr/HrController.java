@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.hr;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.panels.*;
 import com.sanitas.clinicapp.mr.MrController;
 
@@ -15,16 +16,18 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HrController {
 
     private HrModel model;
     private HrView view;
+    private ClinicApplication.Account account;
 
-    public HrController(HrModel model, HrView view,JFrame previousView) {
+    public HrController(HrModel model, HrView view, JFrame previousView, ClinicApplication.Account account) {
         this.model=model;
         this.view=view;
-
+        this.account=account;
         loadListenersHr(previousView);
     }
 
@@ -88,9 +91,12 @@ public class HrController {
             }
 
             for (int index : indexes) {
+                if(model.viewRole((String) employeeTable.getValueAt(index, 3))=="administrator" && (!account.isSuperAdmin())) {
+                    view.sendError("Nu aveti permisiunile necesare!");
+                    continue;
+                }
                 model.deleteEmployee((String) employeeTable.getValueAt(index, 3));
             }
-
             view.getViewv().updateTable(model.getAllData("", "", ""));
             view.sendSuccessMessage("Angajatii selectati au fost stersi.");
         }
@@ -108,9 +114,9 @@ public class HrController {
                 Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
                 view.getViewv().setVisible(false);
                 List<Schedule> schedules=model.viewSchedule(employee.getCnp());
-                PanelViewSchedule panel = new PanelViewSchedule(model,schedules);
+                PanelViewSchedule panel = new PanelViewSchedule(model,schedules,account);
                 panel.addDeleteButtonListener(new DeleteScheduleListener(employee.getCnp()));
-                panel.addInsertButtonListener(new InsertScheduleListener(employee.getCnp(),schedules));
+                panel.addInsertButtonListener(new InsertScheduleListener(employee.getCnp(), schedules));
                 panel.addUpdateButtonListener(new UpdateScheduleListener(employee.getCnp()));
                 panel.addBackButtonListener(new BackScheduleListener());
                 view.setRightPanel(panel);
@@ -130,13 +136,18 @@ public class HrController {
             JPanel panel = view.getCurrentPanel();
 
             if (panel instanceof PanelViewSchedule) {
-                PanelViewSchedule panelViewSchedule = (PanelViewSchedule) view.getCurrentPanel();
-                JTable scheduleTable = panelViewSchedule.getJTable();
-                panelViewSchedule.setVisible(false);
-                PanelInsertSchedule panelInsertSchedule=new PanelInsertSchedule(panelViewSchedule,schedules.get(0).getCnpEmployee());
-                panelInsertSchedule.addSaveScheduleListener(new SaveScheduleListener(null,schedules.get(0).getCnpEmployee()));
-                panelInsertSchedule.addCancelScheduleListener(new CancelScheduleListener());
-                view.setRightPanel(panelInsertSchedule);
+                if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                    view.sendError("Nu aveti permisiunile necesare!");
+                }else {
+
+                    PanelViewSchedule panelViewSchedule = (PanelViewSchedule) view.getCurrentPanel();
+                    JTable scheduleTable = panelViewSchedule.getJTable();
+                    panelViewSchedule.setVisible(false);
+                    PanelInsertSchedule panelInsertSchedule = new PanelInsertSchedule(panelViewSchedule, schedules.get(0).getCnpEmployee());
+                    panelInsertSchedule.addSaveScheduleListener(new SaveScheduleListener(null, schedules.get(0).getCnpEmployee()));
+                    panelInsertSchedule.addCancelScheduleListener(new CancelScheduleListener());
+                    view.setRightPanel(panelInsertSchedule);
+                }
 
             }
         }
@@ -159,13 +170,17 @@ public class HrController {
                     return;
                 }
                 else {
-                    int row=scheduleTable.getSelectedRow();
-                    Schedule schedule= panelViewSchedule.getSchedules().get(row);
-                    panelViewSchedule.setVisible(false);
-                    PanelEditSchedule panelEditSchedule=new PanelEditSchedule(panelViewSchedule,schedule);
-                    panelEditSchedule.addSaveScheduleListener(new SaveScheduleListener(schedule,schedule.getCnpEmployee()));
-                    panelEditSchedule.addCancelScheduleListener(new CancelScheduleListener());
-                    view.setRightPanel(panelEditSchedule);
+                    if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                        view.sendError("Nu aveti permisiunile necesare!");
+                    }else {
+                        int row = scheduleTable.getSelectedRow();
+                        Schedule schedule = panelViewSchedule.getSchedules().get(row);
+                        panelViewSchedule.setVisible(false);
+                        PanelEditSchedule panelEditSchedule = new PanelEditSchedule(panelViewSchedule, schedule, account);
+                        panelEditSchedule.addSaveScheduleListener(new SaveScheduleListener(schedule, schedule.getCnpEmployee()));
+                        panelEditSchedule.addCancelScheduleListener(new CancelScheduleListener());
+                        view.setRightPanel(panelEditSchedule);
+                    }
                 }
                 scheduleTable.clearSelection();
 
@@ -258,14 +273,21 @@ public class HrController {
                     view.sendError("Trebuie sa selectezi cel putin un rand.");
                     return;
                 }
-
+                int i=indexes.length-1;
                 for (int index : indexes) {
-                    model.deleteEmployeeSchedule(cnp,(Integer) scheduleTable.getValueAt(index, 0), (String) scheduleTable.getValueAt(index, 1), (Time) scheduleTable.getValueAt(index, 2),
-                            (Time)  scheduleTable.getValueAt(index, 3),1);
+                    if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                        view.sendError("Nu aveti permisiunile necesare!");
+                        i--;
+                        continue;
+                    }else {
+                        model.deleteEmployeeSchedule(cnp, (Integer) scheduleTable.getValueAt(index, 0), (String) scheduleTable.getValueAt(index, 1), (Time) scheduleTable.getValueAt(index, 2),
+                                (Time) scheduleTable.getValueAt(index, 3), 1);
+                    }
                 }
 
                 panelViewSchedule.updateTable(model.viewSchedule(cnp));
-                view.sendSuccessMessage("Orarul selectat a fost sters.");
+                if(i>0)
+                    view.sendSuccessMessage("Orarul selectat a fost sters.");
             }
         }
     }
@@ -293,11 +315,12 @@ public class HrController {
             if (employeeTable.getSelectedRows().length != 1) {
                 view.sendError("Trebuie sa selectezi exact un angajat.");
             } else {
+
                 int row = employeeTable.getSelectedRow();
                 Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
                 view.getViewv().setVisible(false);
                 List<Holiday> holidays=model.viewHoliday(employee.getCnp());
-                PanelViewHoliday panel = new PanelViewHoliday(model,holidays);
+                PanelViewHoliday panel = new PanelViewHoliday(model,holidays,account);
                 panel.addInsertButtonListener(new InsertHolidayListener(employee.getCnp(),holidays));
                 panel.addBackButtonListener(new BackScheduleListener());
                 view.setRightPanel(panel);
@@ -344,13 +367,17 @@ public class HrController {
             JPanel panel = view.getCurrentPanel();
 
             if (panel instanceof PanelViewHoliday) {
-                PanelViewHoliday panelViewInsert = (PanelViewHoliday) view.getCurrentPanel();
-                JTable holidayTable = panelViewInsert.getJTable();
-                panelViewInsert.setVisible(false);
-                PanelInsertHoliday panelInsertHoliday=new PanelInsertHoliday(panelViewInsert);
-                panelInsertHoliday.addSaveHolidayListener(new SaveHolidayListener(null,holidays.get(0).getCnpEmployee()));
-                panelInsertHoliday.addCancelHolidayListener(new CancelScheduleListener());
-                view.setRightPanel(panelInsertHoliday);
+                if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                    view.sendError("Nu aveti permisiunile necesare!");
+                }else {
+                    PanelViewHoliday panelViewInsert = (PanelViewHoliday) view.getCurrentPanel();
+                    JTable holidayTable = panelViewInsert.getJTable();
+                    panelViewInsert.setVisible(false);
+                    PanelInsertHoliday panelInsertHoliday = new PanelInsertHoliday(panelViewInsert, account);
+                    panelInsertHoliday.addSaveHolidayListener(new SaveHolidayListener(null, holidays.get(0).getCnpEmployee()));
+                    panelInsertHoliday.addCancelHolidayListener(new CancelScheduleListener());
+                    view.setRightPanel(panelInsertHoliday);
+                }
 
             }
         }
@@ -366,21 +393,137 @@ public class HrController {
             if (employeeTable.getSelectedRows().length != 1) {
                 view.sendError("Trebuie sa selectezi exact un angajat.");
             } else {
-                int row = employeeTable.getSelectedRow();
-                Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
-                if(employee.getPosition().equals("Asistent Medical"))
-                    employee=model.getNurse(employee);
-                if(employee.getPosition().equals("Medic"))
-                    employee=model.getDoctor(employee);
-                view.getViewv().setVisible(false);
-                PanelEditEmployee panel = new PanelEditEmployee(employee);
-                panel.addSaveButtonListener(new SaveButtonListenerHr(employee));
-                panel.addCancelButtonListener(new CancelButtonListenerHr());
-                view.setRightPanel(panel);
+                if(model.viewRole((String) employeeTable.getValueAt(employeeTable.getSelectedRow(), 3))=="administrator" && (!account.isSuperAdmin())) {
+                    view.sendError("Nu aveti permisiunile necesare!");
+                }else {
+                    int row = employeeTable.getSelectedRow();
+                    Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
+                    if (employee.getPosition().equals("Asistent Medical"))
+                        employee = model.getNurse(employee);
+                    if (employee.getPosition().equals("Medic")) {
+                        employee = model.getDoctor(employee);
+                    }
+                    view.getViewv().setVisible(false);
+                    PanelEditEmployee panel = new PanelEditEmployee(employee, account,employee.getCnp(),model);
+                    if (employee.getPosition().equals("Medic")) {
+                        panel.updateTable(model.getSpecialities(employee.getCnp()));
+                        panel.updateTable2(model.getAccreditations(employee.getCnp()));
+                        panel.updateCbSpeciality(model.getSpecialities());
+                        panel.updateCbAcc(model.getAccreditations());
+                    }
+                    panel.addAccComboBoxListener(new AccListener(employee.getCnp()));
+                    panel.addSpecialityComboBoxListener(new SpecialityListener(employee.getCnp()));
+                    panel.deleteAccListener(new DeleteAccListener(employee.getCnp()));
+                    panel.deleteSpecListener(new DeleteSpecialityListener(employee.getCnp()));
+                    panel.addSaveButtonListener(new SaveButtonListenerHr(employee));
+                    panel.addCancelButtonListener(new CancelButtonListenerHr());
+                    view.setRightPanel(panel);
+                }
             }
             employeeTable.clearSelection();
         }
 
+    }
+
+    class DeleteAccListener implements ActionListener{
+
+        String cnp;
+
+        DeleteAccListener (String cnp){this.cnp=cnp;}
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                view.sendError("Nu aveti permisiunile necesare!");
+            }else {
+                PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
+                Map.Entry<Integer, String> s = panel.getIdAccreditation();
+                if (!panel.getAccDoc().containsKey(s.getKey())) {
+                    view.sendError("Acreditarea nu exista.");
+                    return;
+                }
+                Map<Integer, String> spe = panel.getAccDoc();
+                spe.remove(s.getKey(), s.getValue());
+                panel.updateTable2(spe);
+                model.deleteAccreditation(cnp, s.getKey());
+                view.sendSuccessMessage("Acreditarea a fost stearsa.");
+            }
+        }
+    }
+
+    class DeleteSpecialityListener implements ActionListener{
+
+        String cnp;
+
+        DeleteSpecialityListener (String cnp){this.cnp=cnp;}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                view.sendError("Nu aveti permisiunile necesare!");
+            }else {
+                PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
+                Map.Entry<Integer, String> s = panel.getIdSpeciality();
+                if (!(panel.getSpecialitiesDoc().stream().anyMatch(speciality -> speciality.getId() == s.getKey()))) {
+                    view.sendError("Specializarea nu exista.");
+                    return;
+                }
+                List<Speciality> spe = panel.getSpecialitiesDoc();
+                spe.removeIf(speciality -> speciality.getId() == s.getKey());
+                panel.updateTable(spe);
+                model.deleteSpeciality(cnp, s.getKey());
+                view.sendSuccessMessage("Specializarea a fost stearsa.");
+            }
+        }
+    }
+
+    class SpecialityListener implements ActionListener{
+
+        String cnp;
+
+        SpecialityListener (String cnp){this.cnp=cnp;}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                view.sendError("Nu aveti permisiunile necesare!");
+            }else {
+                PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
+                Map.Entry<Integer, String> s = panel.getIdSpeciality();
+                if (panel.getSpecialitiesDoc().stream().anyMatch(speciality -> speciality.getId() == s.getKey())) {
+                    view.sendError("Specialitatea exista deja.");
+                    return;
+                }
+                List<Speciality> spe = panel.getSpecialitiesDoc();
+                spe.add(new Speciality(s.getKey(), s.getValue(), (String) panel.getCbRank().getSelectedItem()));
+                panel.updateTable(spe);
+                model.insertSpeciality(cnp, s.getKey(), (String) panel.getCbRank().getSelectedItem());
+                view.sendSuccessMessage("Specializarea a fost adaugata.");
+            }
+        }
+    }
+
+    class AccListener implements ActionListener{
+
+        String cnp;
+
+        AccListener (String cnp){this.cnp=cnp;}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                view.sendError("Nu aveti permisiunile necesare!");
+            }else {
+                PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
+                Map.Entry<Integer, String> s = panel.getIdAccreditation();
+                if (panel.getAccDoc().containsKey(s.getKey())) {
+                    view.sendError("Acreditarea exista deja.");
+                    return;
+                }
+                Map<Integer, String> spe = panel.getAccDoc();
+                spe.put(s.getKey(), s.getValue());
+                panel.updateTable2(spe);
+                model.insertAccreditation(cnp, s.getKey());
+                view.sendSuccessMessage("Acreditarea a fost adaugata.");
+            }
+        }
     }
 
     class SaveButtonListenerHr implements ActionListener {

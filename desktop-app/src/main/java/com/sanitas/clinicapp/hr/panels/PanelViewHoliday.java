@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.hr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.HrModel;
 import com.sanitas.clinicapp.hr.Schedule;
 import com.sanitas.clinicapp.ui.StyledJButton;
@@ -23,8 +24,9 @@ public class PanelViewHoliday extends JPanel{
 
     private HrModel model;
     private List<Holiday> holidays;
+    private ClinicApplication.Account account;
 
-    public PanelViewHoliday(HrModel model,List<Holiday> holidays) {
+    public PanelViewHoliday(HrModel model, List<Holiday> holidays, ClinicApplication.Account account) {
         setLayout(new BorderLayout());
 
         this.holidays=holidays;
@@ -37,8 +39,8 @@ public class PanelViewHoliday extends JPanel{
         tablePanel.add(jScrollPane);
 
         JPanel editPanel = new JPanel(new FlowLayout());
-
-        editPanel.add(insert);
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin() )
+            editPanel.add(insert);
         editPanel.add(back);
 
         add(tablePanel, BorderLayout.CENTER);
