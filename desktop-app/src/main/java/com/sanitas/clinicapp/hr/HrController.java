@@ -89,16 +89,19 @@ public class HrController {
 
                 return;
             }
-
+            int i=indexes.length;
             for (int index : indexes) {
-                if(model.viewRole((String) employeeTable.getValueAt(index, 3))=="administrator" && (!account.isSuperAdmin())) {
+                if((model.viewRole((String) employeeTable.getValueAt(index, 3)).equals("administrator") && (!account.isSuperAdmin()))
+                        || model.viewRole((String) employeeTable.getValueAt(index, 3)).equals("super_administrator")) {
                     view.sendError("Nu aveti permisiunile necesare!");
+                    i--;
                     continue;
-                }
-                model.deleteEmployee((String) employeeTable.getValueAt(index, 3));
+                }else
+                    model.deleteEmployee((String) employeeTable.getValueAt(index, 3));
             }
             view.getViewv().updateTable(model.getAllData("", "", ""));
-            view.sendSuccessMessage("Angajatii selectati au fost stersi.");
+            if(i>0)
+                view.sendSuccessMessage("Angajatii selectati au fost stersi.");
         }
     }
 
@@ -136,7 +139,7 @@ public class HrController {
             JPanel panel = view.getCurrentPanel();
 
             if (panel instanceof PanelViewSchedule) {
-                if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) || (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp())) ) {
                     view.sendError("Nu aveti permisiunile necesare!");
                 }else {
 
@@ -170,7 +173,7 @@ public class HrController {
                     return;
                 }
                 else {
-                    if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                    if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) || (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp())) ) {
                         view.sendError("Nu aveti permisiunile necesare!");
                     }else {
                         int row = scheduleTable.getSelectedRow();
@@ -266,28 +269,32 @@ public class HrController {
             JPanel panel = view.getCurrentPanel();
 
             if (panel instanceof PanelViewSchedule) {
-                PanelViewSchedule panelViewSchedule = (PanelViewSchedule) view.getCurrentPanel();
-                JTable scheduleTable = panelViewSchedule.getJTable();
-                int[] indexes = scheduleTable.getSelectedRows();
-                if (indexes.length == 0) {
-                    view.sendError("Trebuie sa selectezi cel putin un rand.");
-                    return;
-                }
-                int i=indexes.length-1;
-                for (int index : indexes) {
-                    if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
-                        view.sendError("Nu aveti permisiunile necesare!");
-                        i--;
-                        continue;
-                    }else {
-                        model.deleteEmployeeSchedule(cnp, (Integer) scheduleTable.getValueAt(index, 0), (String) scheduleTable.getValueAt(index, 1), (Time) scheduleTable.getValueAt(index, 2),
-                                (Time) scheduleTable.getValueAt(index, 3), 1);
+                if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) || (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp()) )) {
+                    view.sendError("Nu aveti permisiunile necesare!");
+                }else {
+                    PanelViewSchedule panelViewSchedule = (PanelViewSchedule) view.getCurrentPanel();
+                    JTable scheduleTable = panelViewSchedule.getJTable();
+                    int[] indexes = scheduleTable.getSelectedRows();
+                    if (indexes.length == 0) {
+                        view.sendError("Trebuie sa selectezi cel putin un rand.");
+                        return;
                     }
-                }
+                    int i = indexes.length - 1;
+                    for (int index : indexes) {
+                        if (model.viewRole(cnp) == "administrator" && (!account.isSuperAdmin())) {
+                            view.sendError("Nu aveti permisiunile necesare!");
+                            i--;
+                            continue;
+                        } else {
+                            model.deleteEmployeeSchedule(cnp, (Integer) scheduleTable.getValueAt(index, 0), (String) scheduleTable.getValueAt(index, 1), (Time) scheduleTable.getValueAt(index, 2),
+                                    (Time) scheduleTable.getValueAt(index, 3), 1);
+                        }
+                    }
 
-                panelViewSchedule.updateTable(model.viewSchedule(cnp));
-                if(i>0)
-                    view.sendSuccessMessage("Orarul selectat a fost sters.");
+                    panelViewSchedule.updateTable(model.viewSchedule(cnp));
+                    if (i > 0)
+                        view.sendSuccessMessage("Orarul selectat a fost sters.");
+                }
             }
         }
     }
@@ -367,7 +374,7 @@ public class HrController {
             JPanel panel = view.getCurrentPanel();
 
             if (panel instanceof PanelViewHoliday) {
-                if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+                if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) || (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp()) )) {
                     view.sendError("Nu aveti permisiunile necesare!");
                 }else {
                     PanelViewHoliday panelViewInsert = (PanelViewHoliday) view.getCurrentPanel();
@@ -393,9 +400,6 @@ public class HrController {
             if (employeeTable.getSelectedRows().length != 1) {
                 view.sendError("Trebuie sa selectezi exact un angajat.");
             } else {
-                if(model.viewRole((String) employeeTable.getValueAt(employeeTable.getSelectedRow(), 3))=="administrator" && (!account.isSuperAdmin())) {
-                    view.sendError("Nu aveti permisiunile necesare!");
-                }else {
                     int row = employeeTable.getSelectedRow();
                     Employee employee = model.getEmployee((String) employeeTable.getValueAt(row, 3));
                     if (employee.getPosition().equals("Asistent Medical"))
@@ -418,7 +422,6 @@ public class HrController {
                     panel.addSaveButtonListener(new SaveButtonListenerHr(employee));
                     panel.addCancelButtonListener(new CancelButtonListenerHr());
                     view.setRightPanel(panel);
-                }
             }
             employeeTable.clearSelection();
         }
@@ -433,7 +436,7 @@ public class HrController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+            if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) || (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp())) ) {
                 view.sendError("Nu aveti permisiunile necesare!");
             }else {
                 PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
@@ -458,7 +461,7 @@ public class HrController {
         DeleteSpecialityListener (String cnp){this.cnp=cnp;}
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+            if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) || (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp())) ) {
                 view.sendError("Nu aveti permisiunile necesare!");
             }else {
                 PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
@@ -483,7 +486,7 @@ public class HrController {
         SpecialityListener (String cnp){this.cnp=cnp;}
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+            if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) || (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp()) )) {
                 view.sendError("Nu aveti permisiunile necesare!");
             }else {
                 PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
@@ -508,7 +511,8 @@ public class HrController {
         AccListener (String cnp){this.cnp=cnp;}
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(model.viewRole(cnp)=="administrator" && (!account.isSuperAdmin())) {
+            if((model.viewRole(cnp).equals("administrator") && (!account.isSuperAdmin())) ||
+                    (model.viewRole(cnp).equals("super_administrator") && !cnp.equals(account.getCnp())) ) {
                 view.sendError("Nu aveti permisiunile necesare!");
             }else {
                 PanelEditEmployee panel = (PanelEditEmployee) view.getCurrentPanel();
@@ -533,7 +537,10 @@ public class HrController {
         @Override
         public void actionPerformed(ActionEvent e) {
             JPanel panel = view.getCurrentPanel();
-
+            if((model.viewRole(employee.getCnp()).equals("administrator") && (!account.isSuperAdmin())) ||
+                    (model.viewRole(employee.getCnp()).equals("super_administrator") && !employee.getCnp().equals(account.getCnp())) ) {
+                view.sendError("Nu aveti permisiunile necesare!");
+            } else
             if (panel instanceof PanelEditEmployee) {
                 PanelEditEmployee panelEditEmployee = (PanelEditEmployee) view.getCurrentPanel();
                 boolean validation = model.updateEmployee(panelEditEmployee.getTfCnp().getText(),

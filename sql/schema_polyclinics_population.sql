@@ -337,7 +337,7 @@ INSERT INTO `employees` (`cnp`,`lastName`,`firstName`,`address`,`phoneNum`,`emai
 	('2700927417309','Adam','Madalina','Cluj-Napoca, str. Constantei nr. 1','0785630683','madalina_adam@gmail.com','RO68PORL8164427875373638','29','1998-02-19','Medic',17500,120),
 	('2901202334756','Grasu','Maricica','Cluj-Napoca, str. Lacul Albastru nr. 11','0745634611','maricica_gra@gmail.com','RO84PORL3823333897864579','30','1980-06-11','Medic',30000,120),
 	('2903657384589','Nicoara','Marusea Ioana','Cluj-Napoca, str. Rosca Daniela nr. 8','0745859753','nicoara_marusea7@gmail.com','RO84PORL3811137593864780','31','1981-06-11','Medic',28000,120),
-	('2901202334756','Stoica','Iulia Catalina','Cluj-Napoca, str. Parisului nr. 8','0767247458','iuliast14@gmail.com','RO84PORL3001139573576381','32','1983-02-25','Medic',28050,120);
+	('2901202334757','Stoica','Iulia Catalina','Cluj-Napoca, str. Parisului nr. 8','0767247458','iuliast14@gmail.com','RO84PORL3001139573576381','32','1983-02-25','Medic',28050,120);
 
 INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `scientificTitle`, `didacticTitle`) VALUES
 	('2901204019549','12345','0.3',NULL,'profesor'),
@@ -350,7 +350,12 @@ INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `s
 	('2031204115436','40975','0.3','doctor stiinte medicale',NULL),
 	('2731201018946','39563','0.3','doctorand',NULL),
 	('2781201019674','47274','0.3','doctor stiinte medicale','profesor'),
-	('2700927417309','75436','0.3',NULL,NULL);
+	('2700927417309','75436','0.3',NULL,NULL),
+    ('2903657384589','11111','0.3',NULL,NULL),
+    ('2901202334757','00011','0.3',NULL,NULL)
+    
+    INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `scientificTitle`, `didacticTitle`) VALUES
+    ('2901202334756','12234','0.3',NULL,NULL);
  
 INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values
 	('2901204019549',1,'specialist'),

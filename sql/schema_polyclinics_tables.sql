@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`employees` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `polyclinics`.`doctors` (
   `cnpEmployee` VARCHAR(13) NOT NULL,
-  `sealCode` VARCHAR(5) NOT NULL,
+  `sealCode` VARCHAR(5) NULL DEFAULT NULL,
   `commission` DECIMAL(3,2) NULL,
   `scientificTitle` VARCHAR(45) NULL DEFAULT NULL,
   `didacticTitle` VARCHAR(20) NULL,
@@ -324,7 +324,6 @@ CREATE TABLE IF NOT EXISTS `polyclinics`.`appointments` (
   `idCabinet` INT NOT NULL,
   `idSpeciality` INT NOT NULL,
   `date` TIMESTAMP NOT NULL,
-  `hasReceipt` TINYINT DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_appointments_idCabinet_idx` (`idCabinet` ASC) VISIBLE,
   INDEX `fk_appointments_idPatient_idx` (`cnpPatient` ASC) VISIBLE,

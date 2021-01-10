@@ -80,7 +80,8 @@ public class PanelEditEmployee extends JPanel {
         tfPhone.setEditable(false);
         tfSalary.setEditable(false);
 
-        if((!(account.hasPermission("hr.read.all")) || model.viewRole(cnp)=="administrator") && (!account.isSuperAdmin())) {
+        if((!(account.hasPermission("hr.read.all")) || model.viewRole(cnp)=="administrator") && (!account.isSuperAdmin())
+                || (model.viewRole(cnp).equals("super_administrator") && cnp!=account.getCnp())) {
             tfFirstname.setEditable(false);
             tfLastname.setEditable(false);
             tfPosition.setEditable(false);
@@ -278,6 +279,13 @@ public class PanelEditEmployee extends JPanel {
         }
 
         if (tfPosition.getText().equals("Medic") && employee instanceof Doctor) {
+            if((!(account.hasPermission("hr.read.all")) || model.viewRole(cnp)=="administrator") && (!account.isSuperAdmin())
+                    || (model.viewRole(cnp).equals("super_administrator") && cnp!=account.getCnp())) {
+                tfsealCode.setEditable(false);
+                tfcommission.setEditable(false);
+                tfscientificTitle.setEditable(false);
+                tfdidacticTitle.setEditable(false);
+            }
             tfsealCode.setText(((Doctor) employee).getSealCode());
             tfcommission.setText(String.valueOf(((Doctor) employee).getCommission()));
             tfscientificTitle.setText(((Doctor) employee).getScientificTitle());
