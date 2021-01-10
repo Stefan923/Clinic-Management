@@ -18,6 +18,7 @@ public class HomePageModel {
                 new MrMVC(view);
                 break;
             case 4:
+                new ProfileMVC(view);
                 break;
             default:
                 break;

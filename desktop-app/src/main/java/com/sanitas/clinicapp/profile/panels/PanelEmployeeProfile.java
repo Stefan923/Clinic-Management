@@ -1,44 +1,39 @@
-package com.sanitas.clinicapp.hr.panels;
+package com.sanitas.clinicapp.profile.panels;
 
-import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.Employee;
-
-import com.sanitas.clinicapp.hr.HrModel;
-import com.sanitas.clinicapp.hr.Schedule;
 import com.sanitas.clinicapp.hr.Speciality;
+import com.sanitas.clinicapp.hr.panels.Nurse;
+import com.sanitas.clinicapp.profile.ProfileModel;
 import com.sanitas.clinicapp.struct.Doctor;
-import com.sanitas.clinicapp.ui.StyledJButton;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public class PanelEditEmployee extends JPanel {
+
+public class PanelEmployeeProfile extends JPanel{
     private JTextField tfCnp = new JTextField(15);
     private JTextField tfLastname = new JTextField(15);
     private JTextField tfFirstname = new JTextField(15);
-    private JTextField tfPosition = new JTextField(15);
-    private JTextField tfAdress = new JTextField(18);
-    private JTextField tfEmail = new JTextField(18);
-    private JTextField tfContract = new JTextField(15);
-    private JTextField tfPhone = new JTextField(15);
-    private JTextField tfIban = new JTextField(18);
-    private JTextField tfDate = new JTextField(15);
-    private JTextField tfSalary = new JTextField(15);
-    private JTextField tfHours = new JTextField(15);
-    private JTextField tftype = new JTextField(15);
-    private JTextField tfrank = new JTextField(15);
+    private JTextField tfPosition= new JTextField(15);
+    private JTextField tfAdress= new JTextField(18);
+    private JTextField tfEmail= new JTextField(18);
+    private JTextField tfContract= new JTextField(15);
+    private JTextField tfPhone= new JTextField(15);
+    private JTextField tfIban= new JTextField(18);
+    private JTextField tfDate= new JTextField(15);
+    private JTextField tfSalary= new JTextField(15);
+    private JTextField tfHours= new JTextField(15);
+    private JTextField tftype= new JTextField(15);
+    private JTextField tfrank= new JTextField(15);
 
-    private JTextField tfsealCode = new JTextField(15);
-    private JTextField tfcommission = new JTextField(15);
-    private JTextField tfscientificTitle = new JTextField(15);
-    private JTextField tfdidacticTitle = new JTextField(15);
+    private JTextField tfsealCode=new JTextField(15);
+    private JTextField tfcommission=new JTextField(15);
+    private JTextField tfscientificTitle=new JTextField(15);
+    private JTextField tfdidacticTitle=new JTextField(15);
 
     private JTable specializari = new JTable();
     private JTable acreditari = new JTable();
@@ -46,31 +41,14 @@ public class PanelEditEmployee extends JPanel {
     private List<Speciality> specialitiesDoc=new ArrayList<Speciality>();
     private Map<Integer, String> accDoc;
 
-    private Map<Integer, String> specialities;
-    private final JComboBox<String> cbSpeciality = new JComboBox<>();
 
-    private final JComboBox<String> cbRank = new JComboBox<>();
-
-    private Map<Integer, String> acc;
-    private final JComboBox<String> cbAcc = new JComboBox<>();
-
-    private JButton btnAddSpec = new StyledJButton("Adaugare specializare").getButton();
-    private JButton btnAddAcc = new StyledJButton("Adaugare acreditare").getButton();
-    private JButton btnDeleteSpec = new StyledJButton("Stergere specializare").getButton();
-    private JButton btnDeleteAcc = new StyledJButton("Stergere acreditare").getButton();
-    private JButton btnSave = new StyledJButton("Salveaza").getButton();
-    private JButton btnCancel = new StyledJButton("Anuleaza").getButton();
-
-    private List<Speciality> specialitiesList=new ArrayList<Speciality>();
-    private ClinicApplication.Account account;
-    private String cnp;
-
-    public PanelEditEmployee(Employee employee,ClinicApplication.Account account,String cnp,HrModel model) {
+    public PanelEmployeeProfile(Employee employee,ProfileModel model) {
         setLayout(new BorderLayout());
-        this.account=account;
-        this.cnp=cnp;
 
         tfCnp.setEditable(false);
+        tfLastname.setEditable(false);
+        tfFirstname.setEditable(false);
+        tfPosition.setEditable(false);
         tfAdress.setEditable(false);
         tfContract.setEditable(false);
         tfDate.setEditable(false);
@@ -79,13 +57,6 @@ public class PanelEditEmployee extends JPanel {
         tfIban.setEditable(false);
         tfPhone.setEditable(false);
         tfSalary.setEditable(false);
-
-        if((!(account.hasPermission("hr.read.all")) || model.viewRole(cnp)=="administrator") && (!account.isSuperAdmin())) {
-            tfFirstname.setEditable(false);
-            tfLastname.setEditable(false);
-            tfPosition.setEditable(false);
-        }
-
 
         tfCnp.setText(employee.getCnp());
         tfLastname.setText(employee.getLastname());
@@ -171,7 +142,7 @@ public class PanelEditEmployee extends JPanel {
         nrankPanel.add(new JLabel("Rank asistenta:"));
         nrankPanel.add(tfrank);
 
-        JPanel nurse = new JPanel(new GridLayout(1, 2));
+        JPanel nurse = new JPanel(new GridLayout(1,2));
         nurse.add(nrankPanel);
         nurse.add(ntypePanel);
 
@@ -186,56 +157,43 @@ public class PanelEditEmployee extends JPanel {
         commisionPanel.add(tfcommission);
 
         JPanel scientificPanel = new JPanel(new FlowLayout());
-        scientificPanel.setBorder(new EmptyBorder(10, 10, 0, 10));
+        scientificPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         scientificPanel.add(new JLabel("Titlu stiintific:"));
         scientificPanel.add(tfscientificTitle);
 
         JPanel didacticPanel = new JPanel(new FlowLayout());
-        didacticPanel.setBorder(new EmptyBorder(10, 10, 0, 10));
+        didacticPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         didacticPanel.add(new JLabel("Titlu didactic:"));
         didacticPanel.add(tfdidacticTitle);
 
-        cbRank.addItem("Primar");
-        cbRank.addItem("Specialist");
-
-        JPanel specialityPanel = new JPanel(new FlowLayout());
-        specialityPanel.add(new JLabel("Specialitate:"));
-        specialityPanel.add(cbSpeciality);
-        specialityPanel.add(new JLabel("Rank:"));
-        specialityPanel.add(cbRank);
-
-        JPanel accPanel = new JPanel(new FlowLayout());
-        accPanel.add(new JLabel("Acreditare:"));
-        accPanel.add(cbAcc);
-
-
-        JPanel btnSpec = new JPanel(new FlowLayout());
-        btnSpec.add(btnAddSpec);
-        btnSpec.add(btnDeleteSpec);
-
-        JPanel btnAcc = new JPanel(new FlowLayout());
-        btnAcc.add(btnAddAcc);
-        btnAcc.add(btnDeleteAcc);
-
+        updateTable(model.getSpecialities(tfCnp.getText()));
         JScrollPane jScrollPane = new JScrollPane(specializari);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setPreferredSize(new Dimension(250, 100));
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.add(jScrollPane, BorderLayout.NORTH);
-        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()) {
-            tablePanel.add(specialityPanel, BorderLayout.CENTER);
-            tablePanel.add(btnSpec, BorderLayout.SOUTH);
-        }
 
+        updateTable2(model.getAccreditations(tfCnp.getText()));
         JScrollPane jScrollPane2 = new JScrollPane(acreditari);
         jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane2.setPreferredSize(new Dimension(250, 100));
         JPanel tablePanel2 = new JPanel(new BorderLayout());
         tablePanel2.add(jScrollPane2, BorderLayout.NORTH);
-        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()) {
-            tablePanel2.add(accPanel, BorderLayout.CENTER);
-            tablePanel2.add(btnAcc, BorderLayout.SOUTH);
-        }
+
+
+        JPanel employeeData = new JPanel(new GridLayout(6, 2));
+        employeeData.add(cnpPanel);
+        employeeData.add(lastnamePanel);
+        employeeData.add(firstnamePanel);
+        employeeData.add(positionPanel);
+        employeeData.add(adressPanel);
+        employeeData.add(salaryPanel);
+        employeeData.add(ibanPanel);
+        employeeData.add(hoursPanel);
+        employeeData.add(emailPanel);
+        employeeData.add(contractPanel);
+        employeeData.add(phonePanel);
+        employeeData.add(datePanel);
 
         JPanel tables = new JPanel(new FlowLayout());
         tables.add(tablePanel);
@@ -251,24 +209,15 @@ public class PanelEditEmployee extends JPanel {
         doctors.add(doctor, BorderLayout.CENTER);
         doctors.add(tables, BorderLayout.SOUTH);
 
-        JPanel patientData = new JPanel(new GridLayout(6, 2));
-        patientData.add(cnpPanel);
-        patientData.add(lastnamePanel);
-        patientData.add(firstnamePanel);
-        patientData.add(positionPanel);
-        patientData.add(adressPanel);
-        patientData.add(salaryPanel);
-        patientData.add(ibanPanel);
-        patientData.add(hoursPanel);
-        patientData.add(emailPanel);
-        patientData.add(contractPanel);
-        patientData.add(phonePanel);
-        patientData.add(datePanel);
-
+        if (employee.getPosition().equals("Asistent Medical"))
+            employee = model.getNurse(employee);
+        if (employee.getPosition().equals("Medic")) {
+            employee = model.getDoctor(employee);
+        }
 
         JPanel reportDataPanel = new JPanel();
         reportDataPanel.setLayout(new BorderLayout());
-        reportDataPanel.add(patientData, BorderLayout.CENTER);
+        reportDataPanel.add(employeeData, BorderLayout.CENTER);
         if (tfPosition.getText().equals("Asistent Medical") && employee instanceof Nurse) {
             tftype.setEditable(false);
             tfrank.setEditable(false);
@@ -278,6 +227,10 @@ public class PanelEditEmployee extends JPanel {
         }
 
         if (tfPosition.getText().equals("Medic") && employee instanceof Doctor) {
+            tfsealCode.setEditable(false);
+            tfcommission.setEditable(false);
+            tfscientificTitle.setEditable(false);
+            tfdidacticTitle.setEditable(false);
             tfsealCode.setText(((Doctor) employee).getSealCode());
             tfcommission.setText(String.valueOf(((Doctor) employee).getCommission()));
             tfscientificTitle.setText(((Doctor) employee).getScientificTitle());
@@ -291,20 +244,8 @@ public class PanelEditEmployee extends JPanel {
         dataScrollPane.setPreferredSize(new Dimension(500, 325));
         dataScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
-
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
-        if((account.hasPermission("hr.read.all") && account.isSuperAdmin()) || (account.hasPermission("hr.read.all") &&
-                model.viewRole(cnp)!="super_administrator" && model.viewRole(cnp)!="administrator"))
-            buttonsPanel.add(btnSave);
-        buttonsPanel.add(btnCancel);
-
-        add(dataScrollPane, BorderLayout.NORTH);
-
-        add(buttonsPanel, BorderLayout.SOUTH);
-
-        setVisible(false);
+        add(dataScrollPane,BorderLayout.CENTER);
     }
-
     public void updateTable(List<Speciality> obj) {
         this.specialitiesDoc = obj;
         String[] columns = {"Specializari","Rank"};
@@ -342,6 +283,7 @@ public class PanelEditEmployee extends JPanel {
         });
     }
 
+
     public JTextField getTfCnp() {
         return tfCnp;
     }
@@ -374,79 +316,7 @@ public class PanelEditEmployee extends JPanel {
         return tfcommission;
     }
 
-    public void addSaveButtonListener(ActionListener actionListener) {
-        btnSave.addActionListener(actionListener);
-    }
-
-    public void addCancelButtonListener(ActionListener actionListener) {
-        btnCancel.addActionListener(actionListener);
-    }
-
-    public void updateCbSpeciality(Map<Integer, String> specialities) {
-        this.specialities = specialities;
-
-        cbSpeciality.removeAllItems();
-        specialities.values().forEach(cbSpeciality::addItem);
-    }
-
-    public void updateCbAcc(Map<Integer, String> acc) {
-        this.acc = acc;
-
-        cbAcc.removeAllItems();
-        acc.values().forEach(cbAcc::addItem);
-    }
-
-    public void addSpecialityComboBoxListener(ActionListener actionListener) {
-        btnAddSpec.addActionListener(actionListener);
-    }
-
-    public void addAccComboBoxListener(ActionListener actionListener) {
-        btnAddAcc.addActionListener(actionListener);
-    }
-
-    public Map.Entry<Integer, String> getIdSpeciality() {
-        Optional<Map.Entry<Integer, String>> result = specialities
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbSpeciality.getSelectedItem()))
-                .findFirst();
-        return result.orElse(null);
-    }
-
-    public Map.Entry<Integer, String> getIdAccreditation() {
-        Optional<Map.Entry<Integer, String>> result = acc
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbAcc.getSelectedItem()))
-                .findFirst();
-        return result.orElse(null);
-    }
-
-
-    public void deleteSpecListener(ActionListener actionListener) {
-        btnDeleteSpec.addActionListener(actionListener);
-    }
-
-    public void deleteAccListener(ActionListener actionListener) {
-        btnDeleteAcc.addActionListener(actionListener);
-    }
-
-    public void reset() {
-        tfCnp.setText("");
-        tfLastname.setText("");
-        tfFirstname.setText("");
-        tfPosition.setText("");
-    }
-
-    public List<Speciality> getSpecialitiesDoc() {
-        return specialitiesDoc;
-    }
-
-    public Map<Integer, String> getAccDoc() {
-        return accDoc;
-    }
-
-    public JComboBox<String> getCbRank() {
-        return cbRank;
-    }
 }
+
+
+

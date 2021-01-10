@@ -1,8 +1,8 @@
 package com.sanitas.clinicapp.hr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.Employee;
 import com.sanitas.clinicapp.hr.HrModel;
-import com.sanitas.clinicapp.mr.MrModel;
 
 import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
@@ -11,7 +11,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PanelShowEmployee extends JPanel{
     private JTextField TxtFirst = new JTextField(10);
@@ -26,10 +28,11 @@ public class PanelShowEmployee extends JPanel{
     private JButton btnHoliday = new StyledJButton("Zile libere").getButton();
 
     private JTable employeeTable;
+    private ClinicApplication.Account account;
 
-    public PanelShowEmployee(HrModel model) {
+    public PanelShowEmployee(HrModel model, ClinicApplication.Account account) {
         super(new BorderLayout());
-
+        this.account=account;
         btnSearch.setBackground(Colors.MAIN_COLOR.getColor());
 
         employeeTable = initializeTable(model);
@@ -39,6 +42,7 @@ public class PanelShowEmployee extends JPanel{
         jScrollPane.setPreferredSize(new Dimension(540, 240));
         JPanel tablePanel = new JPanel(new FlowLayout());
         tablePanel.add(jScrollPane);
+
 
         JPanel searchPanel = new JPanel(new FlowLayout());
         searchPanel.add(new JLabel("Nume:"));
@@ -50,13 +54,17 @@ public class PanelShowEmployee extends JPanel{
         searchPanel.add(btnSearch);
 
 
+
         JPanel editPanel = new JPanel(new FlowLayout());
         editPanel.add(btnOrar);
         editPanel.add(btnHoliday);
         editPanel.add(btnModify);
-        editPanel.add(btnDelete);
+        if((account.hasPermission("hr.read.all")) || account.isSuperAdmin())
+            editPanel.add(btnDelete);
 
-        add(searchPanel, BorderLayout.NORTH);
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()) {
+            add(searchPanel, BorderLayout.NORTH);
+        }
         add(tablePanel, BorderLayout.CENTER);
         add(editPanel, BorderLayout.SOUTH);
 
@@ -64,12 +72,20 @@ public class PanelShowEmployee extends JPanel{
     }
 
     private JTable initializeTable(HrModel model) {
+
         String[] columns = { "Nume", "Prenume","Functie","CNP" };
         java.util.List<Employee> employees = model.getAllData("", "","");
 
-        Object[][] employeesData = new Object[employees.size()][columns.length];
-        for (int i = 0; i < employees.size(); ++i) {
-            Employee employee = employees.get(i);
+        List<Employee> accountEmployee=new ArrayList<>();
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()){
+            accountEmployee=employees;
+        }
+        else
+            accountEmployee=employees.stream().filter(employee1 ->employee1.getCnp().equals(account.getCnp()) ).collect(Collectors.toList());
+
+        Object[][] employeesData = new Object[accountEmployee.size()][columns.length];
+        for (int i = 0; i < accountEmployee.size(); ++i) {
+            Employee employee = accountEmployee.get(i);
 
             employeesData[i][0] = employee.getLastname();
             employeesData[i][1] = employee.getFirstname();
@@ -91,11 +107,17 @@ public class PanelShowEmployee extends JPanel{
     }
 
     public void updateTable(List<Employee> employee) {
+        List<Employee> accountEmployee=new ArrayList<>();
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()){
+            accountEmployee=employee;
+        }
+        else
+            accountEmployee=employee.stream().filter(employee1 ->employee1.getCnp().equals(account.getCnp()) ).collect(Collectors.toList());
         String[] columns = { "Nume", "Prenume", "Functie","CNP" };
 
-        Object[][] employeeData = new Object[employee.size()][columns.length];
-        for (int i = 0; i < employee.size(); ++i) {
-            Employee employee1 = employee.get(i);
+        Object[][] employeeData = new Object[accountEmployee.size()][columns.length];
+        for (int i = 0; i < accountEmployee.size(); ++i) {
+            Employee employee1 = accountEmployee.get(i);
 
             employeeData[i][0] = employee1.getLastname();
             employeeData[i][1] = employee1.getFirstname();

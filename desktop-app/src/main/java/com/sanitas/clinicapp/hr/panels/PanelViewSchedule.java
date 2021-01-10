@@ -1,5 +1,6 @@
 package com.sanitas.clinicapp.hr.panels;
 
+import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.hr.Employee;
 import com.sanitas.clinicapp.hr.HrModel;
 import com.sanitas.clinicapp.hr.Schedule;
@@ -29,10 +30,11 @@ public class PanelViewSchedule extends JPanel{
 
     private HrModel model;
     private List<Schedule> schedules;
+    private ClinicApplication.Account account;
 
-    public PanelViewSchedule(HrModel model,List<Schedule> schedules) {
+    public PanelViewSchedule(HrModel model, List<Schedule> schedules, ClinicApplication.Account account) {
         setLayout(new BorderLayout());
-
+        this.account=account;
         this.schedules=schedules;
         scheduleTable = initializeTable(model,schedules);
 
@@ -43,9 +45,11 @@ public class PanelViewSchedule extends JPanel{
         tablePanel.add(jScrollPane);
 
         JPanel editPanel = new JPanel(new FlowLayout());
-        editPanel.add(delete);
-        editPanel.add(update);
-        editPanel.add(insert);
+        if(account.hasPermission("hr.read.all")){
+            editPanel.add(delete);
+            editPanel.add(update);
+            editPanel.add(insert);
+        }
         editPanel.add(back);
 
         add(tablePanel, BorderLayout.CENTER);
