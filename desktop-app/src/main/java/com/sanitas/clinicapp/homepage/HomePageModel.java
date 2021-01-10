@@ -3,6 +3,7 @@ package com.sanitas.clinicapp.homepage;
 import com.sanitas.clinicapp.fr.FrMVC;
 import com.sanitas.clinicapp.hr.HrMVC;
 import com.sanitas.clinicapp.mr.MrMVC;
+import com.sanitas.clinicapp.profile.ProfileMVC;
 
 public class HomePageModel {
 

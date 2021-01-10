@@ -23,7 +23,7 @@ public class HomePageController {
         view.addBtnFRListener(new ButtonListener(2, "fr.read"));
         view.addBtnMRListener(new ButtonListener(3, "mr.read"));
         view.addBtnProfileListener(new ButtonListener(4, "profile.read"));
-        view.addBtnDisconnectListener(new ButtonDeleteListener(previousView));
+        view.addBtnDisconnectListener(new ButtonDisconnectListener(previousView));
     }
 
     class ButtonListener implements ActionListener {
@@ -48,16 +48,17 @@ public class HomePageController {
 
     }
 
-    class ButtonDeleteListener implements ActionListener {
+    class ButtonDisconnectListener implements ActionListener {
 
         private final JFrame previousView;
 
-        public ButtonDeleteListener(JFrame previousView) {
+        public ButtonDisconnectListener(JFrame previousView) {
             this.previousView = previousView;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            ClinicApplication.disconnectUser();
             previousView.setVisible(true);
             view.setVisible(false);
             view.dispose();

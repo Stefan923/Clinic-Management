@@ -330,7 +330,18 @@ public class MrController {
                 }
             } else if (panel instanceof  PanelAddPatient) {
                 PanelAddPatient panelAddPatient = (PanelAddPatient) view.getCurrentPanel();
-                boolean validation = model.addPatient(panelAddPatient.getTfCnp().getText(),
+                String cnp = panelAddPatient.getTfCnp().getText();
+
+                if (cnp.length() != 13) {
+                    view.sendError("CNP-ul trebuie sa aiba 13 cifre!");
+                    return;
+                }
+                if (!cnp.matches("[0-9]+")) {
+                    view.sendError("CNP-ul trebuie sa contina doar cifre!");
+                    return;
+                }
+
+                boolean validation = model.addPatient(cnp,
                         panelAddPatient.getTfLastname().getText(),
                         panelAddPatient.getTfFirstname().getText(),
                         panelAddPatient.getTfIban().getText());
@@ -924,7 +935,6 @@ public class MrController {
 
             Date startDate = panel.getTime();
             int duration = panel.getMedicalServices().stream().mapToInt(MedicalService::getDuration).sum();
-            System.out.println(duration);
             Date endDate = new Date(startDate.getTime() + duration * 60 * 1000);
 
             if (panel.getMedicalServices().isEmpty()) {

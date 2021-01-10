@@ -383,6 +383,8 @@ BEGIN
 	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
 		FROM `appointments` A, `patients` P
         WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
+        
+        UPDATE `appointments` SET `hasReceipt` = 1 WHERE `id` = `_id`;
 END;
 // DELIMITER ;
 

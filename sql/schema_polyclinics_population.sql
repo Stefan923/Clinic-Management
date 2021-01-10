@@ -242,6 +242,7 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('2', 'profile.read'),
 	('2', 'hr.read'),
 	('2', 'fr.read'),
+	('2', 'fr.read.employee'),
 	('2', 'mr.read'),
 	('2', 'mr.appointments.read'),
 	('2', 'mr.appointments.read.all'),
@@ -252,16 +253,20 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('3', 'profile.read'),
 	('3', 'hr.read'),
 	('3', 'fr.read'),
+	('3', 'fr.read.employee'),
 	('3', 'hr.read.all'),
 	('3', 'hr.write.all'),
 	('4', 'profile.read'),
 	('4', 'hr.read'),
 	('4', 'fr.read'),
+	('4', 'fr.read.employee'),
 	('4', 'mr.read'),
 	('4', 'mr.analyses.read'),
 	('5', 'profile.read'),
     ('5', 'hr.read'),
 	('5', 'fr.read'),
+	('5', 'fr.read.doctor'),
+	('5', 'fr.read.employee'),
 	('5', 'mr.read'),
 	('5', 'mr.appointments.read'),
 	('5', 'mr.medical_services.write'),
@@ -273,6 +278,8 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('6', 'profile.read'),
 	('6', 'hr.read'),
 	('6', 'fr.read'),
+	('6', 'fr.read.employee'),
+    ('6', 'fr.read.all'),
 	('6', 'fr.write'),
 	('6', 'fr.read.other'),
 	('6', 'fr.write.other'),
@@ -352,10 +359,10 @@ INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `s
 	('2781201019674','47274','0.3','doctor stiinte medicale','profesor'),
 	('2700927417309','75436','0.3',NULL,NULL),
     ('2903657384589','11111','0.3',NULL,NULL),
-    ('2901202334757','00011','0.3',NULL,NULL)
-    
-    INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `scientificTitle`, `didacticTitle`) VALUES
-    ('2901202334756','12234','0.3',NULL,NULL);
+    ('2901202334757','00011','0.3',NULL,NULL),
+    ('2901202334756','16757','0.5','doctorand','profesor'),
+    ('2903657384589','35167','0.4','doctor stiinte medicale','profesor'),
+    ('2901202334757','36738','0.4','doctorand','lector');
  
 INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values
 	('2901204019549',1,'specialist'),
@@ -470,6 +477,11 @@ INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `s
     (2701203534721,1, 'Monday', '08:00', '16:00'),
     (2701203534721,1, 'Tuesday', '16:00', '20:00'),
     (2701203534721,1, 'Friday', '08:00', '18:00'),
+    
+    (1960820039445,1, 'Monday', '10:00', '17:00'),
+    (1960820039445,1, 'Tuesday', '10:00', '19:00'),
+    (1960820039445,1, 'Wednesday', '08:00', '12:00'),
+	(1960820039445,1, 'Thursday', '15:00', '20:00'),
     
     (2701204066352,1, 'Monday', '10:00', '17:00'),
     (2701204066352,1, 'Tuesday', '10:00', '19:00'),
