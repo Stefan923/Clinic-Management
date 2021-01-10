@@ -352,9 +352,7 @@ INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `s
 	('2781201019674','47274','0.3','doctor stiinte medicale','profesor'),
 	('2700927417309','75436','0.3',NULL,NULL),
     ('2903657384589','11111','0.3',NULL,NULL),
-    ('2901202334757','00011','0.3',NULL,NULL)
-    
-    INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `scientificTitle`, `didacticTitle`) VALUES
+    ('2901202334757','00011','0.3',NULL,NULL),
     ('2901202334756','12234','0.3',NULL,NULL);
  
 INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values

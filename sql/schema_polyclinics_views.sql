@@ -146,6 +146,18 @@ DROP VIEW IF EXISTS `polyclinics`.`view_role`;
 CREATE VIEW `polyclinics`.`view_role` AS 
 	SELECT A.cnpEmployee, A.idRole , R.name from accounts A inner join roles R on A.idRole=R.id;
     
+DROP VIEW IF EXISTS `polyclinics`.`view_employee_cnp_name`;
+CREATE VIEW `polyclinics`.`view_employee_cnp_name` AS
+    SELECT DISTINCT `employees`.`cnp`, CONCAT(`employees`.`lastName`, ' ', `employees`.`firstName`)
+    FROM `employees`, `doctors`
+    WHERE `employees`.`cnp` <> `doctors`.`cnpEmployee`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_doctor_cnp_name`;
+CREATE VIEW `polyclinics`.`view_doctor_cnp_name` AS
+    SELECT DISTINCT `employees`.`cnp`, CONCAT(`employees`.`lastName`, ' ', `employees`.`firstName`)
+    FROM `employees`, `doctors`
+    WHERE `employees`.`cnp` =  `doctors`.`cnpEmployee`;
+    
 SELECT * FROM `polyclinics`.`view_nurses`;
 
 SELECT * FROM `view_services_by_cabinet`;
