@@ -1,16 +1,17 @@
-package com.sanitas.clinicapp.hr.panels;
+package com.sanitas.clinicapp.profile.panels;
 
 import com.sanitas.clinicapp.hr.Employee;
-
+import com.sanitas.clinicapp.hr.panels.Nurse;
+import com.sanitas.clinicapp.profile.ProfileModel;
 import com.sanitas.clinicapp.struct.Doctor;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
-public class PanelEditEmployee extends JPanel {
+
+public class PanelEmployeeProfile extends JPanel{
     private JTextField tfCnp = new JTextField(15);
     private JTextField tfLastname = new JTextField(15);
     private JTextField tfFirstname = new JTextField(15);
@@ -31,10 +32,8 @@ public class PanelEditEmployee extends JPanel {
     private JTextField tfscientificTitle=new JTextField(15);
     private JTextField tfdidacticTitle=new JTextField(15);
 
-    private JButton btnSave = new StyledJButton("Salveaza").getButton();
-    private JButton btnCancel = new StyledJButton("Anuleaza").getButton();
 
-    public PanelEditEmployee(Employee employee) {
+    public PanelEmployeeProfile(Employee employee) {
         setLayout(new BorderLayout());
 
         tfCnp.setEditable(false);
@@ -46,8 +45,6 @@ public class PanelEditEmployee extends JPanel {
         tfIban.setEditable(false);
         tfPhone.setEditable(false);
         tfSalary.setEditable(false);
-
-
 
         tfCnp.setText(employee.getCnp());
         tfLastname.setText(employee.getLastname());
@@ -218,19 +215,7 @@ public class PanelEditEmployee extends JPanel {
         return tfcommission;
     }
 
-    public void addSaveButtonListener(ActionListener actionListener) {
-        btnSave.addActionListener(actionListener);
-    }
-
-    public void addCancelButtonListener(ActionListener actionListener) {
-        btnCancel.addActionListener(actionListener);
-    }
-
-    public void reset() {
-        tfCnp.setText("");
-        tfLastname.setText("");
-        tfFirstname.setText("");
-        tfPosition.setText("");
-    }
-
 }
+
+
+

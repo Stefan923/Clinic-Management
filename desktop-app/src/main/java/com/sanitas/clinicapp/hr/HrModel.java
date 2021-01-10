@@ -343,8 +343,6 @@ public class HrModel {
         return false;
     }
 
-
-
     public void setData(boolean data) {
         this.data = data;
     }
