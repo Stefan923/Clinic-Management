@@ -7,6 +7,7 @@ import com.sanitas.clinicapp.ui.Colors;
 import com.sanitas.clinicapp.ui.StyledJButton;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -32,15 +33,25 @@ public class HrView extends JFrame {
         btnSearchEmployee.setBackground(Colors.MAIN_COLOR.getColor());
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
 
-        JPanel menuContent = new JPanel(new GridLayout(2, 1));
+        JPanel showPanel=new JPanel(new FlowLayout());
         if(account.hasPermission("hr.read.all"))
-            menuContent.add(btnShowEmployees);
-        menuContent.add(btnSearchEmployee);
+            showPanel.add(btnShowEmployees);
+        showPanel.setBackground(Colors.MENU_COLOR.getColor());
+        showPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+
+        JPanel searchPanel=new JPanel(new FlowLayout());
+        searchPanel.add(btnSearchEmployee);
+        searchPanel.setBackground(Colors.MENU_COLOR.getColor());
+        searchPanel.setBorder(new EmptyBorder(0, 0, 3, 0));
+
+        JPanel menuContent = new JPanel(new GridLayout(2, 1));
+        menuContent.add(searchPanel);
+        menuContent.add(showPanel);
 
         JPanel leftContent = new JPanel(new BorderLayout());
         leftContent.add(menuContent, BorderLayout.NORTH);
         leftContent.add(btnBack, BorderLayout.SOUTH);
-        leftContent.setBackground(new Color(0XBDBEBF));
+        leftContent.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel content = new JPanel(new BorderLayout());
         content.add(leftContent, BorderLayout.WEST);

@@ -143,9 +143,14 @@ DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
 	SELECT * FROM `cabinets`;
     
-SELECT * FROM `polyclinics`.`view_nuses`;
+DROP VIEW IF EXISTS `polyclinics`.`view_role`;
+CREATE VIEW `polyclinics`.`view_role` AS 
+	SELECT A.cnpEmployee, A.idRole , R.name from accounts A inner join roles R on A.idRole=R.id;
+    
+SELECT * FROM `polyclinics`.`view_nurses`;
 
 SELECT * FROM `view_services_by_cabinet`;
 
 SELECT * FROM `polyclinics`.`view_specialities_by_doctor`;
 SELECT * FROM `view_medical_units`;
+select * from `view_role`;

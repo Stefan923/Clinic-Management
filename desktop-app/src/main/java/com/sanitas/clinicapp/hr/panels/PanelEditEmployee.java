@@ -63,10 +63,12 @@ public class PanelEditEmployee extends JPanel {
 
     private List<Speciality> specialitiesList=new ArrayList<Speciality>();
     private ClinicApplication.Account account;
+    private String cnp;
 
-    public PanelEditEmployee(Employee employee,ClinicApplication.Account account) {
+    public PanelEditEmployee(Employee employee,ClinicApplication.Account account,String cnp,HrModel model) {
         setLayout(new BorderLayout());
         this.account=account;
+        this.cnp=cnp;
 
         tfCnp.setEditable(false);
         tfAdress.setEditable(false);
@@ -78,7 +80,7 @@ public class PanelEditEmployee extends JPanel {
         tfPhone.setEditable(false);
         tfSalary.setEditable(false);
 
-        if(account.hasPermission("hr.read")) {
+        if((!(account.hasPermission("hr.read.all")) || model.viewRole(cnp)=="administrator") && (!account.isSuperAdmin())) {
             tfFirstname.setEditable(false);
             tfLastname.setEditable(false);
             tfPosition.setEditable(false);
@@ -220,15 +222,17 @@ public class PanelEditEmployee extends JPanel {
         jScrollPane.setPreferredSize(new Dimension(250, 100));
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.add(jScrollPane, BorderLayout.NORTH);
-        tablePanel.add(specialityPanel, BorderLayout.CENTER);
-        tablePanel.add(btnSpec, BorderLayout.SOUTH);
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()) {
+            tablePanel.add(specialityPanel, BorderLayout.CENTER);
+            tablePanel.add(btnSpec, BorderLayout.SOUTH);
+        }
 
         JScrollPane jScrollPane2 = new JScrollPane(acreditari);
         jScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane2.setPreferredSize(new Dimension(250, 100));
         JPanel tablePanel2 = new JPanel(new BorderLayout());
         tablePanel2.add(jScrollPane2, BorderLayout.NORTH);
-        if(account.hasPermission("hr.read.all")) {
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()) {
             tablePanel2.add(accPanel, BorderLayout.CENTER);
             tablePanel2.add(btnAcc, BorderLayout.SOUTH);
         }
@@ -289,7 +293,8 @@ public class PanelEditEmployee extends JPanel {
 
 
         JPanel buttonsPanel = new JPanel(new FlowLayout());
-        if(account.hasPermission("hr.read.all"))
+        if((account.hasPermission("hr.read.all") && account.isSuperAdmin()) || (account.hasPermission("hr.read.all") &&
+                model.viewRole(cnp)!="super_administrator" && model.viewRole(cnp)!="administrator"))
             buttonsPanel.add(btnSave);
         buttonsPanel.add(btnCancel);
 

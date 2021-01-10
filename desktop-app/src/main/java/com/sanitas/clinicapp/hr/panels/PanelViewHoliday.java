@@ -39,7 +39,7 @@ public class PanelViewHoliday extends JPanel{
         tablePanel.add(jScrollPane);
 
         JPanel editPanel = new JPanel(new FlowLayout());
-        if(account.hasPermission("hr.read.all"))
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin() )
             editPanel.add(insert);
         editPanel.add(back);
 

@@ -12,7 +12,7 @@ public class ClinicApplication {
     private static Account user;
 
     public static void main(String[] args) {
-        database = new Database("localhost", 3306, "polyclinics", "root", "DButcnMySQL");
+        database = new Database("localhost", 3306, "polyclinics", "root", "workhardgetgood");
 
         new LoginMVC();
     }
@@ -64,6 +64,10 @@ public class ClinicApplication {
 
         public boolean hasPermission(String string) {
             return permissions.contains(string) || permissions.contains("*");
+        }
+
+        public boolean isSuperAdmin() {
+            return permissions.contains("+");
         }
 
     }

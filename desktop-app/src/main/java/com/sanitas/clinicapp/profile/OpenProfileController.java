@@ -32,11 +32,11 @@ public class OpenProfileController {
             String salary = view.getTxtSalary().getText();
             String workedHrs = view.getTxtWorkedHrs().getText();
 
-            Employee employee = new Employee();
+            /*Employee employee = new Employee();
 
             employee = model.getEmployee(cnp, lastname,
                     firstname, address, phoneNum, email, iban, contractNum, employmentDate,position, salary, workedHrs);
-                         System.out.println(employee);
+                         System.out.println(employee);*/
 
 
         }

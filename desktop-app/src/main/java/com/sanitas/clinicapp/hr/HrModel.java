@@ -258,6 +258,26 @@ public class HrModel {
         return false;
     }
 
+    public String viewRole(String cnp)
+    {
+        String role=null;
+
+        try{
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT name FROM `view_role` WHERE `cnpEmployee`=? ;");
+            preparedStatement.setString(1, cnp);
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                role=resultSet.getString(1);
+            }
+
+        }catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return role;
+    }
 
     public List<Schedule> viewSchedule(String cnp) {
         List<Schedule> schedule = new ArrayList<Schedule>();

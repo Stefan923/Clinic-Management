@@ -264,6 +264,7 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('4', 'mr.read'),
 	('4', 'mr.analyses.read'),
 	('5', 'profile.read'),
+    ('5', 'hr.read'),
 	('5', 'fr.read'),
 	('5', 'mr.read'),
 	('5', 'mr.appointments.read'),

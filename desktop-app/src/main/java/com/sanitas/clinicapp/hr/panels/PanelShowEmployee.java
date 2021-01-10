@@ -34,7 +34,6 @@ public class PanelShowEmployee extends JPanel{
     public PanelShowEmployee(HrModel model, ClinicApplication.Account account) {
         super(new BorderLayout());
         this.account=account;
-
         btnSearch.setBackground(Colors.MAIN_COLOR.getColor());
 
         employeeTable = initializeTable(model);
@@ -61,10 +60,10 @@ public class PanelShowEmployee extends JPanel{
         editPanel.add(btnOrar);
         editPanel.add(btnHoliday);
         editPanel.add(btnModify);
-        if(account.hasPermission("hr.read.all"))
+        if((account.hasPermission("hr.read.all")) || account.isSuperAdmin())
             editPanel.add(btnDelete);
 
-        if(account.hasPermission("hr.read.all")) {
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()) {
             add(searchPanel, BorderLayout.NORTH);
         }
         add(tablePanel, BorderLayout.CENTER);
@@ -79,7 +78,7 @@ public class PanelShowEmployee extends JPanel{
         java.util.List<Employee> employees = model.getAllData("", "","");
 
         List<Employee> accountEmployee=new ArrayList<>();
-        if(account.hasPermission("hr.read.all")){
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()){
             accountEmployee=employees;
         }
         else
@@ -110,7 +109,7 @@ public class PanelShowEmployee extends JPanel{
 
     public void updateTable(List<Employee> employee) {
         List<Employee> accountEmployee=new ArrayList<>();
-        if(account.hasPermission("hr.read.all")){
+        if(account.hasPermission("hr.read.all") || account.isSuperAdmin()){
             accountEmployee=employee;
         }
         else
