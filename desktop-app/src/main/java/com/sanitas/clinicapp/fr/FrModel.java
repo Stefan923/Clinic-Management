@@ -225,4 +225,21 @@ public class FrModel {
         }
         return doctorsName;
     }
+
+
+    public HashMap<String, String> getEmployeesName() {
+        HashMap<String, String> employeesName = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = database.preparedStatement("SELECT * FROM `view_employee_cnp_name`;");
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                employeesName.put(result.getString(1),
+                        result.getString(2));
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return employeesName;
+    }
 }

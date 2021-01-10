@@ -148,7 +148,13 @@ CREATE VIEW `polyclinics`.`view_doctor_cnp_name` AS
     FROM `employees`, `doctors`
     WHERE `employees`.`cnp` = `doctors`.`cnpEmployee`;
     
-SELECT * FROM `polyclinics`.`view_doctor_cnp_name`;
+DROP VIEW IF EXISTS `polyclinics`.`view_employee_cnp_name`;
+CREATE VIEW `polyclinics`.`view_employee_cnp_name` AS
+	SELECT DISTINCT `cnp`, CONCAT(`lastName`, " ", `firstName`) 
+    FROM `employees`, `doctors`
+    WHERE `employees`.`cnp` <> `doctors`.`cnpEmployee`;
+    
+SELECT * FROM `view_employee_cnp_name`;
 
 SELECT * FROM `view_services_by_cabinet`;
 

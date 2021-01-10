@@ -523,12 +523,12 @@ BEGIN
     -- CALL GET_PROFIT_BY_SPECIALITY('1', '2020-01-01', '2020-12-15', @output);
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL GET_DOCTOR_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
-    -- CALL GET_PROFIT_BY_DOCTOR('2700927417309', '2020-12-01', '2020-12-31', @output);
-    -- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
+	-- CALL GET_PROFIT_BY_DOCTOR('2700927417309', '2020-12-01', '2020-12-31', @output);
+	CALL GET_EMPLOYEE_SALARY('2701204066352', '2020-12-01', '2020-12-31', @output);
     -- CALL INSERT_PATIENT('1871054098525', 'Ianc', 'Daniel', 'RO12RZBR6975321332427243', @output);
     -- CALL DELETE_PATIENT('1871054098525', @output);
-    CALL GET_RECEIPT('2', @output_name, @output_name2,  @output_address, @output_date, @output_services, @output_price);
-    SELECT @output_name, @output_name2, @output_address, @output_date, @output_services, @output_price;
+    -- CALL GET_RECEIPT('2', @output_name, @output_name2,  @output_address, @output_date, @output_services, @output_price);
+    -- SELECT @output_name, @output_name2, @output_address, @output_date, @output_services, @output_price;
     
 	-- CALL INSERT_PATIENT_HISTORY('1520619148967', '1', 'are toate bolile', NULL, @output);
     -- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
