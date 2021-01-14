@@ -191,10 +191,10 @@ END;
 
 DROP PROCEDURE IF EXISTS UPDATE_EMPLOYEE;
 DELIMITER //
-CREATE PROCEDURE UPDATE_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `_lastName` VARCHAR(25), IN `_firstName` VARCHAR(50), IN `_position` VARCHAR(45), OUT `validation` INT)
+CREATE PROCEDURE UPDATE_EMPLOYEE(IN `_cnp` VARCHAR(13), IN `_lastName` VARCHAR(25), IN `_firstName` VARCHAR(50), IN `_address` VARCHAR(100), IN `_phoneNum` VARCHAR(10), IN `_email` VARCHAR(45),OUT `validation` INT)
 BEGIN
 	IF ((SELECT COUNT(*) FROM `employees` WHERE `cnp`=`_cnp`) = 1) THEN
-		SET @sqlAction = CONCAT("UPDATE employees SET lastName = '", `_lastName`, "', firstName = '", `_firstName`, "', position = '", `_position`, "' WHERE cnp='", `_cnp`, "';");
+		SET @sqlAction = CONCAT("UPDATE employees SET lastName = '", `_lastName`, "', firstName = '", `_firstName`, "' , address='",`_address`,"' , phoneNum='",`_phoneNum`,"' , email='",`_email`,"' WHERE cnp='", `_cnp`, "';");
 		PREPARE statement FROM @sqlAction;
 		EXECUTE statement;
 		SET `validation` = 1;

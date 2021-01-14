@@ -546,7 +546,7 @@ public class HrController {
                 boolean validation = model.updateEmployee(panelEditEmployee.getTfCnp().getText(),
                         panelEditEmployee.getTfLastname().getText(),
                         panelEditEmployee.getTfFirstname().getText(),
-                        panelEditEmployee.getTfPosition().getText());
+                        panelEditEmployee.getTfAdress().getText(),panelEditEmployee.getTfPhone().getText(),panelEditEmployee.getTfEmail().getText());
                 boolean validDoc=false;
                 if(employee instanceof Doctor) {
                    validDoc = model.insertDoctor(((Employee)employee).getCnp(), panelEditEmployee.getTfsealCode().getText(),
@@ -629,17 +629,33 @@ public class HrController {
                     }
                 }
                 try {
-                    if (model.insertEmployee(txt.get(0), txt.get(1), txt.get(2),
-                            txt.get(3), txt.get(4), txt.get(5), txt.get(6),
-                            Integer.parseInt(txt.get(7)), txt.get(8),
-                            txt.get(9), Double.parseDouble(txt.get(10)),
-                            Integer.parseInt(txt.get(11)))) {
-                        view.sendSuccessMessage("Datele angajatului au fost introduse.");
-                        panel.setTxtEmpty();
-                    } else {
-                        view.sendError("Angajat existent!");
-                        //panel.setTxtEmpty();
+                    if(txt.get(0).length()==13){
+                        for(int  i=0;i<13;i++)
+                            if(txt.get(0).charAt(i)<'0' || txt.get(0).charAt(i)>'9') {
+                                view.sendError("CNP introdus gresit!");
+                                return;
+                            }
                     }
+                    else {
+                        view.sendError("CNP introdus gresit!");
+                        return;
+                    }
+                    if(txt.get(9).equals("Asistent Medical") || txt.get(9).equals("HR") || txt.get(9).equals("Receptioner") || txt.get(9).equals("Medic")
+                            || txt.get(9).equals("Contabil")) {
+                        if (model.insertEmployee(txt.get(0), txt.get(1), txt.get(2),
+                                txt.get(3), txt.get(4), txt.get(5), txt.get(6),
+                                Integer.parseInt(txt.get(7)), txt.get(8),
+                                txt.get(9), Double.parseDouble(txt.get(10)),
+                                Integer.parseInt(txt.get(11)))) {
+                            view.sendSuccessMessage("Datele angajatului au fost introduse.");
+                            panel.setTxtEmpty();
+                        } else {
+                            view.sendError("Date existente sau introduse gresit!");
+                            //panel.setTxtEmpty();
+                        }
+                    }
+                    else
+                        view.sendError("Date introduse gresit!");
                 }catch (NumberFormatException ex) {
                     view.sendError("Date introduse gresit!");
                 }

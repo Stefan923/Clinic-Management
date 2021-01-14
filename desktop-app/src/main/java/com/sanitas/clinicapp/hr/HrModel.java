@@ -414,17 +414,19 @@ public class HrModel {
         return false;
     }
 
-    public boolean updateEmployee(String cnp, String lastname, String firstname,String position) {
+    public boolean updateEmployee(String cnp, String lastname, String firstname,String adress,String phone,String email) {
         try {
-            CallableStatement callableStatement = database.callableStatement("CALL UPDATE_EMPLOYEE(?, ?, ?, ?,?);");
+            CallableStatement callableStatement = database.callableStatement("CALL UPDATE_EMPLOYEE(?, ?, ?, ?,?,?,?);");
             callableStatement.setString(1, cnp);
             callableStatement.setString(2, lastname);
             callableStatement.setString(3, firstname);
-            callableStatement.setString(4, position);
-            callableStatement.registerOutParameter(5, Types.BOOLEAN);
+            callableStatement.setString(4, adress);
+            callableStatement.setString(5, phone);
+            callableStatement.setString(6, email);
+            callableStatement.registerOutParameter(7, Types.BOOLEAN);
             callableStatement.execute();
 
-            return callableStatement.getBoolean(5);
+            return callableStatement.getBoolean(7);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
