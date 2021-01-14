@@ -238,7 +238,7 @@ BEGIN
 	SELECT IFNULL(SUM(M.`price` * A.`count`), 0) INTO `profit`
 		FROM (SELECT `idMedicalService`, COUNT(*) AS `count`
 			FROM `appointment_services` A, `appointments` AP
-            WHERE AP.`idSpeciality` = `_id` AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
+            WHERE AP.`idSpeciality` = `_id` AND AP.`id` = A.`idAppointment` AND AP.`hasReceipt` = 1 AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
 		WHERE M.`id` = A.`idMedicalService`;
 END;
 // DELIMITER ;
@@ -250,7 +250,7 @@ BEGIN
 	SELECT IFNULL(SUM(M.`price` * A.`count`), 0) INTO `result`
 		FROM (SELECT `idMedicalService`, COUNT(*) AS `count` 
 			FROM `appointment_services` A, `appointments` AP
-            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
+            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND AP.`hasReceipt` = 1 AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
 		WHERE M.`id` = A.`idMedicalService`;
 END;
 // DELIMITER ;
@@ -305,7 +305,7 @@ BEGIN
 	SELECT IFNULL(SUM(M.`duration` * A.`count`) / 60, 0) INTO @workedHrs
 		FROM (SELECT `idMedicalService`, COUNT(*) AS `count` 
 			FROM `appointment_services` A, `appointments` AP
-            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
+            WHERE AP.`cnpDoctor` = `_cnp` AND AP.`id` = A.`idAppointment` AND AP.`hasReceipt` = 1 AND DATE(AP.`date`) >= `startDate` AND DATE(AP.`date`) <= `endDate` GROUP BY A.`idMedicalService`) A, `medical_services` M
 		WHERE M.`id` = A.`idMedicalService`;
 	
     CALL GET_DOCTOR_PROFIT_TOTAL(`_cnp`, `startDate`, `endDate`, @commission);
@@ -383,6 +383,8 @@ BEGIN
 	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
 		FROM `appointments` A, `patients` P
         WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
+	
+	UPDATE `appointments` SET `hasReceipt` = 1 WHERE `id` = `_id`;
 END;
 // DELIMITER ;
 
@@ -578,12 +580,12 @@ BEGIN
     -- CALL GET_PROFIT_BY_SPECIALITY('1', '2020-01-01', '2020-12-15', @output);
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL GET_DOCTOR_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
-    -- CALL GET_PROFIT_BY_DOCTOR('2700927417309', '2020-12-01', '2020-12-31', @output);
-    -- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
+	-- CALL GET_PROFIT_BY_DOCTOR('2700927417309', '2020-12-01', '2020-12-31', @output);
+	CALL GET_EMPLOYEE_SALARY('2701204066352', '2020-12-01', '2020-12-31', @output);
     -- CALL INSERT_PATIENT('1871054098525', 'Ianc', 'Daniel', 'RO12RZBR6975321332427243', @output);
     -- CALL DELETE_PATIENT('1871054098525', @output);
-    CALL GET_RECEIPT('2', @output_name, @output_name2,  @output_address, @output_date, @output_services, @output_price);
-    SELECT @output_name, @output_name2, @output_address, @output_date, @output_services, @output_price;
+    -- CALL GET_RECEIPT('2', @output_name, @output_name2,  @output_address, @output_date, @output_services, @output_price);
+    -- SELECT @output_name, @output_name2, @output_address, @output_date, @output_services, @output_price;
     
 	-- CALL INSERT_PATIENT_HISTORY('1520619148967', '1', 'are toate bolile', NULL, @output);
     -- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);

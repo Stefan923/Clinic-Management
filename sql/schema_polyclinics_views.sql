@@ -136,7 +136,7 @@ CREATE VIEW `view_appointment_services` AS
 
 DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
 CREATE VIEW `polyclinics`.`view_medical_units` AS
-	SELECT * FROM `medical_units`;
+    SELECT `iban`, `name` FROM `medical_units`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
@@ -144,7 +144,19 @@ CREATE VIEW `polyclinics`.`view_cabinets` AS
     
 DROP VIEW IF EXISTS `polyclinics`.`view_role`;
 CREATE VIEW `polyclinics`.`view_role` AS 
-	SELECT A.cnpEmployee, A.idRole , R.name from accounts A inner join roles R on A.idRole=R.id;
+	SELECT A.`cnpEmployee`, A.`idRole` , R.`name` from `accounts` A inner join `roles` R on A.`idRole`=R.`id`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_employee_cnp_name`;
+CREATE VIEW `polyclinics`.`view_employee_cnp_name` AS
+    SELECT DISTINCT `employees`.`cnp`, CONCAT(`employees`.`lastName`, ' ', `employees`.`firstName`)
+    FROM `employees`, `doctors`
+    WHERE `employees`.`cnp` <> `doctors`.`cnpEmployee`;
+    
+DROP VIEW IF EXISTS `polyclinics`.`view_doctor_cnp_name`;
+CREATE VIEW `polyclinics`.`view_doctor_cnp_name` AS
+    SELECT DISTINCT `employees`.`cnp`, CONCAT(`employees`.`lastName`, ' ', `employees`.`firstName`)
+    FROM `employees`, `doctors`
+    WHERE `employees`.`cnp` =  `doctors`.`cnpEmployee`;
     
 SELECT * FROM `polyclinics`.`view_nurses`;
 

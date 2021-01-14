@@ -10,15 +10,19 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 public class PanelEmployeeSalary extends JPanel {
-    private JTextField tfCNP = new JTextField(20);
+    private JComboBox<String> cbName = new JComboBox<>();
     private JTextField tfSalary = new JTextField(10);
     private JButton btnShowSalary = new StyledJButton("Afisare").getButton();
 
     private UtilDateModel utilDateModelMin = new UtilDateModel();
     private UtilDateModel utilDateModelMax = new UtilDateModel();
+
+    private Map<String, String> employees;
 
     public PanelEmployeeSalary(){
         setLayout(new BorderLayout());
@@ -28,10 +32,10 @@ public class PanelEmployeeSalary extends JPanel {
         JPanel detailsPanel = new JPanel(new GridLayout(5, 1));
         detailsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JPanel employeesCNP = new JPanel(new FlowLayout());
-        employeesCNP.setBorder(new EmptyBorder(0, 0, 10, 0));
-        employeesCNP.add(new JLabel("CNP Angajat:"));
-        employeesCNP.add(tfCNP);
+        JPanel employeesName = new JPanel(new FlowLayout());
+        employeesName.setBorder(new EmptyBorder(0, 0, 10, 0));
+        employeesName.add(new JLabel("Nume Angajat:"));
+        employeesName.add(cbName);
 
         Properties properties = new Properties();
         properties.put("text.today","Today");
@@ -55,7 +59,7 @@ public class PanelEmployeeSalary extends JPanel {
         employeeSalaryPanel.add(new JLabel("Salariu:"));
         employeeSalaryPanel.add(tfSalary);
 
-        detailsPanel.add(employeesCNP);
+        detailsPanel.add(employeesName);
         detailsPanel.add(searchPanel);
         detailsPanel.add(employeeSalaryPanel);
 
@@ -67,12 +71,28 @@ public class PanelEmployeeSalary extends JPanel {
         add(btnPanel, BorderLayout.SOUTH);
     }
 
-    public JTextField getTfCNP() {
-        return tfCNP;
+    public JComboBox<String> getCbName() {
+        return cbName;
     }
 
     public JTextField getTfSalary() {
         return tfSalary;
+    }
+
+    public void updateEmployeesName(Map<String, String> doctorsName) {
+        employees = doctorsName;
+        cbName.removeAllItems();
+        doctorsName.values().forEach(name -> cbName.addItem(name));
+    }
+
+    public String getEmployeesCNP() {
+        Optional<Map.Entry<String, String>> result = employees
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbName.getSelectedItem()))
+                .findFirst();
+        System.out.println(result);
+        return result.map(Map.Entry::getKey).orElse("1");
     }
 
     public UtilDateModel getUtilDateModelMin() {

@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ProfileModel {
     private Database database;
-    private boolean data=false;
+    private boolean data = false;
 
     public ProfileModel() {
         database = ClinicApplication.getDatabase();
@@ -65,6 +65,7 @@ public class ProfileModel {
 
         return nurse;
     }
+
     public Doctor getDoctor(Employee employee) {
         Doctor doctor = null;
 
@@ -88,11 +89,10 @@ public class ProfileModel {
         return doctor;
     }
 
-    public Employee getEmployee(String lastname, String firstname, String position)
-    {
+    public Employee getEmployee(String lastname, String firstname, String position) {
+        Employee employee = null;
         boolean first = true;
         int and = 0;
-       Employee employee= new Employee();
         try {
             StringBuilder stringBuilder = new StringBuilder("SELECT * FROM view_employees ");
             if ((!lastname.equals("") || !firstname.equals("") || !position.equals("")) && first) {
@@ -154,7 +154,7 @@ public class ProfileModel {
 
             while (resultSet.next()) {
                 specialities.add(new Speciality(resultSet.getInt(1),
-                        resultSet.getString(2),resultSet.getString(3)));
+                        resultSet.getString(2), resultSet.getString(3)));
             }
 
             resultSet.close();

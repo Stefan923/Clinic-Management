@@ -1,21 +1,14 @@
 package com.sanitas.clinicapp.fr;
 import com.sanitas.clinicapp.ClinicApplication;
 import com.sanitas.clinicapp.fr.panels.*;
-import com.sanitas.clinicapp.mr.MrController;
-import com.sanitas.clinicapp.mr.panels.PanelEditPatient;
-import com.sanitas.clinicapp.mr.panels.PanelShowPatients;
-import com.sanitas.clinicapp.mr.panels.PanelShowReports;
-import com.sanitas.clinicapp.mr.panels.PanelViewReport;
-import com.sanitas.clinicapp.struct.Report;
 import com.sanitas.clinicapp.struct.Transaction;
-import com.sanitas.clinicapp.ui.Colors;
+
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
-import java.sql.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,15 +40,18 @@ public class FrController {
 
         PanelEmployeeSalary panelEmployeeSalary = new PanelEmployeeSalary();
         panelEmployeeSalary.addShowSalaryButtonListener(new EmployeeSalaryButtonListener());
-
         if(account.hasPermission("fr.read.employee") && !account.hasPermission("fr.read.all")){
-            JTextField tfCnp = panelEmployeeSalary.getTfCNP();
-            tfCnp.setText(account.getCnp());
-            tfCnp.setEditable(false);
+            HashMap<String, String> employeeDetails = new HashMap<>();
+            Optional<Map.Entry<String, String>> ent = model.getEmployeesName()
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(account.getCnp()))
+                    .findFirst();
+            employeeDetails.put(ent.get().getKey(), ent.get().getValue());
+            panelEmployeeSalary.updateEmployeesName(employeeDetails);
         }
         else if (account.hasPermission("fr.read.all")){
-            //
-
+            panelEmployeeSalary.updateEmployeesName(model.getEmployeesName());
         }
 
         PanelDoctorSalary panelDoctorSalary = new PanelDoctorSalary();
@@ -76,6 +72,19 @@ public class FrController {
 
         PanelProfitByDoctor panelProfitByDoctor = new PanelProfitByDoctor();
         panelProfitByDoctor.addProfitButtonListener(new ProfitByDoctorButtonListener());
+        if(account.hasPermission("fr.read.doctor") && !account.hasPermission("fr.read.all")){
+            HashMap<String, String> doctorDetails2 = new HashMap<>();
+            Optional<Map.Entry<String, String>> ent = model.getDoctorsName()
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(account.getCnp()))
+                    .findFirst();
+            doctorDetails2.put(ent.get().getKey(), ent.get().getValue());
+            panelProfitByDoctor.updateDoctorsNames(doctorDetails2);
+        }
+        else if (account.hasPermission("fr.read.all")){
+            panelProfitByDoctor.updateDoctorsNames(model.getDoctorsName());
+        }
 
         PanelProfitBySpeciality panelProfitBySpeciality = new PanelProfitBySpeciality();
         panelProfitBySpeciality.addProfitButtonListener(new ProfitBySpecialityButtonListener());
@@ -181,7 +190,7 @@ public class FrController {
             if (panel instanceof PanelEmployeeSalary) {
                 PanelEmployeeSalary panelES = (PanelEmployeeSalary) panel;
 
-                double salary = model.getEmployeeSalary(panelES.getTfCNP().getText(),
+                double salary = model.getEmployeeSalary(panelES.getEmployeesCNP(),
                         panelES.getUtilDateModelMin().getValue(),
                         panelES.getUtilDateModelMax().getValue());
 
@@ -197,7 +206,7 @@ public class FrController {
             if (panel instanceof PanelProfitByDoctor) {
                 PanelProfitByDoctor panelPBD = (PanelProfitByDoctor) panel;
 
-                double profit = model.getProfitByDoctor(panelPBD.getTfCNP().getText(),
+                double profit = model.getProfitByDoctor(panelPBD.getDoctorsCNP(),
                         panelPBD.getUtilDateModelMin().getValue(),
                         panelPBD.getUtilDateModelMax().getValue());
 

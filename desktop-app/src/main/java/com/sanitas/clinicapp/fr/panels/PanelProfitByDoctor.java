@@ -10,15 +10,19 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 public class PanelProfitByDoctor extends JPanel {
-    private JTextField tfCNP = new JTextField(20);
+    private JComboBox<String> cbName = new JComboBox<>();
     private JTextField tfProfit = new JTextField(10);
     private JButton btnShowProfit = new StyledJButton("Afisare").getButton();
 
     private UtilDateModel utilDateModelMin = new UtilDateModel();
     private UtilDateModel utilDateModelMax = new UtilDateModel();
+
+    private Map<String, String> doctors;
 
     public PanelProfitByDoctor() {
         setLayout(new BorderLayout());
@@ -28,10 +32,10 @@ public class PanelProfitByDoctor extends JPanel {
         JPanel detailsPanel = new JPanel(new GridLayout(5, 1));
         detailsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JPanel doctorsCNP = new JPanel(new FlowLayout());
-        doctorsCNP.setBorder(new EmptyBorder(0, 0, 10, 0));
-        doctorsCNP.add(new JLabel("CNP Medic:"));
-        doctorsCNP.add(tfCNP);
+        JPanel doctorsName = new JPanel(new FlowLayout());
+        doctorsName.setBorder(new EmptyBorder(0, 0, 10, 0));
+        doctorsName.add(new JLabel("Nume Medic:"));
+        doctorsName.add(cbName);
 
         Properties properties = new Properties();
         properties.put("text.today", "Today");
@@ -55,7 +59,7 @@ public class PanelProfitByDoctor extends JPanel {
         profitByDoctorPanel.add(new JLabel("Profit per medic:"));
         profitByDoctorPanel.add(tfProfit);
 
-        detailsPanel.add(doctorsCNP);
+        detailsPanel.add(doctorsName);
         detailsPanel.add(searchPanel);
         detailsPanel.add(profitByDoctorPanel);
 
@@ -67,8 +71,8 @@ public class PanelProfitByDoctor extends JPanel {
         add(btnPanel, BorderLayout.SOUTH);
     }
 
-    public JTextField getTfCNP() {
-        return tfCNP;
+    public JComboBox<String> getCbName() {
+        return cbName;
     }
 
     public UtilDateModel getUtilDateModelMin() {
@@ -81,6 +85,22 @@ public class PanelProfitByDoctor extends JPanel {
 
     public JTextField getTfProfit() {
         return tfProfit;
+    }
+
+    public void updateDoctorsNames(Map<String, String> doctorsName) {
+        doctors = doctorsName;
+        cbName.removeAllItems();
+        doctorsName.values().forEach(name -> cbName.addItem(name));
+    }
+
+    public String getDoctorsCNP() {
+        Optional<Map.Entry<String, String>> result = doctors
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbName.getSelectedItem()))
+                .findFirst();
+        //System.out.println(result);
+        return result.map(Map.Entry::getKey).orElse("1");
     }
 
     public void addProfitButtonListener(ActionListener actionListener) {

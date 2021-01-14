@@ -32,11 +32,6 @@ public class Employee {
         this.salary=salary;
         this.hours=hours;
     }
-
-    public Employee() {
-
-    }
-
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }

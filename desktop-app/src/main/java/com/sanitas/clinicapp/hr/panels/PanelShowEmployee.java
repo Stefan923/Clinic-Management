@@ -33,7 +33,6 @@ public class PanelShowEmployee extends JPanel{
     public PanelShowEmployee(HrModel model, ClinicApplication.Account account) {
         super(new BorderLayout());
         this.account=account;
-        btnSearch.setBackground(Colors.MAIN_COLOR.getColor());
 
         employeeTable = initializeTable(model);
 
