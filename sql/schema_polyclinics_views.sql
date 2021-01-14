@@ -1,7 +1,7 @@
 DROP VIEW IF EXISTS `polyclinics`.`view_employees`;
 CREATE VIEW `polyclinics`.`view_employees` AS
 	SELECT * FROM `employees`;
-    
+
 DROP VIEW IF EXISTS `polyclinics`.`view_accounts`;
 CREATE VIEW `polyclinics`.`view_accounts` AS
 	SELECT `username`, `cnpEmployee` as `cnp` FROM `accounts`;
@@ -136,7 +136,7 @@ CREATE VIEW `view_appointment_services` AS
 
 DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
 CREATE VIEW `polyclinics`.`view_medical_units` AS
-	SELECT `iban`, `name` FROM `medical_units`;
+    SELECT `iban`, `name` FROM `medical_units`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
@@ -144,7 +144,7 @@ CREATE VIEW `polyclinics`.`view_cabinets` AS
     
 DROP VIEW IF EXISTS `polyclinics`.`view_role`;
 CREATE VIEW `polyclinics`.`view_role` AS 
-	SELECT A.cnpEmployee, A.idRole , R.name from accounts A inner join roles R on A.idRole=R.id;
+	SELECT A.`cnpEmployee`, A.`idRole` , R.`name` from `accounts` A inner join `roles` R on A.`idRole`=R.`id`;
     
 DROP VIEW IF EXISTS `polyclinics`.`view_employee_cnp_name`;
 CREATE VIEW `polyclinics`.`view_employee_cnp_name` AS

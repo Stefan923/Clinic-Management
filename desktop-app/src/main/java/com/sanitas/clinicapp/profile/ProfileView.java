@@ -7,6 +7,7 @@ import com.sanitas.clinicapp.ui.StyledJButton;
 
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -25,11 +26,14 @@ public class ProfileView extends JFrame {
         setRightPanel(viewv);
 
         btnBack.setBackground(Colors.MAIN_COLOR.getColor());
-
+        JPanel backPanel = new JPanel(new FlowLayout());
+        backPanel.add(btnBack);
+        backPanel.setBorder(new EmptyBorder(0, 5, 10, 5));
+        backPanel.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel leftContent = new JPanel(new BorderLayout());
-        leftContent.add(btnBack, BorderLayout.SOUTH);
-        leftContent.setBackground(new Color(0XBDBEBF));
+        leftContent.add(backPanel, BorderLayout.SOUTH);
+        leftContent.setBackground(Colors.MENU_COLOR.getColor());
 
         JPanel content = new JPanel(new BorderLayout());
         content.add(leftContent, BorderLayout.WEST);

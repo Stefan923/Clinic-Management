@@ -71,20 +71,20 @@ public class PanelEditEmployee extends JPanel {
         this.cnp=cnp;
 
         tfCnp.setEditable(false);
-        tfAdress.setEditable(false);
         tfContract.setEditable(false);
         tfDate.setEditable(false);
-        tfEmail.setEditable(false);
         tfHours.setEditable(false);
         tfIban.setEditable(false);
-        tfPhone.setEditable(false);
         tfSalary.setEditable(false);
+        tfPosition.setEditable(false);
 
         if((!(account.hasPermission("hr.read.all")) || model.viewRole(cnp)=="administrator") && (!account.isSuperAdmin())
                 || (model.viewRole(cnp).equals("super_administrator") && cnp!=account.getCnp())) {
             tfFirstname.setEditable(false);
             tfLastname.setEditable(false);
-            tfPosition.setEditable(false);
+            tfPhone.setEditable(false);
+            tfEmail.setEditable(false);
+            tfAdress.setEditable(false);
         }
 
 
@@ -456,5 +456,17 @@ public class PanelEditEmployee extends JPanel {
 
     public JComboBox<String> getCbRank() {
         return cbRank;
+    }
+
+    public JTextField getTfAdress() {
+        return tfAdress;
+    }
+
+    public JTextField getTfEmail() {
+        return tfEmail;
+    }
+
+    public JTextField getTfPhone() {
+        return tfPhone;
     }
 }

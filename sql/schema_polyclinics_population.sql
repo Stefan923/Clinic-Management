@@ -46,55 +46,55 @@ INSERT INTO `medical_unit_schedule` (`idMedicalUnit`, `dayOfWeek`, `startHour`, 
 	('5', 'Sunday', '08:00:00', '12:00:00');
 
 INSERT INTO `cabinets` (`idMedicalUnit`, `name`) VALUES
-	('1', 'Cardiologie'),
-	('1', 'Dermatologie'),
-	('1', 'Chirurgie plastica'),
-	('1', 'Endocrinologie'),
-	('1', 'Stomatologie'),
-	('1', 'ORL'),
-	('1', 'Ortopedie'),
-	('1', 'Endoscopie'),
-	('1', 'Radiologie'),
-	('1', 'RMN'),
+	('1', 'Cabinet Cardiologie'),
+	('1', 'Cabinet Dermatologie'),
+	('1', 'Cabinet Chirurgie plastica'),
+	('1', 'Cabinet Endocrinologie'),
+	('1', 'Cabinet Stomatologie'),
+	('1', 'Cabinet ORL'),
+	('1', 'Cabinet Ortopedie'),
+	('1', 'Cabinet Endoscopie'),
+	('1', 'Cabinet Radiologie'),
+	('1', 'Cabinet RMN'),
 	('1', 'Sala de operatie 1'),
 	('1', 'Sala de operatie 2'),
 
-	('2', 'Cardiologie'),
-	('2', 'Dermatologie'),
-	('2', 'Stomatologie'),
-	('2', 'Endocrinologie'),
-	('2', 'Radiologie'),
-	('2', 'Endoscopie'),
+	('2', 'Cabinet Cardiologie'),
+	('2', 'Cabinet Dermatologie'),
+	('2', 'Cabinet Stomatologie'),
+	('2', 'Cabinet Endocrinologie'),
+	('2', 'Cabinet Radiologie'),
+	('2', 'Cabinet Endoscopie'),
 
-	('3', 'Cardiologie'),
-	('3', 'Dermatologie'),
-	('3', 'Chirurgie plastica'),
-	('3', 'Endocrinologie'),
-	('3', 'Stomatologie'),
-	('3', 'ORL'),
-	('3', 'Ortopedie'),
-	('3', 'Endoscopie'),
-	('2', 'Radiologie'),
-	('3', 'RMN'),
+	('3', 'Cabinet Cardiologie'),
+	('3', 'Cabinet Dermatologie'),
+	('3', 'Cabinet Chirurgie plastica'),
+	('3', 'Cabinet Endocrinologie'),
+	('3', 'Cabinet Stomatologie'),
+	('3', 'Cabinet ORL'),
+	('3', 'Cabinet Ortopedie'),
+	('3', 'Cabinet Endoscopie'),
+	('2', 'Cabinet Radiologie'),
+	('3', 'Cabinet RMN'),
 	('3', 'Sala de operatie'),
 
-	('4', 'Cardiologie'),
-	('4', 'Dermatologie'),
-	('4', 'Endocrinologie'),
-	('4', 'Stomatologie'),
-	('4', 'ORL'),
-	('4', 'Ortopedie'),
-	('4', 'Endoscopie'),
-	('4', 'Radiologie'),
+	('4', 'Cabinet Cardiologie'),
+	('4', 'Cabinet Dermatologie'),
+	('4', 'Cabinet Endocrinologie'),
+	('4', 'Cabinet Stomatologie'),
+	('4', 'Cabinet ORL'),
+	('4', 'Cabinet Ortopedie'),
+	('4', 'Cabinet Endoscopie'),
+	('4', 'Cabinet Radiologie'),
 
-	('5', 'Cardiologie'),
-	('5', 'Dermatologie'),
-	('5', 'Endocrinologie'),
-	('5', 'Stomatologie'),
-	('5', 'ORL'),
-	('5', 'Ortopedie'),
-	('5', 'Endoscopie'),
-	('5', 'Radiologie'),
+	('5', 'Cabinet Cardiologie'),
+	('5', 'Cabinet Dermatologie'),
+	('5', 'Cabinet Endocrinologie'),
+	('5', 'Cabinet Stomatologie'),
+	('5', 'Cabinet ORL'),
+	('5', 'Cabinet Ortopedie'),
+	('5', 'Cabinet Endoscopie'),
+	('5', 'Cabinet Radiologie'),
 	('5', 'Sala de operatie');
 
 INSERT INTO `equipments` (`name`) VALUES
@@ -242,6 +242,7 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('2', 'profile.read'),
 	('2', 'hr.read'),
 	('2', 'fr.read'),
+	('2', 'fr.read.employee'),
 	('2', 'mr.read'),
 	('2', 'mr.appointments.read'),
 	('2', 'mr.appointments.read.all'),
@@ -252,16 +253,20 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('3', 'profile.read'),
 	('3', 'hr.read'),
 	('3', 'fr.read'),
+	('3', 'fr.read.employee'),
 	('3', 'hr.read.all'),
 	('3', 'hr.write.all'),
 	('4', 'profile.read'),
 	('4', 'hr.read'),
 	('4', 'fr.read'),
+	('4', 'fr.read.employee'),
 	('4', 'mr.read'),
 	('4', 'mr.analyses.read'),
 	('5', 'profile.read'),
     ('5', 'hr.read'),
 	('5', 'fr.read'),
+	('5', 'fr.read.doctor'),
+	('5', 'fr.read.employee'),
 	('5', 'mr.read'),
 	('5', 'mr.appointments.read'),
 	('5', 'mr.medical_services.write'),
@@ -273,6 +278,8 @@ INSERT INTO `role_permissions`(`idRole`, `permission`) VALUES
 	('6', 'profile.read'),
 	('6', 'hr.read'),
 	('6', 'fr.read'),
+	('6', 'fr.read.employee'),
+    ('6', 'fr.read.all'),
 	('6', 'fr.write'),
 	('6', 'fr.read.other'),
 	('6', 'fr.write.other'),
@@ -351,10 +358,10 @@ INSERT INTO `polyclinics`.`doctors` (`cnpEmployee`, `sealCode`, `commission`, `s
 	('2731201018946','39563','0.3','doctorand',NULL),
 	('2781201019674','47274','0.3','doctor stiinte medicale','profesor'),
 	('2700927417309','75436','0.3',NULL,NULL),
-    ('2903657384589','11111','0.3',NULL,NULL),
-    ('2901202334757','00011','0.3',NULL,NULL),
-    ('2901202334756','12234','0.3',NULL,NULL);
- 
+    ('2901202334756','16757','0.5','doctorand','profesor'),
+    ('2903657384589','35167','0.4','doctor stiinte medicale','profesor'),
+    ('2901202334757','36738','0.4','doctorand','lector');
+
 INSERT INTO `polyclinics`.`doctor_specialities` (`cnpDoctor`, `idSpeciality`, `rank`) values
 	('2901204019549',1,'specialist'),
 	('2701204068831',2,'specialist'),
@@ -464,11 +471,16 @@ INSERT INTO `employee_schedule` (`cnpEmployee`, `idMedicalUnit`, `dayOfWeek`, `s
     (2931204115436,4, 'Tuesday', '07:30', '20:00'),
     (2931204115436,4, 'Monday', '07:30', '12:00'),
     (2931204115436,2, 'Tuesday', '12:30', '18:00'),
-    
+
     (2701203534721,1, 'Monday', '08:00', '16:00'),
     (2701203534721,1, 'Tuesday', '16:00', '20:00'),
     (2701203534721,1, 'Friday', '08:00', '18:00'),
-    
+
+    (1960820039445,1, 'Monday', '10:00', '17:00'),
+    (1960820039445,1, 'Tuesday', '10:00', '19:00'),
+    (1960820039445,1, 'Wednesday', '08:00', '12:00'),
+	(1960820039445,1, 'Thursday', '15:00', '20:00'),
+
     (2701204066352,1, 'Monday', '10:00', '17:00'),
     (2701204066352,1, 'Tuesday', '10:00', '19:00'),
     (2701204066352,1, 'Wednesday', '08:00', '12:00'),
@@ -482,44 +494,45 @@ INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,
 	('2901204019549',1,3,'Consultatie Cardiologie',1,100,30),
 	('2701204068831',2,8,'Consultatie Dermatologie',NULL,80,20),
 	('2901204012456',1,3,'Consultatie Cardiologie',3,1200,120);
+
+DELETE FROM `appointments`;
+INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`, `hasReceipt`) VALUES
+	(1971005087985, 2700927417309, '1', '1', '2020-12-14 15:00:00', '1'),
+	(1960408068054, 2700927417309, '1', '1', '2020-12-14 14:30:00', '1'),
+	(1960408068054, 2700927417309, '1', '1', '2020-12-14 10:00:00', '1'),
+	(1960408068054, 2700927417309, '5', '1', '2020-12-16 10:00:00', '1'),
+	(1801119378613, 2901204012456, '5', '1', '2020-12-16 11:00:00', '1'),
     
-INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`) VALUES
-	(1971005087985, 2700927417309, '1', '1', '2020-12-14 15:00:00'),
-	(1960408068054, 2700927417309, '1', '1', '2020-12-14 14:30:00'),
-	(1960408068054, 2700927417309, '1', '1', '2020-12-14 10:00:00'),
-	(1960408068054, 2700927417309, '5', '1', '2020-12-16 10:00:00'),
-	(1801119378613, 2901204012456, '5', '1', '2020-12-16 11:00:00'),
+    (6000822065974, 2901204012456, '11', '4', '2020-11-07 10:30:00', '1'),
+    (2750329315938, 2901204012456, '11', '4', '2020-11-07 12:30:00', '1'),
+    (2910815468725, 2901204012456, '11', '4', '2020-11-07 14:30:00', '1'),
     
-    (6000822065974, 2901204012456, '11', '4', '2020-11-07 10:30:00'),
-    (2750329315938, 2901204012456, '11', '4', '2020-11-07 12:30:00'),
-    (2910815468725, 2901204012456, '11', '4', '2020-11-07 14:30:00'),
+	(1801119378613, 2811204117404, '25', '8', '2020-11-07 10:45:00', '1'),
+    (2971003128722, 2811204117404, '25', '8', '2020-11-07 09:00:00', '1'),
+    (6000930329136, 2811204117404, '25', '8', '2020-11-07 08:15:00', '1'),
+    (1801119378613, 2811204117404, '25', '8', '2020-11-27 12:30:00', '1'),
+    (1471020095263, 2811204117404, '25', '8', '2020-11-27 16:30:00', '1'),
+    (1520619148967, 2811204117404, '25', '8', '2020-11-27 11:30:00', '1'),
     
-	(1801119378613, 2811204117404, '25', '8', '2020-11-07 10:45:00'),
-    (2971003128722, 2811204117404, '25', '8', '2020-11-07 09:00:00'),
-    (6000930329136, 2811204117404, '25', '8', '2020-11-07 08:15:00'),
-    (1801119378613, 2811204117404, '25', '8', '2020-11-27 12:30:00'),
-    (1471020095263, 2811204117404, '25', '8', '2020-11-27 16:30:00'),
-    (1520619148967, 2811204117404, '25', '8', '2020-11-27 11:30:00'),
+    (1971005087985, 2701204068831, '39', '2', '2020-12-14 14:30:00', '1'),
+    (5000604169904, 2701204068831, '39', '2', '2020-12-21 07:45:00', '1'),
+    (1971005087985, 2701204068831, '39', '2', '2020-12-21 12:45:00', '1'),
+    (1201204085247, 2701204068831, '39', '2', '2020-12-21 08:35:00', '1'),
+    (2991208015482, 2701204068831, '39', '2', '2020-12-21 17:45:00', '1'),
+    (2991208015482, 2701204068831, '39', '2', '2020-12-28 12:45:00', '1'),
+    (5000604169904, 2701204068831, '39', '2', '2020-12-28 17:45:00', '1'),
+    (2991208015482, 2701204068831, '39', '2', '2020-12-28 12:45:00', '1'),
     
-    (1971005087985, 2701204068831, '39', '2', '2020-12-14 14:30:00'),
-    (5000604169904, 2701204068831, '39', '2', '2020-12-21 07:45:00'),
-    (1971005087985, 2701204068831, '39', '2', '2020-12-21 12:45:00'),
-    (1201204085247, 2701204068831, '39', '2', '2020-12-21 08:35:00'),
-    (2991208015482, 2701204068831, '39', '2', '2020-12-21 17:45:00'),
-    (2991208015482, 2701204068831, '39', '2', '2020-12-28 12:45:00'),
-    (5000604169904, 2701204068831, '39', '2', '2020-12-28 17:45:00'),
-    (2991208015482, 2701204068831, '39', '2', '2020-12-28 12:45:00'),
-    
-    (2460512257129, 2931204115436, '32', '11', '2020-12-15 19:00:00'),
-    (2991208015482, 2931204115436, '32', '11', '2020-12-15 16:00:00'),
-	(1201204085247, 2931204115436, '32', '11', '2020-12-15 09:00:00'),
-    (1971005087985, 2931204115436, '32', '11', '2020-12-15 15:45:00'),
-    (1971005087985, 2931204115436, '32', '11', '2020-12-22 15:45:00'),
-    (5000604169904, 2931204115436, '32', '11', '2020-12-22 12:45:00'),
-    (1801119378613, 2931204115436, '32', '11', '2020-12-22 11:30:00'),
-    (2961028088875, 2931204115436, '32', '11', '2020-12-22 18:45:00'),
-    (2380127165640, 2931204115436, '32', '11', '2020-12-22 16:00:00'),
-    (2991208015482, 2931204115436, '32', '11', '2020-12-22 10:30:00');
+    (2460512257129, 2931204115436, '32', '11', '2020-12-15 19:00:00', '1'),
+    (2991208015482, 2931204115436, '32', '11', '2020-12-15 16:00:00', '1'),
+	(1201204085247, 2931204115436, '32', '11', '2020-12-15 09:00:00', '1'),
+    (1971005087985, 2931204115436, '32', '11', '2020-12-15 15:45:00', '1'),
+    (1971005087985, 2931204115436, '32', '11', '2020-12-22 15:45:00', '1'),
+    (5000604169904, 2931204115436, '32', '11', '2020-12-22 12:45:00', '1'),
+    (1801119378613, 2931204115436, '32', '11', '2020-12-22 11:30:00', '1'),
+    (2961028088875, 2931204115436, '32', '11', '2020-12-22 18:45:00', '1'),
+    (2380127165640, 2931204115436, '32', '11', '2020-12-22 16:00:00', '1'),
+    (2991208015482, 2931204115436, '32', '11', '2020-12-22 10:30:00', '1');
 
 INSERT INTO `appointment_services` (`idMedicalService`, `idAppointment`) VALUES
 	('1', '1'),
@@ -528,7 +541,10 @@ INSERT INTO `appointment_services` (`idMedicalService`, `idAppointment`) VALUES
 	('3', '3'),
 	('1', '4'),
 	('1', '5');
-    
+
+INSERT INTO `reports` (`cnpPatient`, `diagnostic`, `recommendation`, `date`, `lastEdit`, `sealCode`) VALUES
+	('');
+
 INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALUES
 	('income', '2018-01-02 08:04:17', '200', 'RO06RZBR2869765134298533', 'RO22PORL9568116158281625'),
 	('income', '2019-01-02 08:04:17', '200', 'RO76PORL5228664564991568', 'RO22PORL9568116158281625'),
@@ -547,6 +563,7 @@ INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALU
 UPDATE `accounts` SET `password` = '123' WHERE `username` = 'm.adam';
 UPDATE `accounts` SET `password` = '123' WHERE `username` = 'g.cristescu';
 UPDATE `accounts` SET `password` = '123' WHERE `username` = 'r.varga';
+UPDATE `accounts` SET `password` = '123' WHERE `username` = 'n.leu';
 UPDATE `accounts` SET `password` = '123', `idRole` = 7 WHERE `username` = 'i.stoica';
 UPDATE `accounts` SET `password` = '123', `idRole` = 7 WHERE `username` = 'i.nicoara';
 UPDATE `accounts` SET `password` = '123', `idRole` = 8 WHERE `username` = 'm.grasu';
