@@ -136,7 +136,7 @@ CREATE VIEW `view_appointment_services` AS
 
 DROP VIEW IF EXISTS `polyclinics`.`view_medical_units`;
 CREATE VIEW `polyclinics`.`view_medical_units` AS
-	SELECT * FROM `medical_units`;
+	SELECT `iban`, `name` FROM `medical_units`;
 
 DROP VIEW IF EXISTS `polyclinics`.`view_cabinets`;
 CREATE VIEW `polyclinics`.`view_cabinets` AS
