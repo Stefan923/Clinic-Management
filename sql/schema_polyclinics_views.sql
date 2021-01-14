@@ -1,7 +1,7 @@
 DROP VIEW IF EXISTS `polyclinics`.`view_employees`;
 CREATE VIEW `polyclinics`.`view_employees` AS
 	SELECT * FROM `employees`;
-    
+
 DROP VIEW IF EXISTS `polyclinics`.`view_accounts`;
 CREATE VIEW `polyclinics`.`view_accounts` AS
 	SELECT `username`, `cnpEmployee` as `cnp` FROM `accounts`;
@@ -17,7 +17,6 @@ CREATE VIEW `polyclinics`.`view_holidays` AS
 DROP VIEW IF EXISTS `polyclinics`.`view_nurses`;
 CREATE VIEW `polyclinics`.`view_nurses` AS
 	SELECT * FROM `nurse`;
-
 
 DROP VIEW IF EXISTS `polyclinics`.`view_services`;
 CREATE VIEW `polyclinics`.`view_services` AS

@@ -283,14 +283,25 @@ DROP PROCEDURE IF EXISTS GET_EMPLOYEE_SALARY;
 DELIMITER //
 CREATE PROCEDURE GET_EMPLOYEE_SALARY(IN `_cnp` VARCHAR(13), IN `startDate` DATE, IN `endDate` DATE, OUT `result` DECIMAL(10,2))
 BEGIN
-	SET @workedHrs = 0, @holidayHrs = 0;
-	SELECT IFNULL(SUM(HOUR(TIMEDIFF(`startHour`, `endHour`))), 0) INTO @workedHrs
+	SET @workedHrs = 0, @holidayHrs = 0, @date1 = `startDate`;
+	/*SELECT IFNULL(SUM(HOUR(TIMEDIFF(`startHour`, `endHour`))), 0) INTO @workedHrs
 		FROM `employee_schedule` ES
-		WHERE ES.`cnpEmployee` = `_cnp`;
+		WHERE ES.`cnpEmployee` = `_cnp`;*/
+    
+    WHILE (@date1 <= `endDate`) DO
+		SET @tempHrs = 0;
+		SELECT IFNULL(SUM(HOUR(TIMEDIFF(ES.`startHour`, ES.`endHour`))), 0) INTO @tempHrs
+			FROM `employee_schedule` ES
+			WHERE ES.`cnpEmployee` = `_cnp` AND DAYNAME(@date1) = ES.`dayOfWeek`;
+			
+		SET @workedHrs = @workedHrs + @tempHrs;
         
+		SET @date1 = DATE_ADD(@date1, INTERVAL 1 DAY);
+	END WHILE;
+	
 	CALL GET_HOLIDAY_HRS(`_cnp`, `startDate`, `endDate`, @holidayHrs);
 	
-	SELECT (((@workedHrs - @holidayHrs) * E.`salary`) / E.`workedHrs`) INTO `result`
+	SELECT 	IFNULL((((@workedHrs - @holidayHrs) * E.`salary`) / E.`workedHrs`), 0) INTO `result`
 		FROM `employees` E
 		WHERE E.`cnp` = `_cnp`;
 END;
@@ -557,7 +568,7 @@ BEGIN
 END;
 // DELIMITER ;
 
--- teste
+-- Teste pentru proceduri
 DROP PROCEDURE IF EXISTS TEST;
 DELIMITER //
 CREATE PROCEDURE TEST()
@@ -581,7 +592,7 @@ BEGIN
     -- CALL GET_DOCTOR_PROFIT_TOTAL('2700927417309', '2020-12-01', '2020-12-31', @output);
     -- CALL GET_DOCTOR_SALARY('2700927417309', '2020-12-01', '2020-12-31', @output);
 	-- CALL GET_PROFIT_BY_DOCTOR('2700927417309', '2020-12-01', '2020-12-31', @output);
-	CALL GET_EMPLOYEE_SALARY('2701204066352', '2020-12-01', '2020-12-31', @output);
+	-- CALL GET_EMPLOYEE_SALARY('2700927417309', '2020-01-01', '2020-01-31', @output);
     -- CALL INSERT_PATIENT('1871054098525', 'Ianc', 'Daniel', 'RO12RZBR6975321332427243', @output);
     -- CALL DELETE_PATIENT('1871054098525', @output);
     -- CALL GET_RECEIPT('2', @output_name, @output_name2,  @output_address, @output_date, @output_services, @output_price);
@@ -592,27 +603,9 @@ BEGIN
     -- CALL INSERT_ANALYSE('2910815468725', '3', '70', @output);
     -- CALL INSERT_MEDICAL_SERVICE('2700927417309', 'Consultatie cardiologie', '1', NULL, NULL, '300', '30', @output);
     -- CALL DELETE_MEDICAL_SERVICE('7', @output);
-    call INSERT_DOCTOR('2811204117404','50012',0.30,null,'lector',@output);
+    -- call INSERT_DOCTOR('2811204117404','50012',0.30,null,'lector',@output);
     SELECT @output;
 END;
 // DELIMITER ;
 
-CALL TEST();
-
-/*SELECT A.`idMedicalService`, IFNULL(SUM(M.`price` * A.`count`), 0)
-    FROM (SELECT `idMedicalService`, COUNT(*) AS `count` FROM `appointment_services` A, `appointments` AP WHERE AP.`idSpeciality` = '1' AND AP.`id` = A.`idAppointment` AND DATE(AP.`date`) >= '2020-12-13' AND DATE(AP.`date`) <= '2020-12-15' GROUP BY A.`idMedicalService`) A, `medical_services` M
-	WHERE M.`id` = A.`idMedicalService` GROUP BY A.`idMedicalService`;
-
-SELECT `idMedicalService`, COUNT(*) AS `count` FROM `appointment_services` A, `appointments` AP WHERE AP.`idSpeciality` = '1' AND AP.`id`=A.`idAppointment` AND DATE(AP.`date`) >= '2020-12-13' AND DATE(AP.`date`) <= '2020-12-15' GROUP BY A.`idMedicalService`;
-
--- INGORA
--- (TIME_TO_SEC(TIME(`date`)) + `duration` * 60)>=TIME_TO_SEC(`_startHour`) AND TIME(`date`)<=`_endHour`)
-
-SELECT * FROM `employees` WHERE `cnp`='?';
-SELECT * FROM `employee_schedule` WHERE `cnpEmployee`='?';
-SELECT * FROM `holidays` WHERE `cnpEmployee`='?';
-SELECT * FROM `patient_history` WHERE `cnpPatient`='?';
-SELECT * FROM `patient_analyses` PA, `analyse` A WHERE PA.`cnpPatient`='?' AND PA.`idAnalyse`=A.`id`;
-SELECT * FROM `patient_analyses` PA, `analyse` A WHERE PA.`cnpPatient`='?' AND PA.`idAnalyse`=A.`id`;
-SELECT A.`id`, `cnpPatient`, `cnpDoctor`, `idCabinet`, S.`name`, `date`, P.`lastName`, P.`firstName`, E.`lastName`, E.`firstName` FROM `patients` P, `appointments` A, `employees` E, `specialities` S WHERE P.`cnp`='1960408068054' AND A.`cnpPatient`=P.`cnp` AND A.`cnpDoctor`=E.`cnp` AND S.`id`=A.`idSpeciality`;
-*/
+-- CALL TEST();

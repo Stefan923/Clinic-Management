@@ -43,7 +43,6 @@ BEGIN
 		SET @username = CONCAT(@firstName, '.', @lastName, @count);
 	END WHILE;
     
-    
     IF (NEW.`position` LIKE 'Receptioner') THEN
 		SET @idRole = 2;
     ELSEIF (NEW.`position` LIKE 'HR') THEN
