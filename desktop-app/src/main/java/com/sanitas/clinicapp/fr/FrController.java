@@ -32,7 +32,7 @@ public class FrController {
         panelMedicalUnitProfit.addUnitsNameComboBoxListener(new ComboBoxMUPListener());
         HashMap<String, String> medicalUnits = model.getMedicalUnits();
         panelMedicalUnitProfit.updateUnitName(medicalUnits);
-        panelMedicalUnitProfit.updateIBAN(medicalUnits.get(panelMedicalUnitProfit.getCbUnitsName().getSelectedItem()));
+        panelMedicalUnitProfit.updateIBAN(panelMedicalUnitProfit.getIbanMedicalUnit());
         panelMedicalUnitProfit.addProfitButtonListener(new ProfitByMedicalUnitButtonListener());
 
         PanelDoctorProfitTotal panelDoctorProfitTotal = new PanelDoctorProfitTotal();
@@ -143,7 +143,7 @@ public class FrController {
             if (panel instanceof PanelMedicalUnitProfit) {
                 PanelMedicalUnitProfit panelMUP = (PanelMedicalUnitProfit) panel;
 
-                String unitIban = panelMUP.getMedicalUnits().get(panelMUP.getCbUnitsName().getSelectedItem());
+                String unitIban = panelMUP.getIbanMedicalUnit();
                 panelMUP.getTfIBAN().setText(unitIban);
             }
         }

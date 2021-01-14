@@ -91,7 +91,6 @@ public class PanelEmployeeSalary extends JPanel {
                 .stream()
                 .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbName.getSelectedItem()))
                 .findFirst();
-        System.out.println(result);
         return result.map(Map.Entry::getKey).orElse("1");
     }
 

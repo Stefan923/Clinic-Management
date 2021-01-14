@@ -542,9 +542,6 @@ INSERT INTO `appointment_services` (`idMedicalService`, `idAppointment`) VALUES
 	('1', '4'),
 	('1', '5');
 
-INSERT INTO `reports` (`cnpPatient`, `diagnostic`, `recommendation`, `date`, `lastEdit`, `sealCode`) VALUES
-	('');
-
 INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALUES
 	('income', '2018-01-02 08:04:17', '200', 'RO06RZBR2869765134298533', 'RO22PORL9568116158281625'),
 	('income', '2019-01-02 08:04:17', '200', 'RO76PORL5228664564991568', 'RO22PORL9568116158281625'),
