@@ -106,7 +106,7 @@ public class PanelMedicalUnitProfit extends JPanel {
     public void updateUnitName(Map<String, String> unitsName) {
         medicalUnits = unitsName;
         cbUnitsName.removeAllItems();
-        unitsName.keySet().forEach(name -> cbUnitsName.addItem(name));
+        unitsName.values().forEach(name -> cbUnitsName.addItem(name));
     }
 
     public void updateIBAN(String iban) {
@@ -117,10 +117,9 @@ public class PanelMedicalUnitProfit extends JPanel {
         Optional<Map.Entry<String, String>> result = medicalUnits
                 .entrySet()
                 .stream()
-                .filter(entry -> entry.getKey().equalsIgnoreCase((String) cbUnitsName.getSelectedItem()))
+                .filter(entry -> entry.getValue().equalsIgnoreCase((String) cbUnitsName.getSelectedItem()))
                 .findFirst();
-        System.out.println(result);
-        return result.map(Map.Entry::getValue).orElse("1");
+        return result.map(Map.Entry::getKey).orElse("1");
     }
 
     public void addUnitsNameComboBoxListener(ActionListener actionListener) { cbUnitsName.addActionListener(actionListener);

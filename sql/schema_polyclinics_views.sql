@@ -18,6 +18,7 @@ DROP VIEW IF EXISTS `polyclinics`.`view_nurses`;
 CREATE VIEW `polyclinics`.`view_nurses` AS
 	SELECT * FROM `nurse`;
 
+
 DROP VIEW IF EXISTS `polyclinics`.`view_services`;
 CREATE VIEW `polyclinics`.`view_services` AS
 	SELECT MS.`id`, MS.`cnpDoctor`, MS.`name` AS `ms_name`, MS.`price`, MS.`duration`, EMP.`lastName`, EMP.`firstName`, S.`name` AS `s_name`, IFNULL(A.`name`, '') AS `a_name`, IFNULL(E.`name`, '') AS `e_name`

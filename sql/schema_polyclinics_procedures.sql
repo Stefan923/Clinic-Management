@@ -383,7 +383,8 @@ DROP PROCEDURE IF EXISTS GET_RECEIPT;
 DELIMITER //
 CREATE PROCEDURE GET_RECEIPT(IN `_id` INT, OUT `_name` VARCHAR(50), OUT `_patientName` VARCHAR(50), OUT `_address` VARCHAR(100), OUT `_date` TIMESTAMP, OUT `_services` VARCHAR(255), OUT `_price` DECIMAL(10,2))
 BEGIN
-	SELECT M.`name`, M.`address`, A.`date` INTO `_name`, `_address`, `_date`
+	SET @unitIBAN = null, @patientIBAN = null;
+	SELECT M.`name`, M.`iban`, M.`address`, A.`date` INTO `_name`, @unitIBAN, `_address`, `_date`
 		FROM `medical_units` M, `appointments` A, `cabinets` C
 		WHERE A.`idCabinet` = C.`id` AND M.`id` = C.`idMedicalUnit` LIMIT 1;
 	
@@ -391,11 +392,14 @@ BEGIN
 		FROM `appointments` A, `appointment_services` S, `medical_services` MS
         WHERE A.`id` = `_id` AND S.`idAppointment` = A.`id` AND S.`idMedicalService` = MS.`id`;
 
-	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`) INTO `_patientName`
+	SELECT CONCAT(P.`lastName`, ' ', P.`firstName`), P.`iban` INTO `_patientName`, @patientIBAN
 		FROM `appointments` A, `patients` P
         WHERE P.`cnp` = A.`cnpPatient` AND A.`id` = `_id`;
 	
-	UPDATE `appointments` SET `hasReceipt` = 1 WHERE `id` = `_id`;
+    IF ((SELECT COUNT(*) FROM `appointments` WHERE `id` = `_id` AND `hasReceipt` = '0') > 0) THEN
+		UPDATE `appointments` SET `hasReceipt` = 1 WHERE `id` = `_id`;
+        INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALUE ('income', NOW(), `_price`, @patientIBAN, @unitIBAN);
+	END IF;
 END;
 // DELIMITER ;
 

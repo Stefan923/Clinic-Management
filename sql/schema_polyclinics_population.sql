@@ -498,7 +498,7 @@ INSERT INTO `medical_services` (`cnpDoctor`,`idSpeciality`,`idEquipment`,`name`,
 DELETE FROM `appointments`;
 INSERT INTO `appointments` (`cnpPatient`, `cnpDoctor`, `idCabinet`, `idSpeciality`, `date`, `hasReceipt`) VALUES
 	(1971005087985, 2700927417309, '1', '1', '2020-12-14 15:00:00', '1'),
-	(1960408068054, 2700927417309, '1', '1', '2020-12-14 14:30:00', '1'),
+	(1960408068054, 2700927417309, '1', '1', '2020-12-14 14:30:00', '0'),
 	(1960408068054, 2700927417309, '1', '1', '2020-12-14 10:00:00', '1'),
 	(1960408068054, 2700927417309, '5', '1', '2020-12-16 10:00:00', '1'),
 	(1801119378613, 2901204012456, '5', '1', '2020-12-16 11:00:00', '1'),
@@ -541,9 +541,6 @@ INSERT INTO `appointment_services` (`idMedicalService`, `idAppointment`) VALUES
 	('3', '3'),
 	('1', '4'),
 	('1', '5');
-
-INSERT INTO `reports` (`cnpPatient`, `diagnostic`, `recommendation`, `date`, `lastEdit`, `sealCode`) VALUES
-	('');
 
 INSERT INTO `transactions` (`type`, `date`, `amount`, `sender`, `receiver`) VALUES
 	('income', '2018-01-02 08:04:17', '200', 'RO06RZBR2869765134298533', 'RO22PORL9568116158281625'),
